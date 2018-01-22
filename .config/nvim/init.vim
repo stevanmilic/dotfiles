@@ -14,21 +14,24 @@ call dein#add('neomake/neomake') "h neomake -> docs
 call dein#add('Shougo/deoplete.nvim') "h deoplate -> docs
 
 " you knoow stuff
-call dein#add('ervandew/supertab') "support for deoplete!
 call dein#add('ctrlpvim/ctrlp.vim')
 call dein#add('christoomey/vim-tmux-navigator')
 call dein#add('altercation/vim-colors-solarized')
+call dein#add('iCyMind/NeoSolarized')
 call dein#add('Chiel92/vim-autoformat')
 call dein#add('tomtom/tcomment_vim')
 call dein#add('tpope/vim-repeat')
 call dein#add('vim-scripts/ReplaceWithRegister')
 call dein#add('tpope/vim-surround')
 call dein#add('vim-scripts/restore_view.vim')
-call dein#add('rking/ag.vim')
+call dein#add('mileszs/ack.vim')
 call dein#add('godlygeek/tabular')
 call dein#add('tmhedberg/SimpylFold', {'on_ft': 'python'})
 call dein#add('scrooloose/nerdtree')
-" call dein#add('valloric/MatchTagAlways', {'on_ft': 'html'})
+call dein#add('valloric/MatchTagAlways', {'on_ft': 'html'})
+call dein#add('tpope/vim-abolish')
+" call dein#add('sbdchd/neoformat')
+call dein#add('Shougo/echodoc.vim')
 
 " extended auto completion
 call dein#add('zchee/deoplete-clang')
@@ -44,6 +47,8 @@ call dein#add('apalmer1377/factorus')
 call dein#add('octol/vim-cpp-enhanced-highlight')
 call dein#add('StanAngeloff/php.vim')
 call dein#add('pangloss/vim-javascript')
+call dein#add('mxw/vim-jsx')
+call dein#add('jparise/vim-graphql')
 call dein#add('vim-python/python-syntax')
 call dein#add('rust-lang/rust.vim')
 call dein#add('magicalbanana/vim-sql-syntax')
@@ -54,6 +59,7 @@ call dein#add('HerringtonDarkholme/yats.vim')
 call dein#add('airblade/vim-gitgutter')
 call dein#add('tpope/vim-fugitive')
 call dein#add('Xuyuanp/nerdtree-git-plugin')
+call dein#add('shumphrey/fugitive-gitlab.vim')
 
 " cool icons
 call dein#add('ryanoasis/vim-devicons')
@@ -95,15 +101,14 @@ set splitbelow "more natural split window for horizontal split
 set splitright "more natural split window for vertical split
 syntax enable "syntax highlight enebled
 set directory=$HOME/.vim/swapfiles "special directory for swap files
-"eneble italic
-set t_ZH=[3m
-set t_ZR=[23m
 " Align blocks of text and keep them selected
 vmap < <gv
 vmap > >gv
 "undo to infinity
 set undodir=$HOME/.vim/undofiles
 set undofile
+set noshowmode
+" set termguicolors
 "}}}
 
 " Fold section --------------------------------------------------------{{{
@@ -136,7 +141,11 @@ autocmd FileType vim setlocal foldmethod=marker
 autocmd FileType vim setlocal foldlevel=0
 autocmd FileType xml setlocal foldmethod=indent foldlevelstart=999 foldminlines=0
 " autocmd FileType py setlocal foldmethod=indent
+
 " let g:SimpylFold_docstring_preview = 1
+" SimpylFold if doesn't work... 
+" set foldmethid=expr
+" set foldexpr=SimpylFold#FoldExpr(v:lnum)
 
 "no auto fold while typing
 autocmd InsertEnter * if !exists('w:last_fdm') | let w:last_fdm=&foldmethod | setlocal foldmethod=manual | endif
@@ -154,17 +163,45 @@ set viewoptions=cursor,folds,slash,unix
 " AutoCompletion section ----------------------------------------------{{{
 
 autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags noci
-autocmd FileType html set omnifunc=htmlcomplete#CompleteTags noci
+" autocmd FileType html set omnifunc=htmlcomplete#CompleteTags noci
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS noci
 
 "NeoStuff wuhu!
 let g:deoplete#enable_at_startup = 1
+let g:echodoc_enable_at_startup = 1
+
+set splitbelow
+set completeopt+=noselect
+set completeopt-=preview
+autocmd CompleteDone * pclose
+
 let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so'
 let g:deoplete#sources#clang#clang_header = '/usr/include/clang/3.8/include'
 let g:deoplete#enable_smart_case = 1
 
+inoremap <silent><expr> <TAB>
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ deoplete#mappings#manual_complete()
+
+inoremap <silent><expr> <S-TAB>
+  \ pumvisible() ? "\<C-p>" : "\<S-TAB>"
+
+function! s:check_back_space() abort "{{{
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction"}}}
+
 let g:deoplete#ignore_sources = {}
-let g:deoplete#ignore_sources.python = ['around']
+let g:deoplete#ignore_sources._ = ['around']
+
+call deoplete#custom#source('buffer', 'mark', 'ℬ')
+call deoplete#custom#source('ternjs', 'mark', '')
+call deoplete#custom#source('omni', 'mark', '⌾')
+call deoplete#custom#source('file', 'mark', 'file')
+call deoplete#custom#source('jedi', 'mark', '')
+call deoplete#custom#source('typescript', 'mark', '')
+call deoplete#custom#source('neosnippet', 'mark', '')
 
 let mapleader = ","
 
@@ -177,10 +214,6 @@ let g:jedi#smart_auto_mappings = 1
 let g:jedi#documentation_command = '<Leader>_K'
 let g:jedi#auto_close_doc = 1
 
-" let g:deoplete#auto_completion_start_length = 1
-" let g:deoplete#ignore_sources = {}
-" let g:deoplete#ignore_sources.python = ['omni']
-
 let g:racer_cmd = "/home/stevan/.cargo/bin/cargo"
 let g:racer_experimental_completer = 1
 
@@ -191,9 +224,10 @@ let g:racer_experimental_completer = 1
 "solarized colorscheme setup
 " let g:solarized_termcolors=256
 " let g:solarized_termtrans=1
-"set t_Co=16
-set background=dark
+" set t_Co=16
 colorscheme solarized
+" colorscheme NeoSolarized
+set background=dark
 
 "ctrlp - file open -> easy
 let g:ctrlp_map = '<c-p>'
@@ -211,19 +245,26 @@ vnoremap <c-/> :TComment<cr>
 
 "autoformat setup for php - html data and c,c++
 " let g:autoformat_verbosemode=1 " debugging
+" noremap <F3> :Neoformat<CR>
 noremap <F3> :Autoformat<CR>
+
 let g:formatdef_my_custom_php = '"html-beautify"'
 let g:formatters_php = ['my_custom_php']
 let g:formatdef_my_custom_c = '"astyle --mode=c --style=kr -pcH".(&expandtab ? "s".shiftwidth() : "t")'
 let g:formatters_c = ['my_custom_c']
 let g:formatdef_my_custom_cpp = '"astyle --mode=c --style=kr -pcH".(&expandtab ? "s".shiftwidth() : "t")'
 let g:formatters_cpp = ['my_custom_cpp']
+" tw option used for python line length with Autoformat plugin
+autocmd FileType python setlocal tw=120
 
 "set filename for tmux windows
 autocmd BufEnter * call system("tmux rename-window " . expand("%:t"))
 autocmd VimLeave * call system("tmux rename-window zsh")
 autocmd BufEnter * let &titlestring = ' ' . expand("%:t")
 set title
+
+" disable cool cursor
+" set guicursor=
 
 " let g:neomake_open_list = 1
 autocmd! BufWritePost * Neomake
@@ -235,20 +276,18 @@ let g:neomake_cpp_gcc_args = ["-Wextra", "-Wall", "-pedantic"]
 let g:neomake_python_enabled_makers = ["pep8", "pylint"]
 let g:neomake_python_pep8_args = ["--max-line-length=119"]
 
-"supertab natural
-let g:SuperTabDefaultCompletionType = "<c-n>"
-
 "javascript 
-let g:neomake_javascript_enabled_makers = ['jshint']
+let g:neomake_javascript_enabled_makers = ['eslint']
 
 let g:tern#command = ['tern']
 let g:tern#arguments = ['--persistent']
 
 let g:neomake_typescript_enabled_makers = ['tsc']
+let g:neomake_html_enabled_makers = []
 
 "save a session
-map <F9> :mksession! ~/.nvim_session <cr> " Quick write session with F11
-map <F10> :source ~/.nvim_session <cr>     " And load session with F12
+map <F9> :mksession! ~/.nvim_session <cr> " Quick write session with F9
+map <F10> :source ~/.nvim_session <cr>     " And load session with F10
 
 " Tab navigation like Firefox.
 nnoremap <S-tab> :tabprevious<CR>
@@ -264,18 +303,18 @@ tnoremap <Esc> <C-\><C-n>
 "search selected text with //
 vnoremap // y/<C-R>"<CR>
 
-au InsertEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
-au InsertLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
-au VimLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
-au VimEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
-
-" extended python syntax
-let g:python_highlight_all = 1
 let g:python_host_prog = "/usr/bin/python"
 let g:python3_host_prog = "/usr/bin/python3"
 
+" extended python syntax
+let g:python_highlight_all = 1
+
+au FileType python map <silent> <leader>b oimport ipdb; ipdb.set_trace()<esc>
+au FileType python map <silent> <leader>B Oimport ipdb; ipdb.set_trace()<esc>
+
 " Enable jedi source debug messages
 " let g:deoplete#enable_profile = 1
+" let g:deoplete#enable_debug = 1
 " call deoplete#enable_logging('DEBUG', 'deoplete.log')
 " call deoplete#custom#source('jedi', 'debug_enabled', 1)
 
@@ -286,6 +325,30 @@ au TermOpen * setlocal nonumber norelativenumber
 let g:NERDTreeDirArrowExpandable = ''
 let g:NERDTreeDirArrowCollapsible = ''
 let g:NERDTreeWinSize=45
+
+" MatchTagAlways
+let g:mta_use_matchparen_group = 0
+
+" jsx in js files
+let g:jsx_ext_required = 0
+
+" Gdiff vertical
+set diffopt+=vertical
+
+" ag ftw
+let g:ackprg = 'ag --vimgrep --smart-case'
+
+" user for GreyLabel project, we need .env
+" let g:ackprg = 'ag --vimgrep --smart-case --skip-vcs-ignores --hidden'
+silent! so .local.vim
+
+cnoreabbrev ag Ack!
+nnoremap <Leader>a :Ack!<Space>
+
+" Gcd used for searching from root(.git) directory
+" nnoremap <Leader>a :Gcd <bar> Ack!<Space>
+
+let g:fugitive_gitlab_domains = ['https://gitlab.tradecore.io/']
 
 "vim repeat plugin
 silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
