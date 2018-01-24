@@ -303,8 +303,8 @@ tnoremap <Esc> <C-\><C-n>
 "search selected text with //
 vnoremap // y/<C-R>"<CR>
 
-let g:python_host_prog = "/usr/bin/python"
-let g:python3_host_prog = "/usr/bin/python3"
+let g:python_host_prog = "/home/stevanmilic/Applications/neovim-venvs/neovim2/bin/python"
+let g:python3_host_prog = "/home/stevanmilic/Applications/neovim-venvs/neovim3/bin/python"
 
 " extended python syntax
 let g:python_highlight_all = 1

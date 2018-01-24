@@ -29,7 +29,7 @@ antigen bundle mollifier/cd-gitroot
 antigen apply
 
 # used by agnoster theme
-export DEFAULT_USER="stevan"
+export DEFAULT_USER=$USER
 
 # Neovim default editor
 export EDITOR=nvim
@@ -37,6 +37,8 @@ export EDITOR=nvim
 if ! { [ -n "$TMUX" ]; } then
   TERM=xterm-256color tmux
 fi
+
+PATH=$HOME/.gem/ruby/2.5.0/bin:$PATH
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
