@@ -35,7 +35,7 @@ export DEFAULT_USER=$USER
 export EDITOR=nvim
 
 if ! { [ -n "$TMUX" ]; } then
-  TERM=xterm-256color tmux
+  TERM=rxvt-256color tmux
 fi
 
 PATH=$HOME/.gem/ruby/2.5.0/bin:$PATH

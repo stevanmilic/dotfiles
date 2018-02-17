@@ -8,6 +8,8 @@ Xft.rgba:                   rgb
 Xft.hinting:                true
 Xft.hintstyle:              hintslight
 
+Xcursor.size: 40
+
 !-------------------------------------------------------------------------------
 ! URxvt settings
 ! Colours lifted from Solarized (http://ethanschoonover.com/solarized)
@@ -28,8 +30,8 @@ URxvt.lineSpace:            0
 
 ! Fonts
 URxvt.allow_bold:           true
-URxvt*font: xft:InconsolataForPowerline Nerd Font:size=9
-URxvt*boldFont: xft:InconsolataForPowerline Nerd Font:size=9
+URxvt*font:                 xft:Inconsolata Nerd Font Mono:size=9
+URxvt*boldFont:             xft:Inconsolata Nerd Font Mono:size=9
 
 ! Fix font space
 URxvt*letterSpace: 0

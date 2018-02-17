@@ -60,6 +60,7 @@ call dein#add('airblade/vim-gitgutter')
 call dein#add('tpope/vim-fugitive')
 call dein#add('Xuyuanp/nerdtree-git-plugin')
 call dein#add('shumphrey/fugitive-gitlab.vim')
+call dein#add('tpope/vim-rhubarb')
 
 " cool icons
 call dein#add('ryanoasis/vim-devicons')
