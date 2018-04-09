@@ -54,6 +54,7 @@ call dein#add('rust-lang/rust.vim')
 call dein#add('magicalbanana/vim-sql-syntax')
 call dein#add('othree/html5.vim')
 call dein#add('HerringtonDarkholme/yats.vim')
+call dein#add('Vimjas/vim-python-pep8-indent')
 
 " git
 call dein#add('airblade/vim-gitgutter')
@@ -310,6 +311,9 @@ let g:python3_host_prog = "/home/stevanmilic/Applications/neovim-venvs/neovim3/b
 " extended python syntax
 let g:python_highlight_all = 1
 
+" disable smartindent for python files, due to the '#' thing
+au! FileType python setl nosmartindent
+
 au FileType python map <silent> <leader>b oimport ipdb; ipdb.set_trace()<esc>
 au FileType python map <silent> <leader>B Oimport ipdb; ipdb.set_trace()<esc>
 
@@ -350,6 +354,9 @@ nnoremap <Leader>a :Ack!<Space>
 " nnoremap <Leader>a :Gcd <bar> Ack!<Space>
 
 let g:fugitive_gitlab_domains = ['https://gitlab.tradecore.io/']
+
+" vertical split with new file
+nnoremap <leader>v :vnew<CR>
 
 "vim repeat plugin
 silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)

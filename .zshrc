@@ -5,9 +5,9 @@ source ~/Applications/antigen/antigen.zsh
 antigen use oh-my-zsh
 
 antigen bundle git
-antigen bundle gradle
 antigen bundle common-aliases
 antigen bundle command-not-found
+antigen bundle pip
 
 # Syntax highlighting bundle.
 antigen bundle zsh-users/zsh-syntax-highlighting
