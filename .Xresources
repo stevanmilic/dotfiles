@@ -2,7 +2,7 @@
 ! Xft settings
 !-------------------------------------------------------------------------------
 
-Xft.dpi:                    220
+Xft.dpi:                    210
 Xft.antialias:              true
 Xft.rgba:                   rgb
 Xft.hinting:                true
@@ -30,8 +30,8 @@ URxvt.lineSpace:            0
 
 ! Fonts
 URxvt.allow_bold:           true
-URxvt*font:                 xft:Inconsolata Nerd Font Mono:size=9
-URxvt*boldFont:             xft:Inconsolata Nerd Font Mono:size=9
+URxvt*font:                 xft:Inconsolata Nerd Font Mono:pixelsize=27:minspace=False, xft:DejaVu Sans:pixelsize=18
+URxvt*boldFont:             xft:Inconsolata Nerd Font Mono:pixelsize=27:minspace=False, xft:DejaVu Sans:pixelsize=18
 
 ! Fix font space
 URxvt*letterSpace: 0
@@ -41,10 +41,12 @@ URxvt.scrollStyle:          rxvt
 URxvt.scrollBar:            false
 
 ! Perl extensions
-URxvt.perl-ext-common:      default,matcher,fullscreen,resize-font
+URxvt.perl-ext-common:      default,matcher,fullscreen
 URxvt.keysym.F11:	        perl:fullscreen:switch
 URxvt.matcher.button:       1
-URxvt.urlLauncher:          firefox
+URxvt.url-launcher:         /usr/bin/chromium
+URxvt.keysym.Control-a:     perl:matcher:last
+URxvt.keysym.Control-d:     perl:matcher:list
 
 ! Font resize
 URxvt.iso14755: false

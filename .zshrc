@@ -35,10 +35,10 @@ export DEFAULT_USER=$USER
 export EDITOR=nvim
 
 if ! { [ -n "$TMUX" ]; } then
-  TERM=rxvt-256color tmux
+  tmux
 fi
 
-PATH=$HOME/.gem/ruby/2.5.0/bin:$PATH
+PATH=$HOME/.gem/ruby/2.5.0/bin:$HOME/.local/bin:$PATH
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm

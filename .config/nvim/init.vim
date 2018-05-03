@@ -110,7 +110,6 @@ vmap > >gv
 set undodir=$HOME/.vim/undofiles
 set undofile
 set noshowmode
-" set termguicolors
 "}}}
 
 " Fold section --------------------------------------------------------{{{
@@ -199,7 +198,7 @@ let g:deoplete#ignore_sources._ = ['around']
 
 call deoplete#custom#source('buffer', 'mark', 'ℬ')
 call deoplete#custom#source('ternjs', 'mark', '')
-call deoplete#custom#source('omni', 'mark', '⌾')
+call deoplete#custom#source('omni', 'mark', 'omni')
 call deoplete#custom#source('file', 'mark', 'file')
 call deoplete#custom#source('jedi', 'mark', '')
 call deoplete#custom#source('typescript', 'mark', '')
@@ -227,7 +226,9 @@ let g:racer_experimental_completer = 1
 " let g:solarized_termcolors=256
 " let g:solarized_termtrans=1
 " set t_Co=16
+" set termguicolors
 colorscheme solarized
+let g:solarized_italic=0
 " colorscheme NeoSolarized
 set background=dark
 
@@ -257,7 +258,10 @@ let g:formatters_c = ['my_custom_c']
 let g:formatdef_my_custom_cpp = '"astyle --mode=c --style=kr -pcH".(&expandtab ? "s".shiftwidth() : "t")'
 let g:formatters_cpp = ['my_custom_cpp']
 " tw option used for python line length with Autoformat plugin
-autocmd FileType python setlocal tw=120
+" autocmd FileType python setlocal tw=120
+
+" add margin column for line length
+autocmd FileType python set cc=80
 
 "set filename for tmux windows
 autocmd BufEnter * call system("tmux rename-window " . expand("%:t"))
@@ -275,8 +279,8 @@ let g:neomake_c_gcc_args = ["-Wextra", "-Wall", "-std=c99", "-pedantic", "-Wshad
 let g:neomake_cpp_enabled_makers=["gcc"]
 let g:neomake_cpp_gcc_args = ["-Wextra", "-Wall", "-pedantic"]
 
-let g:neomake_python_enabled_makers = ["pep8", "pylint"]
-let g:neomake_python_pep8_args = ["--max-line-length=119"]
+let g:neomake_python_enabled_makers = ["flake8", "pylint"]
+let g:neomake_python_flake8_args = ["--max-line-length=119"]
 
 "javascript 
 let g:neomake_javascript_enabled_makers = ['eslint']
@@ -349,6 +353,7 @@ silent! so .local.vim
 
 cnoreabbrev ag Ack!
 nnoremap <Leader>a :Ack!<Space>
+nnoremap <Leader>c :Ack!<Space>"class <cword>\("<CR>
 
 " Gcd used for searching from root(.git) directory
 " nnoremap <Leader>a :Gcd <bar> Ack!<Space>
@@ -357,6 +362,15 @@ let g:fugitive_gitlab_domains = ['https://gitlab.tradecore.io/']
 
 " vertical split with new file
 nnoremap <leader>v :vnew<CR>
+
+" move tabs left and right
+nnoremap <leader>h :tabm -1<CR>
+nnoremap <leader>l :tabm +1<CR>
+
+" enable nested neovim in terminal with nvr
+if has('nvim')
+  let $VISUAL = 'nvr -cc split --remote-wait'
+endif
 
 "vim repeat plugin
 silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
