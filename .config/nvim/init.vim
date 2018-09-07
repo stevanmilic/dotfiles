@@ -17,7 +17,7 @@ call dein#add('Shougo/deoplete.nvim') "h deoplate -> docs
 call dein#add('ctrlpvim/ctrlp.vim')
 call dein#add('christoomey/vim-tmux-navigator')
 call dein#add('altercation/vim-colors-solarized')
-call dein#add('iCyMind/NeoSolarized')
+" call dein#add('iCyMind/NeoSolarized')
 call dein#add('Chiel92/vim-autoformat')
 call dein#add('tomtom/tcomment_vim')
 call dein#add('tpope/vim-repeat')
@@ -32,16 +32,17 @@ call dein#add('valloric/MatchTagAlways', {'on_ft': 'html'})
 call dein#add('tpope/vim-abolish')
 " call dein#add('sbdchd/neoformat')
 call dein#add('Shougo/echodoc.vim')
+call dein#add('junegunn/goyo.vim')
 
 " extended auto completion
-call dein#add('zchee/deoplete-clang')
+call dein#add('zchee/deoplete-clang', {'on_ft': 'cpp'})
 call dein#add('zchee/deoplete-jedi')
 call dein#add('davidhalter/jedi-vim', {'on_ft': 'python'})
-call dein#add('carlitux/deoplete-ternjs')
-call dein#add('ternjs/tern_for_vim')
+call dein#add('carlitux/deoplete-ternjs', {'on_ft': 'js'})
+call dein#add('ternjs/tern_for_vim', {'on_ft': 'js'})
 call dein#add('mhartington/nvim-typescript')
-call dein#add('racer-rust/vim-racer')
-call dein#add('apalmer1377/factorus')
+" call dein#add('racer-rust/vim-racer')
+call dein#add('apalmer1377/factorus', {'on_ft': 'cpp'})
 
 " extended syntax
 call dein#add('octol/vim-cpp-enhanced-highlight')
@@ -55,6 +56,8 @@ call dein#add('magicalbanana/vim-sql-syntax')
 call dein#add('othree/html5.vim')
 call dein#add('HerringtonDarkholme/yats.vim')
 call dein#add('Vimjas/vim-python-pep8-indent')
+call dein#add('towolf/vim-helm')
+call dein#add('pearofducks/ansible-vim')
 
 " git
 call dein#add('airblade/vim-gitgutter')
@@ -79,7 +82,7 @@ filetype plugin indent on
 " System settings -----------------------------------------------------{{{
 set showmatch
 set autoindent
-set smartindent
+" set smartindent
 set tabstop=4
 set expandtab
 set shiftwidth=2
@@ -141,6 +144,7 @@ autocmd FileType vim setlocal fdc=1
 autocmd FileType vim setlocal foldmethod=marker
 autocmd FileType vim setlocal foldlevel=0
 autocmd FileType xml setlocal foldmethod=indent foldlevelstart=999 foldminlines=0
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 " autocmd FileType py setlocal foldmethod=indent
 
 " let g:SimpylFold_docstring_preview = 1
@@ -195,6 +199,7 @@ endfunction"}}}
 
 let g:deoplete#ignore_sources = {}
 let g:deoplete#ignore_sources._ = ['around']
+call deoplete#custom#option('auto_complete', v:false)
 
 call deoplete#custom#source('buffer', 'mark', 'ℬ')
 call deoplete#custom#source('ternjs', 'mark', '')
@@ -347,7 +352,7 @@ set diffopt+=vertical
 " ag ftw
 let g:ackprg = 'ag --vimgrep --smart-case'
 
-" user for GreyLabel project, we need .env
+" used for python projects, since then we can search for in hidden files
 " let g:ackprg = 'ag --vimgrep --smart-case --skip-vcs-ignores --hidden'
 silent! so .local.vim
 
@@ -371,6 +376,10 @@ nnoremap <leader>l :tabm +1<CR>
 if has('nvim')
   let $VISUAL = 'nvr -cc split --remote-wait'
 endif
+
+let g:goyo_width='100%'
+let g:goyo_height='100%'
+
 
 "vim repeat plugin
 silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
