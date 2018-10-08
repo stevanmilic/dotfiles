@@ -30,11 +30,11 @@ URxvt.lineSpace:            0
 
 ! Fonts
 URxvt.allow_bold:           true
-URxvt*font:                 xft:Inconsolata Nerd Font Mono:pixelsize=27:minspace=False, xft:DejaVu Sans:pixelsize=18
-URxvt*boldFont:             xft:Inconsolata Nerd Font Mono:pixelsize=27:minspace=False, xft:DejaVu Sans:pixelsize=18
+URxvt*font:                 xft:SourceCodePro Nerd Font Mono:pixelsize=23:minspace=False, xft:DejaVu Sans:pixelsize=18
+URxvt*boldFont:             xft:SourceCodePro Nerd Font Mono:pixelsize=23:Bold, xft:DejaVu Sans:pixelsize=18
 
 ! Fix font space
-URxvt*letterSpace: 0
+URxvt*letterSpace: -1
 
 ! Scrollbar
 URxvt.scrollStyle:          rxvt
