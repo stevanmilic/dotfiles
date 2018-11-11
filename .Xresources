@@ -2,13 +2,13 @@
 ! Xft settings
 !-------------------------------------------------------------------------------
 
-Xft.dpi:                    210
+Xft.dpi:                    117
 Xft.antialias:              true
 Xft.rgba:                   rgb
 Xft.hinting:                true
 Xft.hintstyle:              hintslight
 
-Xcursor.size: 40
+Xcursor.size: 16
 
 !-------------------------------------------------------------------------------
 ! URxvt settings
@@ -30,8 +30,8 @@ URxvt.lineSpace:            0
 
 ! Fonts
 URxvt.allow_bold:           true
-URxvt*font:                 xft:SourceCodePro Nerd Font Mono:pixelsize=23:minspace=False, xft:DejaVuSansMono Nerd Font Mono:pixelsize=18
-URxvt*boldFont:             xft:SourceCodePro Nerd Font Mono:pixelsize=23:Bold, xft:DejaVuSansMono Nerd Font Mono:pixelsize=18
+URxvt*font:                 xft:SourceCodePro Nerd Font Mono:pixelsize=15:minspace=False, xft:DejaVuSansMono Nerd Font Mono:pixelsize=10
+URxvt*boldFont:             xft:SourceCodePro Nerd Font Mono:pixelsize=15:Bold, xft:DejaVuSansMono Nerd Font Mono:pixelsize=10
 
 ! Fix font space
 URxvt*letterSpace: -1
