@@ -32,7 +32,9 @@ call dein#add('valloric/MatchTagAlways', {'on_ft': 'html'})
 call dein#add('tpope/vim-abolish')
 " call dein#add('sbdchd/neoformat')
 call dein#add('Shougo/echodoc.vim')
-call dein#add('junegunn/goyo.vim')
+" call dein#add('junegunn/goyo.vim')
+call dein#add('janko-m/vim-test')
+" call dein#add('skywind3000/asyncrun.vim')
 
 " extended auto completion
 call dein#add('zchee/deoplete-clang', {'on_ft': 'cpp'})
@@ -162,6 +164,23 @@ vnoremap <Space> za
 
 "restore view plugin - restores fold and cursor info
 set viewoptions=cursor,folds,slash,unix
+
+nnoremap <silent> <leader>zj :call NextClosedFold('j')<cr>
+nnoremap <silent> <leader>zk :call NextClosedFold('k')<cr>
+function! NextClosedFold(dir)
+    let cmd = 'norm!z' . a:dir
+    let view = winsaveview()
+    let [l0, l, open] = [0, view.lnum, 1]
+    while l != l0 && open
+        exe cmd
+        let [l0, l] = [l, line('.')]
+        let open = foldclosed(l) < 0
+    endwhile
+    if open
+        call winrestview(view)
+    endif
+endfunction
+
 " let g:skipview_files = ['*\.vim']
 " }}}
 
@@ -198,7 +217,7 @@ function! s:check_back_space() abort "{{{
 endfunction"}}}
 
 let g:deoplete#ignore_sources = {}
-let g:deoplete#ignore_sources._ = ['around']
+let g:deoplete#ignore_sources._ = ['around', 'buffer', 'member']
 call deoplete#custom#option('auto_complete', v:false)
 
 call deoplete#custom#source('buffer', 'mark', 'ℬ')
@@ -241,7 +260,8 @@ set background=dark
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 let g:ctrlp_working_path_mode = 'ra'
-let g:ctrlp_user_command = ['.git', 'cd %s && comm --nocheck-order -3 <(git ls-files -co --exclude-standard) <(git ls-files -i --exclude-from=.gitignore)']
+" let g:ctrlp_user_command = ['.git', 'cd %s && comm --nocheck-order -3 <(git ls-files -co --exclude-standard) <(git ls-files -i --exclude-from=.gitignore)']
+let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g ""'
 
 hi! link SignColumn LineNr
 
@@ -359,6 +379,8 @@ silent! so .local.vim
 cnoreabbrev ag Ack!
 nnoremap <Leader>a :Ack!<Space>
 nnoremap <Leader>c :Ack!<Space>"class <cword>\("<CR>
+nnoremap <Leader>f :Ack!<Space>"def <cword>\("<CR>
+nnoremap <Leader>w :Ack!<Space>"<cword>"<CR>
 
 " Gcd used for searching from root(.git) directory
 " nnoremap <Leader>a :Gcd <bar> Ack!<Space>
@@ -380,8 +402,13 @@ endif
 let g:goyo_width='100%'
 let g:goyo_height='100%'
 
-
 "vim repeat plugin
 silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
 
+let test#strategy = "neovim"
+nmap <Leader>tn :TestNearest<CR>
+nmap <Leader>tf :TestFile<CR>
+nmap <Leader>ts :TestSuite<CR>
+nmap <Leader>tl :TestLast<CR>
+nmap <Leader>tv :TestVisit<CR>
 " }}}
