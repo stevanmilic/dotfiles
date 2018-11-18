@@ -14,7 +14,8 @@ call dein#add('neomake/neomake') "h neomake -> docs
 call dein#add('Shougo/deoplete.nvim') "h deoplate -> docs
 
 " you knoow stuff
-call dein#add('ctrlpvim/ctrlp.vim')
+call dein#add('junegunn/fzf', {'build': './install --all'})
+call dein#add('junegunn/fzf.vim')
 call dein#add('christoomey/vim-tmux-navigator')
 call dein#add('altercation/vim-colors-solarized')
 " call dein#add('iCyMind/NeoSolarized')
@@ -31,7 +32,7 @@ call dein#add('scrooloose/nerdtree')
 call dein#add('valloric/MatchTagAlways', {'on_ft': 'html'})
 call dein#add('tpope/vim-abolish')
 " call dein#add('sbdchd/neoformat')
-call dein#add('Shougo/echodoc.vim')
+" call dein#add('Shougo/echodoc.vim')
 " call dein#add('junegunn/goyo.vim')
 call dein#add('janko-m/vim-test')
 " call dein#add('skywind3000/asyncrun.vim')
@@ -192,7 +193,7 @@ autocmd FileType css set omnifunc=csscomplete#CompleteCSS noci
 
 "NeoStuff wuhu!
 let g:deoplete#enable_at_startup = 1
-let g:echodoc_enable_at_startup = 1
+" let g:echodoc_enable_at_startup = 1
 
 set splitbelow
 set completeopt+=noselect
@@ -244,6 +245,53 @@ let g:racer_experimental_completer = 1
 
 " }}}
 
+" Fzf section ----------------------------------------------{{{
+
+augroup fzf
+  autocmd!
+  autocmd! FileType fzf
+  autocmd  FileType fzf set laststatus=0 noshowmode noruler
+    \| autocmd BufWinLeave <buffer> set laststatus=2 showmode ruler
+augroup END
+
+let $FZF_DEFAULT_COMMAND = 'fd --hidden --type f'
+
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Identifier'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Normal'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
+command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('down:60%')
+  \           : fzf#vim#with_preview('right:50%'),
+  \   <bang>0)
+
+" [Buffers] Jump to the existing window if possible
+let g:fzf_buffers_jump=1
+
+nnoremap <c-p> :Files<cr>
+
+nnoremap <Leader>r :Rg<Space>
+nnoremap <silent> <Leader>c :Rg class <C-R><C-W>\(<CR>
+nnoremap <silent> <Leader>f :Rg def <C-R><C-W>\(<CR>
+nnoremap <silent> <Leader>w :Rg <C-R><C-W><CR>
+" }}}
+
 " Everything else (not much tho) --------------------------------------{{{
 "
 "solarized colorscheme setup
@@ -255,13 +303,6 @@ colorscheme solarized
 let g:solarized_italic=0
 " colorscheme NeoSolarized
 set background=dark
-
-"ctrlp - file open -> easy
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_cmd = 'CtrlP'
-let g:ctrlp_working_path_mode = 'ra'
-" let g:ctrlp_user_command = ['.git', 'cd %s && comm --nocheck-order -3 <(git ls-files -co --exclude-standard) <(git ls-files -i --exclude-from=.gitignore)']
-let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g ""'
 
 hi! link SignColumn LineNr
 
@@ -369,21 +410,9 @@ let g:jsx_ext_required = 0
 " Gdiff vertical
 set diffopt+=vertical
 
-" ag ftw
-let g:ackprg = 'ag --vimgrep --smart-case'
-
 " used for python projects, since then we can search for in hidden files
 " let g:ackprg = 'ag --vimgrep --smart-case --skip-vcs-ignores --hidden'
 silent! so .local.vim
-
-cnoreabbrev ag Ack!
-nnoremap <Leader>a :Ack!<Space>
-nnoremap <Leader>c :Ack!<Space>"class <cword>\("<CR>
-nnoremap <Leader>f :Ack!<Space>"def <cword>\("<CR>
-nnoremap <Leader>w :Ack!<Space>"<cword>"<CR>
-
-" Gcd used for searching from root(.git) directory
-" nnoremap <Leader>a :Gcd <bar> Ack!<Space>
 
 let g:fugitive_gitlab_domains = ['https://gitlab.tradecore.io/']
 
