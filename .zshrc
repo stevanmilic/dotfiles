@@ -48,4 +48,10 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# aliases
 alias fzo='nvim $(fzf)'
+alias greylabel='cd ~/tradecore/brokeriq/greylabel/ && source .env/bin/activate && nvim'
+alias remap='xmodmap ~/.Xmodmap'
+alias tcvpn='sudo openvpn ~/tradecore/smilic.ovpn'
+alias rurxvt='~/restart_urxvt.sh -checkout'

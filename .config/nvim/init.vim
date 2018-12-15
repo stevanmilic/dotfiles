@@ -190,6 +190,7 @@ endfunction
 autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags noci
 " autocmd FileType html set omnifunc=htmlcomplete#CompleteTags noci
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS noci
+autocmd BufEnter *.tpl setlocal filetype=htmldjango
 
 "NeoStuff wuhu!
 let g:deoplete#enable_at_startup = 1
@@ -286,9 +287,9 @@ let g:fzf_buffers_jump=1
 
 nnoremap <c-p> :Files<cr>
 
-nnoremap <Leader>r :Rg<Space>
-nnoremap <silent> <Leader>c :Rg class <C-R><C-W>\(<CR>
-nnoremap <silent> <Leader>f :Rg def <C-R><C-W>\(<CR>
+nnoremap <Leader>a :Rg<Space>
+nnoremap <silent> <Leader>c :Rg class <C-R><C-W>(<CR>
+nnoremap <silent> <Leader>f :Rg def <C-R><C-W>(<CR>
 nnoremap <silent> <Leader>w :Rg <C-R><C-W><CR>
 " }}}
 
