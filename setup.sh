@@ -2,6 +2,7 @@
 sudo pacman -S zsh
 sudo pacman -S tmux
 sudo pacman -S neovim
+sudo pacman -S fzf ripgrep fd bat
 sudo pacman -S xclip
 
 # dotfiles expansion
@@ -18,6 +19,7 @@ mkdir -p ~/Applications/antigen/
 curl -L git.io/antigen > ~/Applications/antigen/antigen.zsh
 
 # TODO: instal python pip, and create vms for neovim
+# pip3 install nvr
 
 # dein => neovim
 mkdir ~/Applications/dein/

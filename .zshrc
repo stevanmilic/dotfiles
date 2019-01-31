@@ -41,7 +41,8 @@ if ! { [ -n "$TMUX" ]; } then
   tmux
 fi
 
-PATH=$HOME/.gem/ruby/2.5.0/bin:$HOME/.local/bin:$PATH
+export GOPATH=$HOME/Applications/go
+PATH=$HOME/.gem/ruby/2.5.0/bin:$HOME/.local/bin:$GOPATH/bin/:$PATH
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -55,3 +56,4 @@ alias greylabel='cd ~/tradecore/brokeriq/greylabel/ && source .env/bin/activate 
 alias remap='xmodmap ~/.Xmodmap'
 alias tcvpn='sudo openvpn ~/tradecore/smilic.ovpn'
 alias rurxvt='~/restart_urxvt.sh -checkout'
+alias fd=fd

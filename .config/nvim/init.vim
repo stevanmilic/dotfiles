@@ -46,6 +46,8 @@ call dein#add('ternjs/tern_for_vim', {'on_ft': 'js'})
 call dein#add('mhartington/nvim-typescript')
 " call dein#add('racer-rust/vim-racer')
 call dein#add('apalmer1377/factorus', {'on_ft': 'cpp'})
+call dein#add('zchee/deoplete-go', {'build': 'make'})
+call dein#add('fatih/vim-go')
 
 " extended syntax
 call dein#add('octol/vim-cpp-enhanced-highlight')
@@ -63,7 +65,7 @@ call dein#add('towolf/vim-helm')
 call dein#add('pearofducks/ansible-vim')
 
 " git
-call dein#add('airblade/vim-gitgutter')
+" call dein#add('airblade/vim-gitgutter')
 call dein#add('tpope/vim-fugitive')
 call dein#add('Xuyuanp/nerdtree-git-plugin')
 call dein#add('shumphrey/fugitive-gitlab.vim')
@@ -88,8 +90,8 @@ set autoindent
 " set smartindent
 set tabstop=4
 set expandtab
-set shiftwidth=2
-set softtabstop=2
+set shiftwidth=4
+set softtabstop=4
 set smarttab
 set clipboard=unnamedplus "share cliboard
 set relativenumber number "hybrid line number
