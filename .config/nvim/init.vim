@@ -28,6 +28,7 @@ call dein#add('vim-scripts/restore_view.vim')
 call dein#add('mileszs/ack.vim')
 call dein#add('godlygeek/tabular')
 call dein#add('tmhedberg/SimpylFold', {'on_ft': 'python'})
+call dein#add('Konfekt/FastFold')
 call dein#add('scrooloose/nerdtree')
 call dein#add('valloric/MatchTagAlways', {'on_ft': 'html'})
 call dein#add('tpope/vim-abolish')
@@ -43,11 +44,11 @@ call dein#add('zchee/deoplete-jedi')
 call dein#add('davidhalter/jedi-vim', {'on_ft': 'python'})
 call dein#add('carlitux/deoplete-ternjs', {'on_ft': 'js'})
 call dein#add('ternjs/tern_for_vim', {'on_ft': 'js'})
-call dein#add('mhartington/nvim-typescript')
+call dein#add('mhartington/nvim-typescript', {'on_ft': 'ts'})
 " call dein#add('racer-rust/vim-racer')
 call dein#add('apalmer1377/factorus', {'on_ft': 'cpp'})
-call dein#add('zchee/deoplete-go', {'build': 'make'})
-call dein#add('fatih/vim-go')
+call dein#add('zchee/deoplete-go', {'build': 'make', 'on_ft': 'go'})
+call dein#add('fatih/vim-go', {'on_ft': 'go'})
 
 " extended syntax
 call dein#add('octol/vim-cpp-enhanced-highlight')
@@ -238,6 +239,7 @@ let g:jedi#auto_vim_configuration = 0
 let g:jedi#use_tabs_not_buffers = 0  " current default is 1.
 let g:jedi#completions_enabled = 0
 let g:jedi#smart_auto_mappings = 1
+let g:jedi#show_call_signatures = 0
 
 " Unite/ref and pydoc are more useful.
 let g:jedi#documentation_command = '<Leader>_K'
