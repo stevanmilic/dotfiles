@@ -10,8 +10,6 @@ call dein#begin(expand('~/.config/nvim/'))
 
 " neo ftw
 call dein#add('Shougo/dein.vim')
-call dein#add('neomake/neomake') "h neomake -> docs
-call dein#add('Shougo/deoplete.nvim') "h deoplate -> docs
 
 " you knoow stuff
 call dein#add('junegunn/fzf', {'build': './install --all'})
@@ -24,31 +22,21 @@ call dein#add('tomtom/tcomment_vim')
 call dein#add('tpope/vim-repeat')
 call dein#add('vim-scripts/ReplaceWithRegister')
 call dein#add('tpope/vim-surround')
+call dein#add('wellle/targets.vim')
 call dein#add('zhimsel/vim-stay')
 call dein#add('mileszs/ack.vim')
 call dein#add('godlygeek/tabular')
 call dein#add('tmhedberg/SimpylFold', {'on_ft': 'python'})
-call dein#add('Konfekt/FastFold')
+" call dein#add('Konfekt/FastFold')
 call dein#add('scrooloose/nerdtree')
 call dein#add('valloric/MatchTagAlways', {'on_ft': 'html'})
 call dein#add('tpope/vim-abolish')
-" call dein#add('sbdchd/neoformat')
-" call dein#add('Shougo/echodoc.vim')
 " call dein#add('junegunn/goyo.vim')
 call dein#add('janko-m/vim-test')
 " call dein#add('skywind3000/asyncrun.vim')
 
 " extended auto completion
-call dein#add('zchee/deoplete-clang', {'on_ft': 'cpp'})
-call dein#add('zchee/deoplete-jedi')
-call dein#add('davidhalter/jedi-vim', {'on_ft': 'python'})
-call dein#add('carlitux/deoplete-ternjs', {'on_ft': 'js'})
-call dein#add('ternjs/tern_for_vim', {'on_ft': 'js'})
-call dein#add('mhartington/nvim-typescript', {'on_ft': 'ts'})
-" call dein#add('racer-rust/vim-racer')
-call dein#add('apalmer1377/factorus', {'on_ft': 'cpp'})
-call dein#add('zchee/deoplete-go', {'build': 'make', 'on_ft': 'go'})
-call dein#add('fatih/vim-go', {'on_ft': 'go'})
+call dein#add('neoclide/coc.nvim', {'merge':0, 'build': 'yarn install --frozen-lockfile'})
 
 " extended syntax
 call dein#add('octol/vim-cpp-enhanced-highlight')
@@ -119,6 +107,8 @@ vmap > >gv
 set undodir=$HOME/.vim/undofiles
 set undofile
 set noshowmode
+
+let mapleader = ","
 "}}}
 
 " Fold section --------------------------------------------------------{{{
@@ -189,64 +179,91 @@ endfunction
 " }}}
 
 " AutoCompletion section ----------------------------------------------{{{
+let g:coc_force_debug = 1
+
+" if hidden is not set, TextEdit might fail.
+set hidden
+
+" Some servers have issues with backup files, see #649
+set nobackup
+set nowritebackup
+
+" Smaller updatetime for CursorHold & CursorHoldI
+set updatetime=300
+
+" don't give |ins-completion-menu| messages.
+set shortmess+=c
+
+" Use tab for trigger completion with characters ahead and navigate.
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
+" Coc only does snippet and additional edit on confirm.
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+" Use `[c` and `]c` to navigate diagnostics
+nmap <silent> [c <Plug>(coc-diagnostic-prev)
+nmap <silent> ]c <Plug>(coc-diagnostic-next)
+
+" Remap keys for gotos
+nmap <leader>d <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <leader>u <Plug>(coc-references)
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Highlight symbol under cursor on CursorHold
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Remap for rename current word
+nmap <leader>r <Plug>(coc-rename)
+
+" Remap for format selected region
+vmap <leader>g  <Plug>(coc-format-selected)
+nmap <leader>g  <Plug>(coc-format-selected)
+" Use `:Format` to format current buffer
+command! -nargs=0 Format :call CocAction('format')
+
+" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
+" vmap <leader>a  <Plug>(coc-codeaction-selected)
+" nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap for do codeAction of current line
+" nmap <leader>ac  <Plug>(coc-codeaction)
+" Fix autofix problem of current line
+" nmap <leader>qf  <Plug>(coc-fix-current)
+
+
+" Use `:Fold` to fold current buffer
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
 autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags noci
 " autocmd FileType html set omnifunc=htmlcomplete#CompleteTags noci
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS noci
 autocmd BufEnter *.tpl setlocal filetype=htmldjango
-
-"NeoStuff wuhu!
-let g:deoplete#enable_at_startup = 1
-" let g:echodoc_enable_at_startup = 1
-
-set splitbelow
-set completeopt+=noselect
-set completeopt-=preview
-autocmd CompleteDone * pclose
-
-let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so'
-let g:deoplete#sources#clang#clang_header = '/usr/include/clang/3.8/include'
-let g:deoplete#enable_smart_case = 1
-
-inoremap <silent><expr> <TAB>
-  \ pumvisible() ? "\<C-n>" :
-  \ <SID>check_back_space() ? "\<TAB>" :
-  \ deoplete#mappings#manual_complete()
-
-inoremap <silent><expr> <S-TAB>
-  \ pumvisible() ? "\<C-p>" : "\<S-TAB>"
-
-function! s:check_back_space() abort "{{{
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~ '\s'
-endfunction"}}}
-
-let g:deoplete#ignore_sources = {}
-let g:deoplete#ignore_sources._ = ['around', 'buffer', 'member']
-call deoplete#custom#option('auto_complete', v:false)
-
-call deoplete#custom#source('buffer', 'mark', 'ℬ')
-call deoplete#custom#source('ternjs', 'mark', '')
-call deoplete#custom#source('omni', 'mark', 'omni')
-call deoplete#custom#source('file', 'mark', 'file')
-call deoplete#custom#source('jedi', 'mark', '')
-call deoplete#custom#source('typescript', 'mark', '')
-call deoplete#custom#source('neosnippet', 'mark', '')
-
-let mapleader = ","
-
-let g:jedi#auto_vim_configuration = 0
-let g:jedi#use_tabs_not_buffers = 0  " current default is 1.
-let g:jedi#completions_enabled = 0
-let g:jedi#smart_auto_mappings = 1
-let g:jedi#show_call_signatures = 0
-
-" Unite/ref and pydoc are more useful.
-let g:jedi#documentation_command = '<Leader>_K'
-let g:jedi#auto_close_doc = 1
-
-let g:racer_cmd = "/home/stevan/.cargo/bin/cargo"
-let g:racer_experimental_completer = 1
 
 " }}}
 
@@ -322,45 +339,11 @@ vnoremap <c-/> :TComment<cr>
 " noremap <F3> :Neoformat<CR>
 noremap <F3> :Autoformat<CR>
 
-let g:formatdef_my_custom_php = '"html-beautify"'
-let g:formatters_php = ['my_custom_php']
-let g:formatdef_my_custom_c = '"astyle --mode=c --style=kr -pcH".(&expandtab ? "s".shiftwidth() : "t")'
-let g:formatters_c = ['my_custom_c']
-let g:formatdef_my_custom_cpp = '"astyle --mode=c --style=kr -pcH".(&expandtab ? "s".shiftwidth() : "t")'
-let g:formatters_cpp = ['my_custom_cpp']
-" tw option used for python line length with Autoformat plugin
-" autocmd FileType python setlocal tw=120
-
-" add margin column for line length
-autocmd FileType python set cc=80
-
 "set filename for tmux windows
 autocmd BufEnter * call system("tmux rename-window " . expand("%:t"))
 autocmd VimLeave * call system("tmux rename-window zsh")
 autocmd BufEnter * let &titlestring = ' ' . expand("%:t")
 set title
-
-" disable cool cursor
-" set guicursor=
-
-" let g:neomake_open_list = 1
-autocmd! BufWritePost * Neomake
-let g:neomake_c_enabled_makers=["gcc"]
-let g:neomake_c_gcc_args = ["-Wextra", "-Wall", "-std=c99", "-pedantic", "-Wshadow", "-Wpointer-arith", "-Wcast-qual"]
-let g:neomake_cpp_enabled_makers=["gcc"]
-let g:neomake_cpp_gcc_args = ["-Wextra", "-Wall", "-pedantic"]
-
-let g:neomake_python_enabled_makers = ["flake8", "pylint"]
-let g:neomake_python_flake8_args = ["--max-line-length=119"]
-
-"javascript 
-let g:neomake_javascript_enabled_makers = ['eslint']
-
-let g:tern#command = ['tern']
-let g:tern#arguments = ['--persistent']
-
-let g:neomake_typescript_enabled_makers = ['tsc']
-let g:neomake_html_enabled_makers = []
 
 "save a session
 map <F9> :mksession! ~/.nvim_session <cr> " Quick write session with F9
@@ -391,12 +374,6 @@ au! FileType python setl nosmartindent
 
 au FileType python map <silent> <leader>b oimport ipdb; ipdb.set_trace()<esc>
 au FileType python map <silent> <leader>B Oimport ipdb; ipdb.set_trace()<esc>
-
-" Enable jedi source debug messages
-" let g:deoplete#enable_profile = 1
-" let g:deoplete#enable_debug = 1
-" call deoplete#enable_logging('DEBUG', 'deoplete.log')
-" call deoplete#custom#source('jedi', 'debug_enabled', 1)
 
 "no line numbers in terminal mode
 au TermOpen * setlocal nonumber norelativenumber
