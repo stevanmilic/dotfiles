@@ -15,9 +15,8 @@ call dein#add('Shougo/dein.vim')
 call dein#add('junegunn/fzf', {'build': './install --all'})
 call dein#add('junegunn/fzf.vim')
 call dein#add('christoomey/vim-tmux-navigator')
-call dein#add('altercation/vim-colors-solarized')
+call dein#add('lifepillar/vim-solarized8')
 " call dein#add('iCyMind/NeoSolarized')
-call dein#add('Chiel92/vim-autoformat')
 call dein#add('tomtom/tcomment_vim')
 call dein#add('tpope/vim-repeat')
 call dein#add('vim-scripts/ReplaceWithRegister')
@@ -27,16 +26,16 @@ call dein#add('zhimsel/vim-stay')
 call dein#add('mileszs/ack.vim')
 call dein#add('godlygeek/tabular')
 call dein#add('tmhedberg/SimpylFold', {'on_ft': 'python'})
-" call dein#add('Konfekt/FastFold')
+call dein#add('Konfekt/FastFold')
 call dein#add('scrooloose/nerdtree')
 call dein#add('valloric/MatchTagAlways', {'on_ft': 'html'})
 call dein#add('tpope/vim-abolish')
-" call dein#add('junegunn/goyo.vim')
+call dein#add('junegunn/goyo.vim')
 call dein#add('janko-m/vim-test')
 " call dein#add('skywind3000/asyncrun.vim')
 
 " extended auto completion
-call dein#add('neoclide/coc.nvim', {'merge':0, 'build': 'yarn install --frozen-lockfile'})
+call dein#add('neoclide/coc.nvim', {'merge':0, 'rev': 'release'})
 
 " extended syntax
 call dein#add('octol/vim-cpp-enhanced-highlight')
@@ -52,6 +51,7 @@ call dein#add('HerringtonDarkholme/yats.vim')
 call dein#add('Vimjas/vim-python-pep8-indent')
 call dein#add('towolf/vim-helm')
 call dein#add('pearofducks/ansible-vim')
+call dein#add('cespare/vim-toml')
 
 " git
 " call dein#add('airblade/vim-gitgutter')
@@ -82,6 +82,7 @@ set expandtab
 set shiftwidth=4
 set softtabstop=4
 set smarttab
+" set nowrap
 set clipboard=unnamedplus "share cliboard
 set relativenumber number "hybrid line number
 set ft=tasm "syntax for .asm files
@@ -179,7 +180,7 @@ endfunction
 " }}}
 
 " AutoCompletion section ----------------------------------------------{{{
-let g:coc_force_debug = 1
+" let g:coc_force_debug = 1
 
 " if hidden is not set, TextEdit might fail.
 set hidden
@@ -246,6 +247,8 @@ vmap <leader>g  <Plug>(coc-format-selected)
 nmap <leader>g  <Plug>(coc-format-selected)
 " Use `:Format` to format current buffer
 command! -nargs=0 Format :call CocAction('format')
+command! -nargs=0 OR :call CocAction('runCommand', 'editor.action.organizeImport')
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
 " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
 " vmap <leader>a  <Plug>(coc-codeaction-selected)
@@ -254,11 +257,7 @@ command! -nargs=0 Format :call CocAction('format')
 " Remap for do codeAction of current line
 " nmap <leader>ac  <Plug>(coc-codeaction)
 " Fix autofix problem of current line
-" nmap <leader>qf  <Plug>(coc-fix-current)
-
-
-" Use `:Fold` to fold current buffer
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+nmap <leader>qf  <Plug>(coc-fix-current)
 
 autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags noci
 " autocmd FileType html set omnifunc=htmlcomplete#CompleteTags noci
@@ -317,13 +316,12 @@ nnoremap <silent> <Leader>w :Rg <C-R><C-W><CR>
 " Everything else (not much tho) --------------------------------------{{{
 "
 "solarized colorscheme setup
-" let g:solarized_termcolors=256
-" let g:solarized_termtrans=1
-" set t_Co=16
-" set termguicolors
-colorscheme solarized
-let g:solarized_italic=0
+set termguicolors
 " colorscheme NeoSolarized
+colorscheme solarized8
+let g:solarized_statusline = "flat"
+let g:solarized_extra_hi_groups= "1"
+let g:solarized_visibility = "low"
 set background=dark
 
 hi! link SignColumn LineNr
@@ -333,11 +331,6 @@ hi! link SignColumn LineNr
 
 "comment lines with (ctrl + /)x2 or with gc (gcc)
 vnoremap <c-/> :TComment<cr>
-
-"autoformat setup for php - html data and c,c++
-" let g:autoformat_verbosemode=1 " debugging
-" noremap <F3> :Neoformat<CR>
-noremap <F3> :Autoformat<CR>
 
 "set filename for tmux windows
 autocmd BufEnter * call system("tmux rename-window " . expand("%:t"))
@@ -363,8 +356,8 @@ tnoremap <Esc> <C-\><C-n>
 "search selected text with //
 vnoremap // y/<C-R>"<CR>
 
-let g:python_host_prog = "/home/stevanmilic/Applications/neovim-venvs/neovim2/bin/python"
-let g:python3_host_prog = "/home/stevanmilic/Applications/neovim-venvs/neovim3/bin/python"
+let g:python_host_prog = "/home/stevan/Applications/neovim-venvs/neovim2/bin/python"
+let g:python3_host_prog = "/home/stevan/Applications/neovim-venvs/neovim3/bin/python"
 
 " extended python syntax
 let g:python_highlight_all = 1
@@ -409,9 +402,6 @@ nnoremap <leader>l :tabm +1<CR>
 if has('nvim')
   let $VISUAL = 'nvr -cc split --remote-wait'
 endif
-
-let g:goyo_width='100%'
-let g:goyo_height='100%'
 
 "vim repeat plugin
 silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)

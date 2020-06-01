@@ -41,6 +41,8 @@ if ! { [ -n "$TMUX" ]; } then
   tmux
 fi
 
+export PYTHONBREAKPOINT=ipdb.set_trace
+
 export GOPATH=$HOME/Applications/go
 PATH=$HOME/.gem/ruby/2.5.0/bin:$HOME/.local/bin:$GOPATH/bin/:$PATH
 
@@ -53,7 +55,11 @@ export NVM_DIR="$HOME/.nvm"
 # aliases
 alias fzo='nvim $(fzf)'
 alias greylabel='cd ~/tradecore/brokeriq/greylabel/ && source .env/bin/activate && nvim'
+alias castle-dir='cd ~/tradecore/castle/ && source .env/bin/activate && nvim'
 alias remap='xmodmap ~/.Xmodmap'
 alias tcvpn='sudo openvpn ~/tradecore/smilic.ovpn'
 alias rurxvt='~/restart_urxvt.sh -checkout'
 alias fd=fd
+alias git=hub
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$HOME/.poetry/bin:$PATH"
