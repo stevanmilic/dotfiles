@@ -61,5 +61,6 @@ alias tcvpn='sudo openvpn ~/tradecore/smilic.ovpn'
 alias rurxvt='~/restart_urxvt.sh -checkout'
 alias fd=fd
 alias git=hub
+alias k=kubectl
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$HOME/.poetry/bin:$PATH"

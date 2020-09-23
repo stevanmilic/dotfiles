@@ -32,10 +32,14 @@ call dein#add('valloric/MatchTagAlways', {'on_ft': 'html'})
 call dein#add('tpope/vim-abolish')
 call dein#add('junegunn/goyo.vim')
 call dein#add('janko-m/vim-test')
+call dein#add('machakann/vim-highlightedyank')
+call dein#add('mg979/vim-xtabline')
+call dein#add('vim-airline/vim-airline')
+call dein#add('vim-airline/vim-airline-themes')
 " call dein#add('skywind3000/asyncrun.vim')
 
 " extended auto completion
-call dein#add('neoclide/coc.nvim', {'merge':0, 'rev': 'release'})
+call dein#add('neoclide/coc.nvim', {'merged':0, 'rev': 'release'})
 
 " extended syntax
 call dein#add('octol/vim-cpp-enhanced-highlight')
@@ -232,7 +236,7 @@ function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
   else
-    call CocAction('doHover')
+    call CocActionAsync('doHover')
   endif
 endfunction
 
@@ -243,12 +247,17 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 nmap <leader>r <Plug>(coc-rename)
 
 " Remap for format selected region
-vmap <leader>g  <Plug>(coc-format-selected)
-nmap <leader>g  <Plug>(coc-format-selected)
+vmap <leader>g  :call CocActionAsync('format')<CR>
+nmap <leader>g  :call CocActionAsync('format')<CR>
+
 " Use `:Format` to format current buffer
-command! -nargs=0 Format :call CocAction('format')
-command! -nargs=0 OR :call CocAction('runCommand', 'editor.action.organizeImport')
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+command! -nargs=0 Format :call CocActionAsync('format')
+command! -nargs=0 OR :call CocActionAsync('runCommand', 'editor.action.organizeImport')
+command! -nargs=? Fold :call     CocActionAsync('fold', <f-args>)
+
+" Scroll through preview window.
+nnoremap <expr><C-f> coc#util#has_float() ? coc#util#float_scroll(1) : "\<C-f>"
+nnoremap <expr><C-b> coc#util#has_float() ? coc#util#float_scroll(0) : "\<C-b>"
 
 " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
 " vmap <leader>a  <Plug>(coc-codeaction-selected)
@@ -317,11 +326,11 @@ nnoremap <silent> <Leader>w :Rg <C-R><C-W><CR>
 "
 "solarized colorscheme setup
 set termguicolors
-" colorscheme NeoSolarized
 colorscheme solarized8
 let g:solarized_statusline = "flat"
 let g:solarized_extra_hi_groups= "1"
 let g:solarized_visibility = "low"
+let g:solarized_old_cursor_style= "1"
 set background=dark
 
 hi! link SignColumn LineNr
@@ -361,6 +370,7 @@ let g:python3_host_prog = "/home/stevan/Applications/neovim-venvs/neovim3/bin/py
 
 " extended python syntax
 let g:python_highlight_all = 1
+let g:python_highlight_space_errors = "0"
 
 " disable smartindent for python files, due to the '#' thing
 au! FileType python setl nosmartindent
@@ -413,7 +423,65 @@ nmap <Leader>ts :TestSuite<CR>
 nmap <Leader>tl :TestLast<CR>
 nmap <Leader>tv :TestVisit<CR>
 
-" oepn terminal in new tab and vsplit
+" open terminal in new tab and vsplit
 command! -nargs=* T tabnew | terminal <args>
 command! -nargs=* VT vsplit | terminal <args>
+
+" yank duration highlight in ms
+let g:highlightedyank_highlight_duration = 500
+
+" xtabline settings
+let g:xtabline_settings = {}
+let g:xtabline_lazy = 1
+let g:xtabline_settings.show_right_corner = 0
+let g:xtabline_settings.current_tab_paths = 0
+let g:xtabline_settings.other_tabs_paths = 0
+let g:xtabline_settings.indicators = {
+      \ 'modified': '●',
+      \ 'pinned': '[📌]',
+      \}
+
+" airline settings
+"
+" Disable tabline close button
+let g:airline#extensions#tabline#show_close_button = 0
+let g:airline#extensions#tabline#show_tab_type = 0
+let g:airline#extensions#tabline#show_tab_nr = 0
+let g:airline#extensions#tabline#fnamecollapse = 1
+
+let g:airline_extensions = ['branch', 'hunks', 'coc', "term"]
+
+let g:airline_section_c = airline#section#create(['file'])
+
+let g:airline#extensions#tabline#buffers_label = ''
+let g:airline#extensions#tabline#tabs_label = ''
+let g:airline#extensions#coc#enabled = 1
+
+" enable powerline fonts
+let g:airline_powerline_fonts = 1
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+
+let g:airline#extensions#default#layout = [['a', 'b', 'c'], ['z', 'warning', 'error']]
+
+let g:airline_theme='solarized'
+let g:airline_solarized_dark_inactive_border = 1
+
+" Sections.
+let g:webdevicons_enable_airline_tabline = 1
+
+" Fix for terminal theme.
+let s:saved_theme = []
+let g:airline_theme_patch_func = 'AirlineThemePatch'
+function! AirlineThemePatch(palette)
+    for colors in values(a:palette)
+        if has_key(colors, 'airline_c') && len(s:saved_theme) ==# 0
+            let s:saved_theme = colors.airline_c
+        endif
+        if has_key(colors, 'airline_term')
+            let colors.airline_term = s:saved_theme
+        endif
+    endfor
+endfunction
 " }}}
