@@ -26,9 +26,8 @@ call dein#add('zhimsel/vim-stay')
 call dein#add('mileszs/ack.vim')
 call dein#add('godlygeek/tabular')
 call dein#add('tmhedberg/SimpylFold', {'on_ft': 'python'})
-call dein#add('Konfekt/FastFold')
+" call dein#add('Konfekt/FastFold')
 call dein#add('scrooloose/nerdtree')
-call dein#add('valloric/MatchTagAlways', {'on_ft': 'html'})
 call dein#add('tpope/vim-abolish')
 call dein#add('junegunn/goyo.vim')
 call dein#add('janko-m/vim-test')
@@ -36,26 +35,16 @@ call dein#add('machakann/vim-highlightedyank')
 call dein#add('mg979/vim-xtabline')
 call dein#add('vim-airline/vim-airline')
 call dein#add('vim-airline/vim-airline-themes')
-" call dein#add('skywind3000/asyncrun.vim')
+call dein#add('nvim-treesitter/nvim-treesitter', {'hook_post_update': ':TSUpdate'})
 
 " extended auto completion
-call dein#add('neoclide/coc.nvim', {'merged':0, 'rev': 'release'})
+call dein#add('neoclide/coc.nvim', { 'merged': 0 })
 
 " extended syntax
-call dein#add('octol/vim-cpp-enhanced-highlight')
-call dein#add('StanAngeloff/php.vim')
-call dein#add('pangloss/vim-javascript')
-call dein#add('mxw/vim-jsx')
-call dein#add('jparise/vim-graphql')
-call dein#add('vim-python/python-syntax')
-call dein#add('rust-lang/rust.vim')
-call dein#add('magicalbanana/vim-sql-syntax')
-call dein#add('othree/html5.vim')
-call dein#add('HerringtonDarkholme/yats.vim')
-call dein#add('Vimjas/vim-python-pep8-indent')
 call dein#add('towolf/vim-helm')
 call dein#add('pearofducks/ansible-vim')
-call dein#add('cespare/vim-toml')
+call dein#add('gf3/peg.vim')
+call dein#add('vim-scripts/ebnf.vim')
 
 " git
 " call dein#add('airblade/vim-gitgutter')
@@ -112,6 +101,8 @@ vmap > >gv
 set undodir=$HOME/.vim/undofiles
 set undofile
 set noshowmode
+" turn off swap files
+set noswapfile
 
 let mapleader = ","
 "}}}
@@ -137,21 +128,17 @@ function! MyFoldText() "{{{
 endfunction "}}}
 
 set foldtext=MyFoldText()
-set foldmethod=syntax "fold according to syntax
 set foldlevelstart=1
+set foldmethod=syntax
+set foldexpr=nvim_treesitter#foldexpr()
+
 set fillchars=fold:\ 
-let g:php_folding=2
 autocmd FileType vim setlocal fdc=1
 autocmd FileType vim setlocal foldmethod=marker
 autocmd FileType vim setlocal foldlevel=0
 autocmd FileType xml setlocal foldmethod=indent foldlevelstart=999 foldminlines=0
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
-" autocmd FileType py setlocal foldmethod=indent
-
-" let g:SimpylFold_docstring_preview = 1
-" SimpylFold if doesn't work... 
-" set foldmethid=expr
-" set foldexpr=SimpylFold#FoldExpr(v:lnum)
+" autocmd FileType go,javascript,javascriptreact setlocal foldmethod=expr foldexpr=nvim_treesitter#foldexpr()
 
 "no auto fold while typing
 autocmd InsertEnter * if !exists('w:last_fdm') | let w:last_fdm=&foldmethod | setlocal foldmethod=manual | endif
@@ -255,9 +242,13 @@ command! -nargs=0 Format :call CocActionAsync('format')
 command! -nargs=0 OR :call CocActionAsync('runCommand', 'editor.action.organizeImport')
 command! -nargs=? Fold :call     CocActionAsync('fold', <f-args>)
 
-" Scroll through preview window.
-nnoremap <expr><C-f> coc#util#has_float() ? coc#util#float_scroll(1) : "\<C-f>"
-nnoremap <expr><C-b> coc#util#has_float() ? coc#util#float_scroll(0) : "\<C-b>"
+" Remap <C-f> and <C-b> for scroll float windows/popups.
+nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 
 " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
 " vmap <leader>a  <Plug>(coc-codeaction-selected)
@@ -369,12 +360,6 @@ let g:python_host_prog = "/home/stevan/Applications/neovim-venvs/neovim2/bin/pyt
 let g:python3_host_prog = "/home/stevan/Applications/neovim-venvs/neovim3/bin/python"
 
 " extended python syntax
-let g:python_highlight_all = 1
-let g:python_highlight_space_errors = "0"
-
-" disable smartindent for python files, due to the '#' thing
-au! FileType python setl nosmartindent
-
 au FileType python map <silent> <leader>b oimport ipdb; ipdb.set_trace()<esc>
 au FileType python map <silent> <leader>B Oimport ipdb; ipdb.set_trace()<esc>
 
@@ -388,9 +373,6 @@ let g:NERDTreeWinSize=45
 
 " MatchTagAlways
 let g:mta_use_matchparen_group = 0
-
-" jsx in js files
-let g:jsx_ext_required = 0
 
 " Gdiff vertical
 set diffopt+=vertical
@@ -417,6 +399,8 @@ endif
 silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
 
 let test#strategy = "neovim"
+let test#scala#runner = 'blooptest'
+
 nmap <Leader>tn :TestNearest<CR>
 nmap <Leader>tf :TestFile<CR>
 nmap <Leader>ts :TestSuite<CR>
@@ -484,4 +468,17 @@ function! AirlineThemePatch(palette)
         endif
     endfor
 endfunction
+
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  highlight = {
+    enable = true,              -- false will disable the whole extension
+  },
+  incremental_selection = { enable = true },
+  indent = {
+    enable = true
+  },
+}
+EOF
 " }}}
