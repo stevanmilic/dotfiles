@@ -12,8 +12,9 @@ call dein#begin(expand('~/.config/nvim/'))
 call dein#add('Shougo/dein.vim')
 
 " you knoow stuff
-call dein#add('junegunn/fzf', {'build': './install --all'})
-call dein#add('junegunn/fzf.vim')
+call dein#add('nvim-lua/popup.nvim')
+call dein#add('nvim-lua/plenary.nvim')
+call dein#add('nvim-telescope/telescope.nvim')
 call dein#add('christoomey/vim-tmux-navigator')
 call dein#add('lifepillar/vim-solarized8')
 call dein#add('tomtom/tcomment_vim')
@@ -31,7 +32,8 @@ call dein#add('tpope/vim-abolish')
 call dein#add('junegunn/goyo.vim')
 call dein#add('janko-m/vim-test')
 call dein#add('machakann/vim-highlightedyank')
-call dein#add('mg979/vim-xtabline')
+call dein#add('akinsho/nvim-bufferline.lua')
+call dein#add('moll/vim-bbye')
 call dein#add('vim-airline/vim-airline')
 call dein#add('vim-airline/vim-airline-themes')
 call dein#add('nvim-treesitter/nvim-treesitter', {'hook_post_update': ':TSUpdate'})
@@ -46,14 +48,13 @@ call dein#add('gf3/peg.vim')
 call dein#add('vim-scripts/ebnf.vim')
 
 " git
-" call dein#add('airblade/vim-gitgutter')
 call dein#add('tpope/vim-fugitive')
 call dein#add('Xuyuanp/nerdtree-git-plugin')
 call dein#add('shumphrey/fugitive-gitlab.vim')
 call dein#add('tpope/vim-rhubarb')
 
 " cool icons
-call dein#add('ryanoasis/vim-devicons')
+call dein#add('kyazdani42/nvim-web-devicons')
 
 " auotomatic updates
 " if dein#check_install()
@@ -68,7 +69,7 @@ filetype plugin indent on
 " System settings -----------------------------------------------------{{{
 set showmatch
 set autoindent
-" set smartindent
+set smartindent
 set tabstop=4
 set expandtab
 set shiftwidth=4
@@ -128,7 +129,7 @@ endfunction "}}}
 
 set foldtext=MyFoldText()
 set foldlevelstart=1
-set foldmethod=syntax
+set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
 
 set fillchars=fold:\ 
@@ -138,6 +139,7 @@ autocmd FileType vim setlocal foldlevel=0
 autocmd FileType xml setlocal foldmethod=indent foldlevelstart=999 foldminlines=0
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 " autocmd FileType go,javascript,javascriptreact setlocal foldmethod=expr foldexpr=nvim_treesitter#foldexpr()
+autocmd FileType scala setlocal foldmethod=syntax
 
 "no auto fold while typing
 autocmd InsertEnter * if !exists('w:last_fdm') | let w:last_fdm=&foldmethod | setlocal foldmethod=manual | endif
@@ -148,7 +150,7 @@ nnoremap <Space> za
 vnoremap <Space> za
 
 "restore view plugin - restores fold and cursor info
-set viewoptions=cursor,folds,slash,unix
+set viewoptions=cursor,slash,unix
 
 nnoremap <silent> <leader>zj :call NextClosedFold('j')<cr>
 nnoremap <silent> <leader>zk :call NextClosedFold('k')<cr>
@@ -166,12 +168,9 @@ function! NextClosedFold(dir)
     endif
 endfunction
 
-" let g:skipview_files = ['*\.vim']
 " }}}
 
 " AutoCompletion section ----------------------------------------------{{{
-" let g:coc_force_debug = 1
-
 " if hidden is not set, TextEdit might fail.
 set hidden
 
@@ -210,7 +209,7 @@ nmap <silent> [c <Plug>(coc-diagnostic-prev)
 nmap <silent> ]c <Plug>(coc-diagnostic-next)
 
 " Remap keys for gotos
-nmap <leader>d <Plug>(coc-definition)
+nmap <silent> <leader>d :call CocAction('jumpDefinition', 'tabe')<CR>
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <leader>u <Plug>(coc-references)
@@ -221,8 +220,10 @@ nnoremap <silent> K :call <SID>show_documentation()<CR>
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
-  else
+  elseif (coc#rpc#ready())
     call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
   endif
 endfunction
 
@@ -254,7 +255,7 @@ vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(
 " nmap <leader>a  <Plug>(coc-codeaction-selected)
 
 " Remap for do codeAction of current line
-" nmap <leader>ac  <Plug>(coc-codeaction)
+nmap <leader>e  <Plug>(coc-codeaction)
 " Fix autofix problem of current line
 nmap <leader>qf  <Plug>(coc-fix-current)
 
@@ -266,50 +267,14 @@ autocmd BufEnter *.tpl setlocal filetype=htmldjango
 " }}}
 
 " Fzf section ----------------------------------------------{{{
+" Using lua functions
+nnoremap <c-p> <cmd>lua require('telescope.builtin').find_files(require('telescope.themes').get_dropdown({width = 0.5, results_height = 20}))<cr>
+nnoremap <leader>a <cmd>lua require('telescope.builtin').live_grep(require('telescope.themes').get_dropdown({width = 0.5, results_height = 20}))<cr>
+nnoremap <leader>w <cmd>lua require('telescope.builtin').grep_string(require('telescope.themes').get_dropdown({width = 0.5, results_height = 20}))<cr>
 
-augroup fzf
-  autocmd!
-  autocmd! FileType fzf
-  autocmd  FileType fzf set laststatus=0 noshowmode noruler
-    \| autocmd BufWinLeave <buffer> set laststatus=2 showmode ruler
-augroup END
+nnoremap <silent> <Leader>c :Telescope grep_string search=class\ <C-R><C-W>(<CR>
+nnoremap <silent> <Leader>f :Telescope grep_string search=def\ <C-R><C-W>(<CR>
 
-let $FZF_DEFAULT_COMMAND = 'fd --hidden --type f'
-
-let g:fzf_colors =
-\ { 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Identifier'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Normal'],
-  \ 'info':    ['fg', 'PreProc'],
-  \ 'border':  ['fg', 'Ignore'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'header':  ['fg', 'Comment'] }
-
-command! -bang -nargs=? -complete=dir Files
-  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
-  \   <bang>0 ? fzf#vim#with_preview('down:60%')
-  \           : fzf#vim#with_preview('right:50%'),
-  \   <bang>0)
-
-" [Buffers] Jump to the existing window if possible
-let g:fzf_buffers_jump=1
-
-nnoremap <c-p> :Files<cr>
-
-nnoremap <Leader>a :Rg<Space>
-nnoremap <silent> <Leader>c :Rg class <C-R><C-W>(<CR>
-nnoremap <silent> <Leader>f :Rg def <C-R><C-W>(<CR>
-nnoremap <silent> <Leader>w :Rg <C-R><C-W><CR>
 " }}}
 
 " Everything else (not much tho) --------------------------------------{{{
@@ -348,6 +313,8 @@ nnoremap <C-t>     :tabnew<CR>
 inoremap <C-S-tab> <Esc>:tabprevious<CR>i
 inoremap <C-tab>   <Esc>:tabnext<CR>i
 inoremap <C-t>     <Esc>:tabnew<CR>
+nnoremap <silent> gb :BufferLinePick<CR>
+nnoremap <silent> <leader>s :Bdelete!<CR>
 
 "escape nvim terminal
 tnoremap <Esc> <C-\><C-n>
@@ -370,15 +337,8 @@ let g:NERDTreeDirArrowExpandable = ''
 let g:NERDTreeDirArrowCollapsible = ''
 let g:NERDTreeWinSize=45
 
-" MatchTagAlways
-let g:mta_use_matchparen_group = 0
-
 " Gdiff vertical
 set diffopt+=vertical
-
-" used for python projects, since then we can search for in hidden files
-" let g:ackprg = 'ag --vimgrep --smart-case --skip-vcs-ignores --hidden'
-silent! so .local.vim
 
 let g:fugitive_gitlab_domains = ['https://gitlab.tradecore.io/']
 
@@ -413,24 +373,10 @@ command! -nargs=* VT vsplit | terminal <args>
 " yank duration highlight in ms
 let g:highlightedyank_highlight_duration = 500
 
-" xtabline settings
-let g:xtabline_settings = {}
-let g:xtabline_lazy = 1
-let g:xtabline_settings.show_right_corner = 0
-let g:xtabline_settings.current_tab_paths = 0
-let g:xtabline_settings.other_tabs_paths = 0
-let g:xtabline_settings.indicators = {
-      \ 'modified': '●',
-      \ 'pinned': '[📌]',
-      \}
-
 " airline settings
 "
-" Disable tabline close button
-let g:airline#extensions#tabline#show_close_button = 0
-let g:airline#extensions#tabline#show_tab_type = 0
-let g:airline#extensions#tabline#show_tab_nr = 0
-let g:airline#extensions#tabline#fnamecollapse = 1
+" Disable airline tabline
+let g:airline#extensions#tabline#enabled = 0
 
 let g:airline_extensions = ['branch', 'hunks', 'coc', "term"]
 
@@ -479,5 +425,39 @@ require'nvim-treesitter.configs'.setup {
     enable = true
   },
 }
+
+require'bufferline'.setup{
+  options = {
+    view = "default",
+    show_buffer_close_icons = false,
+    show_close_icon = false,
+  }
+}
+
+local transform_mod = require('telescope.actions.mt').transform_mod
+local actions = require('telescope.actions')
+local edit = transform_mod({
+  x = function()
+      vim.cmd(':ls')
+  end,
+})
+
+require'telescope'.setup{
+  defaults = {
+    prompt_prefix = "🔍",
+    mappings = {
+      i = {
+        ["<c-j>"] = actions.move_selection_next,
+        ["<c-b>"] = actions.send_selected_to_qflist + actions.open_qflist,
+        ["<c-k>"] = actions.move_selection_previous,
+        ["<esc>"] = actions.close,
+        ["<CR>"] = actions.select_default + actions.center + edit,
+      },
+    },
+  }
+}
 EOF
+
+silent! so .local.vim
+
 " }}}
