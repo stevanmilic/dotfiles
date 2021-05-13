@@ -34,8 +34,7 @@ call dein#add('janko-m/vim-test')
 call dein#add('machakann/vim-highlightedyank')
 call dein#add('akinsho/nvim-bufferline.lua')
 call dein#add('moll/vim-bbye')
-call dein#add('vim-airline/vim-airline')
-call dein#add('vim-airline/vim-airline-themes')
+call dein#add('glepnir/galaxyline.nvim', {'rev': 'main'})
 call dein#add('nvim-treesitter/nvim-treesitter', {'hook_post_update': ':TSUpdate'})
 
 " extended auto completion
@@ -172,7 +171,7 @@ endfunction
 
 " AutoCompletion section ----------------------------------------------{{{
 " if hidden is not set, TextEdit might fail.
-set hidden
+" set hidden
 
 " Some servers have issues with backup files, see #649
 set nobackup
@@ -209,7 +208,7 @@ nmap <silent> [c <Plug>(coc-diagnostic-prev)
 nmap <silent> ]c <Plug>(coc-diagnostic-next)
 
 " Remap keys for gotos
-nmap <silent> <leader>d :call CocAction('jumpDefinition', 'tabe')<CR>
+nmap <silent> <leader>d <Plug>(coc-type-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <leader>u <Plug>(coc-references)
@@ -269,9 +268,9 @@ autocmd BufEnter *.tpl setlocal filetype=htmldjango
 " Fzf section ----------------------------------------------{{{
 " Using lua functions
 nnoremap <c-p> <cmd>lua require('telescope.builtin').find_files(require('telescope.themes').get_dropdown({width = 0.5, results_height = 20}))<cr>
-nnoremap <leader>a <cmd>lua require('telescope.builtin').live_grep(require('telescope.themes').get_dropdown({width = 0.5, results_height = 20}))<cr>
 nnoremap <leader>w <cmd>lua require('telescope.builtin').grep_string(require('telescope.themes').get_dropdown({width = 0.5, results_height = 20}))<cr>
 
+nnoremap <leader>a :Telescope grep_string search=
 nnoremap <silent> <Leader>c :Telescope grep_string search=class\ <C-R><C-W>(<CR>
 nnoremap <silent> <Leader>f :Telescope grep_string search=def\ <C-R><C-W>(<CR>
 
@@ -307,14 +306,15 @@ map <F9> :mksession! ~/.nvim_session <cr> " Quick write session with F9
 map <F10> :source ~/.nvim_session <cr>     " And load session with F10
 
 " Tab navigation like Firefox.
-nnoremap <S-tab> :tabprevious<CR>
-nnoremap <tab>   :tabnext<CR>
-nnoremap <C-t>     :tabnew<CR>
-inoremap <C-S-tab> <Esc>:tabprevious<CR>i
-inoremap <C-tab>   <Esc>:tabnext<CR>i
-inoremap <C-t>     <Esc>:tabnew<CR>
+nnoremap <silent> <S-tab> :tabprevious<CR>
+nnoremap <silent> <tab>   :tabnext<CR>
+nnoremap <silent> <C-t>     :tabnew<CR>
+inoremap <silent> <C-S-tab> <Esc>:tabprevious<CR>i
+inoremap <silent> <C-tab>   <Esc>:tabnext<CR>i
+inoremap <silent> <C-t>     <Esc>:tabnew<CR>
 nnoremap <silent> gb :BufferLinePick<CR>
-nnoremap <silent> <leader>s :Bdelete!<CR>
+nnoremap <silent> <leader>sb :Bdelete!<CR>
+nnoremap <silent> <leader>st :windo bd<CR>
 
 "escape nvim terminal
 tnoremap <Esc> <C-\><C-n>
@@ -373,47 +373,6 @@ command! -nargs=* VT vsplit | terminal <args>
 " yank duration highlight in ms
 let g:highlightedyank_highlight_duration = 500
 
-" airline settings
-"
-" Disable airline tabline
-let g:airline#extensions#tabline#enabled = 0
-
-let g:airline_extensions = ['branch', 'hunks', 'coc', "term"]
-
-let g:airline_section_c = airline#section#create(['file'])
-
-let g:airline#extensions#tabline#buffers_label = ''
-let g:airline#extensions#tabline#tabs_label = ''
-let g:airline#extensions#coc#enabled = 1
-
-" enable powerline fonts
-let g:airline_powerline_fonts = 1
-let g:airline_left_sep = ''
-let g:airline_right_sep = ''
-let g:airline_right_alt_sep = ''
-
-let g:airline#extensions#default#layout = [['a', 'b', 'c'], ['z', 'warning', 'error']]
-
-let g:airline_theme='solarized'
-let g:airline_solarized_dark_inactive_border = 1
-
-" Sections.
-let g:webdevicons_enable_airline_tabline = 1
-
-" Fix for terminal theme.
-let s:saved_theme = []
-let g:airline_theme_patch_func = 'AirlineThemePatch'
-function! AirlineThemePatch(palette)
-    for colors in values(a:palette)
-        if has_key(colors, 'airline_c') && len(s:saved_theme) ==# 0
-            let s:saved_theme = colors.airline_c
-        endif
-        if has_key(colors, 'airline_term')
-            let colors.airline_term = s:saved_theme
-        endif
-    endfor
-endfunction
-
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
@@ -436,11 +395,6 @@ require'bufferline'.setup{
 
 local transform_mod = require('telescope.actions.mt').transform_mod
 local actions = require('telescope.actions')
-local edit = transform_mod({
-  x = function()
-      vim.cmd(':ls')
-  end,
-})
 
 require'telescope'.setup{
   defaults = {
@@ -451,9 +405,141 @@ require'telescope'.setup{
         ["<c-b>"] = actions.send_selected_to_qflist + actions.open_qflist,
         ["<c-k>"] = actions.move_selection_previous,
         ["<esc>"] = actions.close,
-        ["<CR>"] = actions.select_default + actions.center + edit,
       },
     },
+  }
+}
+
+local gl = require('galaxyline')
+local colors = {
+  bg = '#073642',
+  yellow = '#b58900',
+  cyan = '#2aa198',
+  darkblue = '#081633',
+  green = '#859900',
+  orange = '#cb4b16',
+  purple = '#5d4d7a',
+  magenta = '#d33682',
+  grey = '#c0c0c0',
+  blue = '#268bd2',
+  red = '#dc322f'
+}
+local condition = require('galaxyline.condition')
+local gls = gl.section
+gl.short_line_list = {'NvimTree','vista','dbui','packer'}
+
+gls.left[1] = {
+  RainbowRed = {
+    provider = function() return '▊ ' end,
+    highlight = {colors.blue,colors.bg}
+  },
+}
+gls.left[2] = {
+  ViMode = {
+    provider = function()
+      -- auto change color according the vim mode
+      local mode_color = {n = colors.red, i = colors.green,v=colors.blue,
+                          [''] = colors.blue,V=colors.blue,
+                          c = colors.magenta,no = colors.red,s = colors.orange,
+                          S=colors.orange,[''] = colors.orange,
+                          ic = colors.yellow,R = colors.violet,Rv = colors.violet,
+                          cv = colors.red,ce=colors.red, r = colors.cyan,
+                          rm = colors.cyan, ['r?'] = colors.cyan,
+                          ['!']  = colors.red,t = colors.red}
+      vim.api.nvim_command('hi GalaxyViMode guifg='..mode_color[vim.fn.mode()])
+      return '  '
+    end,
+    highlight = {colors.red,colors.bg,'bold'},
+  },
+}
+gls.left[3] = {
+  FileSize = {
+    provider = 'FileSize',
+    condition = condition.buffer_not_empty,
+    highlight = {colors.fg,colors.bg}
+  }
+}
+gls.left[4] ={
+  FileIcon = {
+    provider = 'FileIcon',
+    condition = condition.buffer_not_empty,
+    highlight = {require('galaxyline.provider_fileinfo').get_file_icon_color,colors.bg},
+  },
+}
+
+gls.left[5] = {
+  FileName = {
+    provider = 'FileName',
+    condition = condition.buffer_not_empty,
+    highlight = {colors.magenta,colors.bg,'bold'}
+  }
+}
+
+gls.left[6] = {
+  LineInfo = {
+    provider = 'LineColumn',
+    separator = ' ',
+    separator_highlight = {'NONE',colors.bg},
+    highlight = {colors.fg,colors.bg},
+  },
+}
+
+gls.left[7] = {
+  PerCent = {
+    provider = 'LinePercent',
+    separator = ' ',
+    separator_highlight = {'NONE',colors.bg},
+    highlight = {colors.fg,colors.bg,'bold'},
+  }
+}
+
+
+gls.right[1] = {
+  GitIcon = {
+    provider = function() return '  ' end,
+    condition = condition.check_git_workspace,
+    separator = ' ',
+    separator_highlight = {'NONE',colors.bg},
+    highlight = {colors.violet,colors.bg,'bold'},
+  }
+}
+
+gls.right[2] = {
+  GitBranch = {
+    provider = 'GitBranch',
+    condition = condition.check_git_workspace,
+    highlight = {colors.violet,colors.bg,'bold'},
+  }
+}
+
+gls.right[3] = {
+  RainbowBlue = {
+    provider = function() return '  ▊' end,
+    highlight = {colors.blue,colors.bg}
+  },
+}
+
+gls.short_line_left[1] = {
+  BufferType = {
+    provider = 'FileTypeName',
+    separator = ' ',
+    separator_highlight = {'NONE',colors.bg},
+    highlight = {colors.blue,colors.bg,'bold'}
+  }
+}
+
+gls.short_line_left[2] = {
+  SFileName = {
+    provider =  'SFileName',
+    condition = condition.buffer_not_empty,
+    highlight = {colors.fg,colors.bg,'bold'}
+  }
+}
+
+gls.short_line_right[1] = {
+  BufferIcon = {
+    provider= 'BufferIcon',
+    highlight = {colors.fg,colors.bg}
   }
 }
 EOF
