@@ -15,6 +15,7 @@ call dein#add('Shougo/dein.vim')
 call dein#add('nvim-lua/popup.nvim')
 call dein#add('nvim-lua/plenary.nvim')
 call dein#add('nvim-telescope/telescope.nvim')
+call dein#add('nvim-telescope/telescope-fzy-native.nvim')
 call dein#add('christoomey/vim-tmux-navigator')
 call dein#add('lifepillar/vim-solarized8')
 call dein#add('tomtom/tcomment_vim')
@@ -141,8 +142,8 @@ autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 autocmd FileType scala setlocal foldmethod=syntax
 
 "no auto fold while typing
-autocmd InsertEnter * if !exists('w:last_fdm') | let w:last_fdm=&foldmethod | setlocal foldmethod=manual | endif
-autocmd InsertLeave,WinLeave * if exists('w:last_fdm') | let &l:foldmethod=w:last_fdm | unlet w:last_fdm | endif
+" autocmd InsertEnter * if !exists('w:last_fdm') | let w:last_fdm=&foldmethod | setlocal foldmethod=manual | endif
+" autocmd InsertLeave,WinLeave * if exists('w:last_fdm') | let &l:foldmethod=w:last_fdm | unlet w:last_fdm | endif
 
 " use space to fold/unfold
 nnoremap <Space> za
@@ -208,7 +209,7 @@ nmap <silent> [c <Plug>(coc-diagnostic-prev)
 nmap <silent> ]c <Plug>(coc-diagnostic-next)
 
 " Remap keys for gotos
-nmap <silent> <leader>d <Plug>(coc-type-definition)
+nmap <silent> <leader>d <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <leader>u <Plug>(coc-references)
@@ -267,8 +268,8 @@ autocmd BufEnter *.tpl setlocal filetype=htmldjango
 
 " Fzf section ----------------------------------------------{{{
 " Using lua functions
-nnoremap <c-p> <cmd>lua require('telescope.builtin').find_files(require('telescope.themes').get_dropdown({width = 0.5, results_height = 20}))<cr>
-nnoremap <leader>w <cmd>lua require('telescope.builtin').grep_string(require('telescope.themes').get_dropdown({width = 0.5, results_height = 20}))<cr>
+nnoremap <c-p> <cmd>Telescope find_files<cr>
+nnoremap <leader>w <cmd>Telescope grep_string<cr>
 
 nnoremap <leader>a :Telescope grep_string search=
 nnoremap <silent> <Leader>c :Telescope grep_string search=class\ <C-R><C-W>(<CR>
@@ -393,7 +394,6 @@ require'bufferline'.setup{
   }
 }
 
-local transform_mod = require('telescope.actions.mt').transform_mod
 local actions = require('telescope.actions')
 
 require'telescope'.setup{
@@ -409,6 +409,7 @@ require'telescope'.setup{
     },
   }
 }
+require('telescope').load_extension('fzy_native')
 
 local gl = require('galaxyline')
 local colors = {
