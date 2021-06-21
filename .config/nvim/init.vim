@@ -237,12 +237,12 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 nmap <leader>r <Plug>(coc-rename)
 
 " Remap for format selected region
-vmap <leader>g  :call CocActionAsync('format')<CR>
-nmap <leader>g  :call CocActionAsync('format')<CR>
+vmap <leader>g  :call CocAction('format')<CR>
+nmap <leader>g  :call CocAction('format')<CR>
 
 " Use `:Format` to format current buffer
-command! -nargs=0 Format :call CocActionAsync('format')
-command! -nargs=0 OR :call CocActionAsync('runCommand', 'editor.action.organizeImport')
+command! -nargs=0 Format :call CocAction('format')
+command! -nargs=0 OR :call CocAction('runCommand', 'editor.action.organizeImport')
 command! -nargs=? Fold :call     CocActionAsync('fold', <f-args>)
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
