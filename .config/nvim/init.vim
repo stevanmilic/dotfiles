@@ -34,6 +34,7 @@ call dein#add('junegunn/goyo.vim')
 call dein#add('janko-m/vim-test')
 call dein#add('machakann/vim-highlightedyank')
 call dein#add('akinsho/nvim-bufferline.lua')
+call dein#add('arithran/vim-delete-hidden-buffers')
 call dein#add('moll/vim-bbye')
 call dein#add('glepnir/galaxyline.nvim', {'rev': 'main'})
 call dein#add('nvim-treesitter/nvim-treesitter', {'hook_post_update': ':TSUpdate'})
@@ -316,6 +317,7 @@ inoremap <silent> <C-t>     <Esc>:tabnew<CR>
 nnoremap <silent> gb :BufferLinePick<CR>
 nnoremap <silent> <leader>sb :Bdelete!<CR>
 nnoremap <silent> <leader>st :windo bd<CR>
+nnoremap <silent> <leader>su :DeleteHiddenBuffers<CR>
 
 "escape nvim terminal
 tnoremap <Esc> <C-\><C-n>
