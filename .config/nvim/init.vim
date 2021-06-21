@@ -175,6 +175,8 @@ endfunction
 " if hidden is not set, TextEdit might fail.
 " set hidden
 
+au BufRead,BufNewFile *.fuse set filetype=fuse
+
 " Some servers have issues with backup files, see #649
 set nobackup
 set nowritebackup
@@ -385,6 +387,14 @@ require'nvim-treesitter.configs'.setup {
   incremental_selection = { enable = true },
   indent = {
     enable = true
+  },
+}
+
+local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
+parser_config.fuse = {
+  install_info = {
+    url = "https://github.com/stevanmilic/tree-sitter-fuse",
+    files = { "src/parser.c", "src/scanner.cc" },
   },
 }
 
