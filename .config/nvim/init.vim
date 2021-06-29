@@ -143,8 +143,8 @@ autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 autocmd FileType scala setlocal foldmethod=syntax
 
 "no auto fold while typing
-" autocmd InsertEnter * if !exists('w:last_fdm') | let w:last_fdm=&foldmethod | setlocal foldmethod=manual | endif
-" autocmd InsertLeave,WinLeave * if exists('w:last_fdm') | let &l:foldmethod=w:last_fdm | unlet w:last_fdm | endif
+autocmd InsertEnter * if !exists('w:last_fdm') | let w:last_fdm=&foldmethod | setlocal foldmethod=manual | endif
+autocmd InsertLeave,WinLeave * if exists('w:last_fdm') | let &l:foldmethod=w:last_fdm | unlet w:last_fdm | endif
 
 " use space to fold/unfold
 nnoremap <Space> za
@@ -482,9 +482,11 @@ gls.left[4] ={
 
 gls.left[5] = {
   FileName = {
-    provider = 'FileName',
+    provider = function() return vim.fn.expand('%') end,
     condition = condition.buffer_not_empty,
-    highlight = {colors.magenta,colors.bg,'bold'}
+    highlight = {colors.magenta,colors.bg,'bold'},
+    separator = ' ',
+    separator_highlight = {'NONE',colors.bg},
   }
 }
 
