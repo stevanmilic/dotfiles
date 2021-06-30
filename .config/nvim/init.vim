@@ -418,11 +418,11 @@ sort_by = function(buffer_a, buffer_b)
   end
 
   if buffer_a_tabnr == nil then
-      return true
+      return false
   end
 
   if buffer_b_tabnr == nil then
-      return false
+      return true
   end
 
   return buffer_a_tabnr < buffer_b_tabnr
