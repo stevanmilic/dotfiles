@@ -398,42 +398,18 @@ parser_config.fuse = {
   },
 }
 
-sort_by = function(buffer_a, buffer_b)
-  local tabs = vim.fn.gettabinfo()
-  local buffer_a_tabnr = nil
-  local buffer_b_tabnr = nil
-
-  for _, tab in ipairs(tabs) do
-      local buffers = vim.fn.tabpagebuflist(tab.tabnr)
-      for _, buff in ipairs(buffers) do
-          if buff == buffer_a.id then
-              buffer_a_tabnr = tab.tabnr
-          elseif buff == buffer_b.id then
-              buffer_b_tabnr = tab.tabnr
-          end
-          if buffer_a_tabnr ~= nil and buffer_b_tabnr ~= nil then
-              return buffer_a_tabnr < buffer_b_tabnr
-          end
-      end
-  end
-
-  if buffer_a_tabnr == nil then
-      return false
-  end
-
-  if buffer_b_tabnr == nil then
-      return true
-  end
-
-  return buffer_a_tabnr < buffer_b_tabnr
-end
-
 require'bufferline'.setup{
   options = {
     view = "default",
     show_buffer_close_icons = false,
     show_close_icon = false,
-    sort_by = sort_by,
+    sort_by = 'tabs',
+    name_formatter = function(buf)
+        if next(vim.fn.win_findbuf(buf.bufnr)) == nil then
+            return 'ℍ  ' .. buf.name
+        end 
+        return buf.name
+    end,
   }
 }
 
@@ -441,7 +417,10 @@ local actions = require('telescope.actions')
 
 require'telescope'.setup{
   defaults = {
-    prompt_prefix = "🔍",
+    prompt_prefix = "🔍 ",
+    layout_config = {
+      preview_width = 0.5,
+    },
     mappings = {
       i = {
         ["<c-j>"] = actions.move_selection_next,
