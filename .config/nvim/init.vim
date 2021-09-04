@@ -18,15 +18,12 @@ call dein#add('nvim-telescope/telescope.nvim')
 call dein#add('nvim-telescope/telescope-fzy-native.nvim')
 call dein#add('christoomey/vim-tmux-navigator')
 call dein#add('lifepillar/vim-solarized8')
-call dein#add('tomtom/tcomment_vim')
+call dein#add('b3nj5m1n/kommentary')
 call dein#add('tpope/vim-repeat')
-call dein#add('vim-scripts/ReplaceWithRegister')
+call dein#add('inkarkat/vim-ReplaceWithRegister')
 call dein#add('tpope/vim-surround')
 call dein#add('wellle/targets.vim')
 call dein#add('zhimsel/vim-stay')
-call dein#add('mileszs/ack.vim')
-call dein#add('godlygeek/tabular')
-call dein#add('tmhedberg/SimpylFold', {'on_ft': 'python'})
 call dein#add('Konfekt/FastFold')
 call dein#add('scrooloose/nerdtree')
 call dein#add('tpope/vim-abolish')
@@ -38,9 +35,10 @@ call dein#add('arithran/vim-delete-hidden-buffers')
 call dein#add('moll/vim-bbye')
 call dein#add('glepnir/galaxyline.nvim', {'rev': 'main'})
 call dein#add('nvim-treesitter/nvim-treesitter', {'hook_post_update': ':TSUpdate'})
+call dein#add('nvim-treesitter/nvim-treesitter-textobjects')
 
 " extended auto completion
-call dein#add('neoclide/coc.nvim', { 'merged': 0 })
+call dein#add('neoclide/coc.nvim', { 'merged': 0, 'rev': 'release' })
 
 " extended syntax
 call dein#add('towolf/vim-helm')
@@ -69,8 +67,8 @@ filetype plugin indent on
 
 " System settings -----------------------------------------------------{{{
 set showmatch
-set autoindent
-set smartindent
+" set autoindent
+" set smartindent
 set tabstop=4
 set expandtab
 set shiftwidth=4
@@ -139,12 +137,6 @@ autocmd FileType vim setlocal foldmethod=marker
 autocmd FileType vim setlocal foldlevel=0
 autocmd FileType xml setlocal foldmethod=indent foldlevelstart=999 foldminlines=0
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
-" autocmd FileType go,javascript,javascriptreact setlocal foldmethod=expr foldexpr=nvim_treesitter#foldexpr()
-autocmd FileType scala setlocal foldmethod=syntax
-
-"no auto fold while typing
-autocmd InsertEnter * if !exists('w:last_fdm') | let w:last_fdm=&foldmethod | setlocal foldmethod=manual | endif
-autocmd InsertLeave,WinLeave * if exists('w:last_fdm') | let &l:foldmethod=w:last_fdm | unlet w:last_fdm | endif
 
 " use space to fold/unfold
 nnoremap <Space> za
@@ -296,9 +288,6 @@ hi! link SignColumn LineNr
 "use python in vim editing
 :vnoremap <S-Tab> :!python<CR>
 
-"comment lines with (ctrl + /)x2 or with gc (gcc)
-vnoremap <c-/> :TComment<cr>
-
 "set filename for tmux windows
 autocmd BufEnter * call system("tmux rename-window " . expand("%:t"))
 autocmd VimLeave * call system("tmux rename-window zsh")
@@ -330,7 +319,7 @@ vnoremap // y/<C-R>"<CR>
 let g:python_host_prog = "/home/stevan/Applications/neovim-venvs/neovim2/bin/python"
 let g:python3_host_prog = "/home/stevan/Applications/neovim-venvs/neovim3/bin/python"
 
-" extended python syntax
+" python breakpoints mapping
 au FileType python map <silent> <leader>b oimport ipdb; ipdb.set_trace()<esc>
 au FileType python map <silent> <leader>B Oimport ipdb; ipdb.set_trace()<esc>
 
@@ -365,6 +354,9 @@ silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
 let test#strategy = "neovim"
 let test#scala#runner = 'blooptest'
 
+let test#python#runner = 'pytest'
+let test#python#pytest#options = '-s --tb=short'
+
 nmap <Leader>tn :TestNearest<CR>
 nmap <Leader>tf :TestFile<CR>
 nmap <Leader>ts :TestSuite<CR>
@@ -378,6 +370,10 @@ command! -nargs=* VT vsplit | terminal <args>
 " yank duration highlight in ms
 let g:highlightedyank_highlight_duration = 500
 
+" }}}
+
+" Lua config --------------------------------------{{{
+
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
@@ -388,6 +384,30 @@ require'nvim-treesitter.configs'.setup {
   indent = {
     enable = true
   },
+  textobjects = {
+    select = {
+      enable = true,
+
+      -- Automatically jump forward to textobj, similar to targets.vim 
+      lookahead = true,
+
+      keymaps = {
+        -- You can use the capture groups defined in textobjects.scm
+        ["ab"] = "@block.outer",
+        ["ib"] = "@block.inner",
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["at"] = "@class.outer",
+        ["it"] = "@class.inner",
+        ["ap"] = "@parameter.outer",
+        ["ip"] = "@parameter.inner",
+        ["al"] = "@call.outer",
+        ["il"] = "@call.inner",
+        ["as"] = "@statement.outer",
+        ["ac"] = "@comment.outer",
+      },
+    },
+  },
 }
 
 local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
@@ -397,6 +417,15 @@ parser_config.fuse = {
     files = { "src/parser.c", "src/scanner.cc" },
   },
 }
+local python_folds_query = [[
+    [
+      (function_definition)
+      (class_definition)
+      (import_from_statement)
+      (string)
+    ] @fold
+]]
+require('vim.treesitter.query').set_query("python", "folds", python_folds_query)
 
 require'bufferline'.setup{
   options = {
