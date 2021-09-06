@@ -24,7 +24,6 @@ call dein#add('inkarkat/vim-ReplaceWithRegister')
 call dein#add('tpope/vim-surround')
 call dein#add('wellle/targets.vim')
 call dein#add('zhimsel/vim-stay')
-call dein#add('Konfekt/FastFold')
 call dein#add('scrooloose/nerdtree')
 call dein#add('tpope/vim-abolish')
 call dein#add('junegunn/goyo.vim')
@@ -36,6 +35,7 @@ call dein#add('moll/vim-bbye')
 call dein#add('glepnir/galaxyline.nvim', {'rev': 'main'})
 call dein#add('nvim-treesitter/nvim-treesitter', {'hook_post_update': ':TSUpdate'})
 call dein#add('nvim-treesitter/nvim-treesitter-textobjects')
+call dein#add('nvim-treesitter/playground')
 
 " extended auto completion
 call dein#add('neoclide/coc.nvim', { 'merged': 0, 'rev': 'release' })
@@ -67,8 +67,7 @@ filetype plugin indent on
 
 " System settings -----------------------------------------------------{{{
 set showmatch
-" set autoindent
-" set smartindent
+set autoindent
 set tabstop=4
 set expandtab
 set shiftwidth=4
@@ -143,7 +142,7 @@ nnoremap <Space> za
 vnoremap <Space> za
 
 "restore view plugin - restores fold and cursor info
-set viewoptions=cursor,slash,unix
+set viewoptions=cursor,folds
 
 nnoremap <silent> <leader>zj :call NextClosedFold('j')<cr>
 nnoremap <silent> <leader>zk :call NextClosedFold('k')<cr>
@@ -417,6 +416,13 @@ parser_config.fuse = {
     files = { "src/parser.c", "src/scanner.cc" },
   },
 }
+parser_config.scala = {
+  install_info = {
+    url = "https://github.com/stevanmilic/tree-sitter-scala",
+    files = { "src/parser.c", "src/scanner.c" },
+    revision = "7d14e0c4b651c749da442d6064597e210f409f63",
+  },
+}
 local python_folds_query = [[
     [
       (function_definition)
@@ -443,6 +449,7 @@ require'bufferline'.setup{
 }
 
 local actions = require('telescope.actions')
+local action_set = require('telescope.actions.set')
 
 require'telescope'.setup{
   defaults = {
@@ -457,6 +464,19 @@ require'telescope'.setup{
         ["<c-k>"] = actions.move_selection_previous,
         ["<esc>"] = actions.close,
       },
+    },
+  },
+  pickers = {
+    find_files = {
+      hidden = true,
+      attach_mappings = function(prompt_bufnr)
+        action_set.select:enhance({
+          post = function()
+            vim.cmd(":normal! zx")
+          end
+        })
+        return true
+      end
     },
   }
 }
