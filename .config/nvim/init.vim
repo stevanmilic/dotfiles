@@ -16,7 +16,6 @@ call dein#add('nvim-lua/popup.nvim')
 call dein#add('nvim-lua/plenary.nvim')
 call dein#add('nvim-telescope/telescope.nvim')
 call dein#add('nvim-telescope/telescope-fzy-native.nvim')
-call dein#add('christoomey/vim-tmux-navigator')
 call dein#add('lifepillar/vim-solarized8')
 call dein#add('b3nj5m1n/kommentary')
 call dein#add('tpope/vim-repeat')
@@ -36,6 +35,7 @@ call dein#add('glepnir/galaxyline.nvim', {'rev': 'main'})
 call dein#add('nvim-treesitter/nvim-treesitter', {'hook_post_update': ':TSUpdate'})
 call dein#add('nvim-treesitter/nvim-treesitter-textobjects')
 call dein#add('nvim-treesitter/playground')
+call dein#add('beauwilliams/focus.nvim')
 
 " extended auto completion
 call dein#add('neoclide/coc.nvim', { 'merged': 0, 'rev': 'release' })
@@ -49,7 +49,6 @@ call dein#add('vim-scripts/ebnf.vim')
 " git
 call dein#add('tpope/vim-fugitive')
 call dein#add('Xuyuanp/nerdtree-git-plugin')
-call dein#add('shumphrey/fugitive-gitlab.vim')
 call dein#add('tpope/vim-rhubarb')
 
 " cool icons
@@ -265,7 +264,7 @@ autocmd BufEnter *.tpl setlocal filetype=htmldjango
 nnoremap <c-p> <cmd>Telescope find_files<cr>
 nnoremap <leader>w <cmd>Telescope grep_string<cr>
 
-nnoremap <leader>a :Telescope grep_string search=
+nnoremap <leader>a :Telescope live_grep<CR>
 nnoremap <silent> <Leader>c :Telescope grep_string search=class\ <C-R><C-W>(<CR>
 nnoremap <silent> <Leader>f :Telescope grep_string search=def\ <C-R><C-W>(<CR>
 
@@ -286,12 +285,6 @@ hi! link SignColumn LineNr
 
 "use python in vim editing
 :vnoremap <S-Tab> :!python<CR>
-
-"set filename for tmux windows
-autocmd BufEnter * call system("tmux rename-window " . expand("%:t"))
-autocmd VimLeave * call system("tmux rename-window zsh")
-autocmd BufEnter * let &titlestring = ' ' . expand("%:t")
-set title
 
 "save a session
 map <F9> :mksession! ~/.nvim_session <cr> " Quick write session with F9
@@ -318,9 +311,11 @@ vnoremap // y/<C-R>"<CR>
 let g:python_host_prog = "/home/stevan/Applications/neovim-venvs/neovim2/bin/python"
 let g:python3_host_prog = "/home/stevan/Applications/neovim-venvs/neovim3/bin/python"
 
-" python breakpoints mapping
-au FileType python map <silent> <leader>b oimport ipdb; ipdb.set_trace()<esc>
-au FileType python map <silent> <leader>B Oimport ipdb; ipdb.set_trace()<esc>
+" breakpoints mapping
+au FileType python map <silent> <leader>b obreakpoint()<esc>
+au FileType python map <silent> <leader>B Obreakpoint()<esc>
+au FileType javascript,typescript,typescriptreact map <silent> <leader>b odebugger;<esc>
+au FileType javascript,typescript,typescriptreact  map <silent> <leader>B Odebugger;<esc>
 
 "no line numbers in terminal mode
 au TermOpen * setlocal nonumber norelativenumber
@@ -332,8 +327,6 @@ let g:NERDTreeWinSize=45
 
 " Gdiff vertical
 set diffopt+=vertical
-
-let g:fugitive_gitlab_domains = ['https://gitlab.tradecore.io/']
 
 " vertical split with new file
 nnoremap <leader>v :vnew<CR>
@@ -420,7 +413,7 @@ parser_config.scala = {
   install_info = {
     url = "https://github.com/stevanmilic/tree-sitter-scala",
     files = { "src/parser.c", "src/scanner.c" },
-    revision = "7d14e0c4b651c749da442d6064597e210f409f63",
+    revision = "1564db8ae938955fbd939a6ae8f543a1bfdcfa79",
   },
 }
 local python_folds_query = [[
@@ -448,8 +441,22 @@ require'bufferline'.setup{
   }
 }
 
+require("focus").setup()
+
 local actions = require('telescope.actions')
-local action_set = require('telescope.actions.set')
+local telescope_actions = require("telescope.actions.set")
+
+local fix_folds = {
+	hidden = true,
+	attach_mappings = function(_)
+		telescope_actions.select:enhance({
+			post = function()
+				vim.cmd(":normal! zx")
+			end,
+		})
+		return true
+	end,
+}
 
 require'telescope'.setup{
   defaults = {
@@ -467,17 +474,9 @@ require'telescope'.setup{
     },
   },
   pickers = {
-    find_files = {
-      hidden = true,
-      attach_mappings = function(prompt_bufnr)
-        action_set.select:enhance({
-          post = function()
-            vim.cmd(":normal! zx")
-          end
-        })
-        return true
-      end
-    },
+    find_files = fix_folds,
+    grep_string = fix_folds,
+    live_grep = fix_folds,
   }
 }
 require('telescope').load_extension('fzy_native')
