@@ -16,6 +16,7 @@ call dein#add('nvim-lua/popup.nvim')
 call dein#add('nvim-lua/plenary.nvim')
 call dein#add('nvim-telescope/telescope.nvim')
 call dein#add('nvim-telescope/telescope-fzy-native.nvim')
+call dein#add('christoomey/vim-tmux-navigator')
 call dein#add('lifepillar/vim-solarized8')
 call dein#add('b3nj5m1n/kommentary')
 call dein#add('tpope/vim-repeat')
@@ -23,7 +24,7 @@ call dein#add('inkarkat/vim-ReplaceWithRegister')
 call dein#add('tpope/vim-surround')
 call dein#add('wellle/targets.vim')
 call dein#add('zhimsel/vim-stay')
-call dein#add('scrooloose/nerdtree')
+call dein#add('kyazdani42/nvim-tree.lua')
 call dein#add('tpope/vim-abolish')
 call dein#add('junegunn/goyo.vim')
 call dein#add('janko-m/vim-test')
@@ -48,7 +49,6 @@ call dein#add('vim-scripts/ebnf.vim')
 
 " git
 call dein#add('tpope/vim-fugitive')
-call dein#add('Xuyuanp/nerdtree-git-plugin')
 call dein#add('tpope/vim-rhubarb')
 
 " cool icons
@@ -402,6 +402,8 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
+require'nvim-tree'.setup()
+
 local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
 parser_config.fuse = {
   install_info = {
@@ -524,21 +526,6 @@ gls.left[2] = {
   },
 }
 gls.left[3] = {
-  FileSize = {
-    provider = 'FileSize',
-    condition = condition.buffer_not_empty,
-    highlight = {colors.fg,colors.bg}
-  }
-}
-gls.left[4] ={
-  FileIcon = {
-    provider = 'FileIcon',
-    condition = condition.buffer_not_empty,
-    highlight = {require('galaxyline.provider_fileinfo').get_file_icon_color,colors.bg},
-  },
-}
-
-gls.left[5] = {
   FileName = {
     provider = function() return vim.fn.expand('%') end,
     condition = condition.buffer_not_empty,
@@ -548,7 +535,7 @@ gls.left[5] = {
   }
 }
 
-gls.left[6] = {
+gls.left[4] = {
   LineInfo = {
     provider = 'LineColumn',
     separator = ' ',
@@ -557,7 +544,7 @@ gls.left[6] = {
   },
 }
 
-gls.left[7] = {
+gls.left[5] = {
   PerCent = {
     provider = 'LinePercent',
     separator = ' ',
