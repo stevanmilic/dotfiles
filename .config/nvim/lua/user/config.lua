@@ -128,9 +128,7 @@ vim.cmd [[
   nnoremap <silent> <tab>   :tabnext<CR>
   nnoremap <silent> <C-t>     :tabnew<CR>
   nnoremap <silent> gb :BufferLinePick<CR>
-  nnoremap <silent> <leader>sb :Bdelete!<CR>
-  nnoremap <silent> <leader>st :windo bd<CR>
-  nnoremap <silent> <leader>su :DeleteHiddenBuffers<CR>
+  nnoremap <silent> <leader>st :windo BDelete!<CR>
   
   "escape nvim terminal
   tnoremap <Esc> <C-\><C-n>

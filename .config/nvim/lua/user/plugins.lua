@@ -56,25 +56,16 @@ return packer.startup(function(use)
 	use("zhimsel/vim-stay")
 	use({
 		"kyazdani42/nvim-tree.lua",
-		requires = {
-			"kyazdani42/nvim-web-devicons", -- optional, for file icon
-		},
 		config = function()
 			require("nvim-tree").setup({})
 		end,
 	})
 	use("tpope/vim-abolish")
-	use("junegunn/goyo.vim")
 	use("janko-m/vim-test")
 	use("machakann/vim-highlightedyank")
-	use("akinsho/nvim-bufferline.lua")
-	use("arithran/vim-delete-hidden-buffers")
-	use("moll/vim-bbye")
-	use("NTBBloodbath/galaxyline.nvim")
-	use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
-	use("nvim-treesitter/nvim-treesitter-textobjects")
-	use("nvim-treesitter/playground")
-	use("JoosepAlviste/nvim-ts-context-commentstring")
+	use({ "akinsho/bufferline.nvim", tag = "*" })
+	use("kazhala/close-buffers.nvim")
+	use("nvim-lualine/lualine.nvim")
 	use({
 		"beauwilliams/focus.nvim",
 		config = function()
@@ -101,12 +92,12 @@ return packer.startup(function(use)
 			vim.g.cursorhold_updatetime = 100
 		end,
 	})
-	use({
-		"kevinhwang91/nvim-fFHighlight",
-		config = function()
-			require("fFHighlight").setup()
-		end,
-	})
+
+	-- tree-sitter
+	use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
+	use("nvim-treesitter/nvim-treesitter-textobjects")
+	use("nvim-treesitter/playground")
+	use("JoosepAlviste/nvim-ts-context-commentstring")
 
 	-- lsp
 	use("neovim/nvim-lspconfig")
@@ -117,7 +108,6 @@ return packer.startup(function(use)
 	use("onsails/lspkind-nvim")
 	use("tami5/lspsaga.nvim")
 	use("jose-elias-alvarez/null-ls.nvim")
-	-- use "ray-x/lsp_signature.nvim"
 
 	-- extendend syntax
 	use("towolf/vim-helm")
