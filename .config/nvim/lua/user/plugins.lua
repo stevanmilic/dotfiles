@@ -87,12 +87,24 @@ return packer.startup(function(use)
 			require("alpha").setup(require("alpha.themes.startify").config)
 		end,
 	})
-	use("nathom/filetype.nvim")
 	use("lewis6991/impatient.nvim")
 	use({
 		"ahmedkhalf/project.nvim",
 		config = function()
 			require("project_nvim").setup({})
+		end,
+	})
+	use({
+		"antoinemadec/FixCursorHold.nvim",
+		event = "BufRead",
+		config = function()
+			vim.g.cursorhold_updatetime = 100
+		end,
+	})
+	use({
+		"kevinhwang91/nvim-fFHighlight",
+		config = function()
+			require("fFHighlight").setup()
 		end,
 	})
 
@@ -116,6 +128,7 @@ return packer.startup(function(use)
 	-- git
 	use("tpope/vim-fugitive")
 	use("tpope/vim-rhubarb")
+	use("rhysd/conflict-marker.vim")
 
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins

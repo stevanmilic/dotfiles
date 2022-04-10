@@ -37,12 +37,13 @@ vim.cmd [[
   set noswapfile
   
   let mapleader = ","
+  " 0.7 nvim filetype detection
+  let g:do_filetype_lua = 1
+  let g:did_load_filetypes = 1
 ]]
 
 -- folds 
 vim.cmd [[
-  " open all folds with zR, close all folds with zM
-  
   function! MyFoldText() "{{{
   	let line = getline(v:foldstart)
   
@@ -81,14 +82,9 @@ vim.cmd [[
 
 -- mappings and stuff
 vim.cmd [[
-  au BufRead,BufNewFile *.fuse set filetype=fuse
-  
   " Some servers have issues with backup files, see #649
   set nobackup
   set nowritebackup
-  
-  " Smaller updatetime for CursorHold & CursorHoldI
-  set updatetime=300
   
   " don't give |ins-completion-menu| messages.
   set shortmess+=c
@@ -97,7 +93,6 @@ vim.cmd [[
   " autocmd FileType html set omnifunc=htmlcomplete#CompleteTags noci
   autocmd FileType css set omnifunc=csscomplete#CompleteCSS noci
   autocmd BufEnter *.tpl setlocal filetype=htmldjango
-  autocmd CursorHold * :lua require'lspsaga.diagnostic'.show_line_diagnostics()
   
   nnoremap <c-p> <cmd>Telescope find_files<cr>
   nnoremap <leader>w <cmd>Telescope grep_string<cr>
@@ -210,6 +205,8 @@ vim.cmd [[
   highlight link LspSagaCodeActionTruncateLine Normal
   highlight link markdownError NONE
 
+
   let g:pyrightTypeCheckingMode = "off"
   silent! so .local.vim
 ]]
+

@@ -19,6 +19,7 @@ local on_attach = function(client, bufnr)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>r", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
+	-- vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>o", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>ya", "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>yr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(
@@ -47,8 +48,8 @@ local enhance_server_opts = {
 		op.settings = {
 			python = {
 				analysis = {
-					typeCheckingMode = vim.api.nvim_get_var('pyrightTypeCheckingMode'),
-                    useLibraryCodeForType = true,
+					typeCheckingMode = vim.api.nvim_get_var("pyrightTypeCheckingMode"),
+					useLibraryCodeForTypes = true,
 				},
 			},
 		}
@@ -148,6 +149,7 @@ null_ls.setup({
 		null_ls.builtins.formatting.isort,
 		null_ls.builtins.formatting.stylua,
 		null_ls.builtins.diagnostics.mypy,
+		null_ls.builtins.diagnostics.buf,
 	},
 })
 
@@ -203,3 +205,10 @@ lspsaga.setup({ -- defaults ...
 })
 
 -- require("lsp_signature").setup({ hint_enable = false })
+--
+vim.api.nvim_exec(
+    [[
+        autocmd CursorHold * lua vim.diagnostic.open_float()
+    ]],
+    false
+)
