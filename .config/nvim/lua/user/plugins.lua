@@ -46,7 +46,17 @@ return packer.startup(function(use)
 		"nvim-telescope/telescope-fzf-native.nvim",
 		run = "make",
 	})
-	use("christoomey/vim-tmux-navigator")
+    use({
+        "aserowy/tmux.nvim",
+        config = function()
+            require("tmux").setup({
+                navigation = {
+                    -- enables default keybindings (C-hjkl) for normal mode
+                    enable_default_keybindings = true,
+                },
+            })
+        end
+    })
 	use("lifepillar/vim-solarized8")
 	use("b3nj5m1n/kommentary")
 	use("tpope/vim-repeat")
@@ -54,12 +64,7 @@ return packer.startup(function(use)
 	use("tpope/vim-surround")
 	use("wellle/targets.vim")
 	use("zhimsel/vim-stay")
-	use({
-		"kyazdani42/nvim-tree.lua",
-		config = function()
-			require("nvim-tree").setup({})
-		end,
-	})
+	use("kyazdani42/nvim-tree.lua")
 	use("tpope/vim-abolish")
 	use("janko-m/vim-test")
 	use("machakann/vim-highlightedyank")

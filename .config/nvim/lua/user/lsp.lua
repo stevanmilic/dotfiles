@@ -1,5 +1,15 @@
 local lsp_installer = require("nvim-lsp-installer")
 
+local border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }
+
+-- To instead override globally
+local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+	opts = opts or {}
+	opts.border = opts.border or border
+	return orig_util_open_floating_preview(contents, syntax, opts, ...)
+end
+
 -- Mappings.
 local opts = { noremap = true, silent = true }
 
@@ -13,13 +23,13 @@ local on_attach = function(client, bufnr)
 	-- See `:help vim.lsp.*` for documentation on any of the below functions
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>D", "<cmd>lua vim.lsp.buf.declaration()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>d", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
+	vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>td", "<cmd>tab split | lua vim.lsp.buf.definition()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>t", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>g", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>r", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
-	-- vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>o", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>ya", "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>yr", "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(
@@ -33,7 +43,6 @@ local on_attach = function(client, bufnr)
 	-- Lspsaga mappings.
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>e", "<cmd>Lspsaga code_action<cr>", opts)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>p", "<cmd>Lspsaga preview_definition<cr>", opts)
-
 end
 
 -- Add additional capabilities supported by nvim-cmp
@@ -89,6 +98,7 @@ end
 
 -- nvim-cmp setup
 local cmp = require("cmp")
+local lspkind = require("lspkind")
 cmp.setup({
 	snippet = nil,
 	mapping = {
@@ -127,13 +137,9 @@ cmp.setup({
 		{ name = "nvim_lsp" },
 		{ name = "nvim_lsp_signature_help" },
 	},
-	documentation = {
-		border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
+	window = {
+		documentation = { border = border },
 	},
-})
-
-local lspkind = require("lspkind")
-cmp.setup({
 	formatting = {
 		format = lspkind.cmp_format({
 			mode = "symbol", -- show only symbol annotations
@@ -207,8 +213,8 @@ lspsaga.setup({ -- defaults ...
 -- require("lsp_signature").setup({ hint_enable = false })
 --
 vim.api.nvim_exec(
-    [[
+	[[
         autocmd CursorHold * lua vim.diagnostic.open_float()
     ]],
-    false
+	false
 )

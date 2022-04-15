@@ -1,5 +1,5 @@
 -- System settings
-vim.cmd [[
+vim.cmd([[
   set showmatch
   set autoindent
   set tabstop=4
@@ -40,10 +40,10 @@ vim.cmd [[
   " 0.7 nvim filetype detection
   let g:do_filetype_lua = 1
   let g:did_load_filetypes = 1
-]]
+]])
 
--- folds 
-vim.cmd [[
+-- folds
+vim.cmd([[
   function! MyFoldText() "{{{
   	let line = getline(v:foldstart)
   
@@ -78,10 +78,10 @@ vim.cmd [[
   
   "restore view plugin - restores fold and cursor info
   set viewoptions=cursor,folds
-]]
+]])
 
 -- mappings and stuff
-vim.cmd [[
+vim.cmd([[
   " Some servers have issues with backup files, see #649
   set nobackup
   set nowritebackup
@@ -128,7 +128,7 @@ vim.cmd [[
   nnoremap <silent> <tab>   :tabnext<CR>
   nnoremap <silent> <C-t>     :tabnew<CR>
   nnoremap <silent> gb :BufferLinePick<CR>
-  nnoremap <silent> <leader>st :windo BDelete!<CR>
+  nnoremap <silent> <leader>st :windo bd!<CR>
   
   "escape nvim terminal
   tnoremap <Esc> <C-\><C-n>
@@ -206,5 +206,12 @@ vim.cmd [[
 
   let g:pyrightTypeCheckingMode = "off"
   silent! so .local.vim
-]]
+]])
 
+require("nvim-tree").setup({
+	actions = {
+		open_file = {
+			window_picker = { enable = false },
+		},
+	},
+})
