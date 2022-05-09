@@ -37,37 +37,25 @@ packer.init({
 
 -- Install your plugins here
 return packer.startup(function(use)
-	-- My plugins here
 	use("wbthomason/packer.nvim") -- Have packer manage itself
 	use("kyazdani42/nvim-web-devicons")
 	use("nvim-lua/plenary.nvim")
 	use("nvim-telescope/telescope.nvim")
+	use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
 	use({
-		"nvim-telescope/telescope-fzf-native.nvim",
-		run = "make",
+		"aserowy/tmux.nvim",
+		config = function()
+			require("tmux").setup({
+				navigation = {
+					-- enables default keybindings (C-hjkl) for normal mode
+					enable_default_keybindings = true,
+				},
+			})
+		end,
 	})
-    use({
-        "aserowy/tmux.nvim",
-        config = function()
-            require("tmux").setup({
-                navigation = {
-                    -- enables default keybindings (C-hjkl) for normal mode
-                    enable_default_keybindings = true,
-                },
-            })
-        end
-    })
-	use("lifepillar/vim-solarized8")
-	use("b3nj5m1n/kommentary")
-	use("tpope/vim-repeat")
-	use("inkarkat/vim-ReplaceWithRegister")
-	use("tpope/vim-surround")
-	use("wellle/targets.vim")
-	use("zhimsel/vim-stay")
+    use 'rmehri01/onenord.nvim'
+	use("terrortylor/nvim-comment")
 	use("kyazdani42/nvim-tree.lua")
-	use("tpope/vim-abolish")
-	use("janko-m/vim-test")
-	use("machakann/vim-highlightedyank")
 	use({ "akinsho/bufferline.nvim", tag = "*" })
 	use("kazhala/close-buffers.nvim")
 	use("nvim-lualine/lualine.nvim")
@@ -77,19 +65,7 @@ return packer.startup(function(use)
 			require("focus").setup({ autoresize = false })
 		end,
 	})
-	use({
-		"goolord/alpha-nvim",
-		config = function()
-			require("alpha").setup(require("alpha.themes.startify").config)
-		end,
-	})
 	use("lewis6991/impatient.nvim")
-	use({
-		"ahmedkhalf/project.nvim",
-		config = function()
-			require("project_nvim").setup({})
-		end,
-	})
 	use({
 		"antoinemadec/FixCursorHold.nvim",
 		event = "BufRead",
@@ -97,12 +73,26 @@ return packer.startup(function(use)
 			vim.g.cursorhold_updatetime = 100
 		end,
 	})
+	use({ "akinsho/toggleterm.nvim" })
+	use({ "stevearc/dressing.nvim" })
+	use({ "anuvyklack/pretty-fold.nvim" })
+	use({ "rmagatti/auto-session" })
+
+	-- vimscript plugins
+	use("tpope/vim-abolish")
+	use("janko-m/vim-test")
+	use({ "rcarriga/vim-ultest", requires = { "vim-test/vim-test" }, run = ":UpdateRemotePlugins" })
+	use("tpope/vim-repeat")
+	use("inkarkat/vim-ReplaceWithRegister")
+	use("tpope/vim-surround")
+	use("wellle/targets.vim")
 
 	-- tree-sitter
 	use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
 	use("nvim-treesitter/nvim-treesitter-textobjects")
 	use("nvim-treesitter/playground")
 	use("JoosepAlviste/nvim-ts-context-commentstring")
+    use({ "yioneko/nvim-yati", requires = "nvim-treesitter/nvim-treesitter" })
 
 	-- lsp
 	use("neovim/nvim-lspconfig")
@@ -111,8 +101,8 @@ return packer.startup(function(use)
 	use("hrsh7th/cmp-nvim-lsp")
 	use("hrsh7th/cmp-nvim-lsp-signature-help")
 	use("onsails/lspkind-nvim")
-	use("tami5/lspsaga.nvim")
 	use("jose-elias-alvarez/null-ls.nvim")
+	use("j-hui/fidget.nvim")
 
 	-- extendend syntax
 	use("towolf/vim-helm")

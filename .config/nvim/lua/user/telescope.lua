@@ -13,13 +13,23 @@ local fix_folds = {
 	end,
 }
 
-telescope = require("telescope")
+local telescope = require("telescope")
 telescope.setup({
 	defaults = {
 		selection_caret = "❯ ",
 		prompt_prefix = "🔍 ",
+        winblend = 0,
 		layout_config = {
-			preview_width = 0.5,
+			horizontal = {
+				preview_width = 0.55,
+				results_width = 0.8,
+			},
+			vertical = {
+				mirror = false,
+			},
+			width = 0.80,
+			height = 0.85,
+			preview_cutoff = 120,
 		},
 		mappings = {
 			i = {
@@ -37,6 +47,13 @@ telescope.setup({
 		lsp_references = fix_folds,
 		lsp_dynamic_workspace_symbols = fix_folds,
 	},
+	extensions = {
+		fzf = {
+			fuzzy = true,
+			override_generic_sorter = true,
+			override_file_sorter = true,
+			case_mode = "smart_case",
+		},
+	},
 })
 telescope.load_extension("fzf")
-telescope.load_extension("projects")

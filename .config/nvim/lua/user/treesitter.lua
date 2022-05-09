@@ -4,10 +4,11 @@ require'nvim-treesitter.configs'.setup {
     enable = true,              -- false will disable the whole extension
   },
   ignore_install = { "phpdoc" },
-  incremental_selection = { enable = true },
+  incremental_selection = { enable = false },
   indent = {
-    enable = true
+    enable = false
   },
+  yati = { enable = true },
   textobjects = {
     select = {
       enable = true,
@@ -34,7 +35,8 @@ require'nvim-treesitter.configs'.setup {
 
 require'nvim-treesitter.configs'.setup {
   context_commentstring = {
-    enable = true
+    enable = true,
+    enable_autocmd = false,
   }
 }
 
@@ -43,13 +45,6 @@ parser_config.fuse = {
   install_info = {
     url = "https://github.com/stevanmilic/tree-sitter-fuse",
     files = { "src/parser.c", "src/scanner.cc" },
-  },
-}
-parser_config.scala = {
-  install_info = {
-    url = "https://github.com/stevanmilic/tree-sitter-scala",
-    files = { "src/parser.c", "src/scanner.c" },
-    revision = "1564db8ae938955fbd939a6ae8f543a1bfdcfa79",
   },
 }
 local python_folds_query = [[
