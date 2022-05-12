@@ -13,12 +13,13 @@ local fix_folds = {
 	end,
 }
 
+local trouble = require("trouble.providers.telescope")
 local telescope = require("telescope")
 telescope.setup({
 	defaults = {
 		selection_caret = "❯ ",
 		prompt_prefix = "🔍 ",
-        winblend = 0,
+		winblend = 0,
 		layout_config = {
 			horizontal = {
 				preview_width = 0.55,
@@ -37,6 +38,7 @@ telescope.setup({
 				["<c-b>"] = actions.send_selected_to_qflist + actions.open_qflist,
 				["<c-k>"] = actions.move_selection_previous,
 				["<esc>"] = actions.close,
+				["<c-q>"] = trouble.smart_open_with_trouble,
 			},
 		},
 	},

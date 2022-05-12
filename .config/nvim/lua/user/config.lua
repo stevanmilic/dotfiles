@@ -70,7 +70,6 @@ vim.cmd([[
   nnoremap <silent> <Leader>c :Telescope grep_string search=class\ <C-R><C-W>(<CR>
   nnoremap <silent> <Leader>f :Telescope grep_string search=def\ <C-R><C-W>(<CR>
   nnoremap <silent> <leader>x :lua require('telescope.builtin').lsp_dynamic_workspace_symbols()<cr>
-  nnoremap <silent> <leader>u :lua require('telescope.builtin').lsp_references()<cr>
   
   " Tab navigation like Firefox.
   nnoremap <silent> <S-tab> :tabprevious<CR>
@@ -226,6 +225,5 @@ end
 require("auto-session").setup({
 	auto_session_suppress_dirs = { "~/" },
 	pre_save_cmds = { close_all_floating_wins },
-	auto_session_use_git_branch = true,
 })
 vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"

@@ -103,6 +103,7 @@ return packer.startup(function(use)
 	use("onsails/lspkind-nvim")
 	use("jose-elias-alvarez/null-ls.nvim")
 	use("j-hui/fidget.nvim")
+	use("folke/trouble.nvim")
 
 	-- extendend syntax
 	use("towolf/vim-helm")
