@@ -118,7 +118,7 @@ vim.cmd([[
   let test#python#pytest#options = '-s --tb=short'
   
   nmap <Leader>tn :TestNearest<CR>
-  nmap <Leader>tf :Ultest<CR>
+  nmap <Leader>tf :TestFile<CR>
   nmap <Leader>ts :TestSuite<CR>
   nmap <Leader>tl :TestLast<CR>
   nmap <Leader>tv :TestVisit<CR>
@@ -170,7 +170,9 @@ require("nvim-tree").setup({
 	},
 })
 
-require("toggleterm").setup({
+-- toggleterm
+local toggleterm = require("toggleterm")
+toggleterm.setup({
 	size = 10,
 	open_mapping = "<leader>m",
 	hide_numbers = true,
@@ -191,6 +193,14 @@ require("toggleterm").setup({
 		},
 	},
 })
+
+vim.g["test#custom_strategies"] = {
+	toggleterm = function(cmd)
+		toggleterm.exec(cmd)
+	end,
+}
+
+vim.g["test#strategy"] = "toggleterm"
 
 require("pretty-fold").setup({
 	keep_indentation = true,

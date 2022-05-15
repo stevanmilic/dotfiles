@@ -7,9 +7,6 @@ local conditions = {
 	buffer_not_empty = function()
 		return vim.fn.empty(vim.fn.expand("%:t")) ~= 1
 	end,
-	hide_in_width = function()
-		return vim.fn.winwidth(0) > 80
-	end,
 }
 
 -- Config
@@ -18,7 +15,7 @@ local config = {
 		-- Disable sections and component separators
 		component_separators = "",
 		section_separators = "",
-        theme = "onenord",
+		theme = "onenord",
 		globalstatus = true,
 	},
 	sections = {
@@ -109,6 +106,16 @@ ins_left({
 	function()
 		return "%="
 	end,
+})
+
+ins_right({
+	function()
+		return "Metals: " .. vim.g["metals_status"]
+	end,
+	cond = function()
+        local metals_status = vim.g["metals_status"]
+        return vim.bo.filetype == "scala" and metals_status ~= nil and metals_status ~= ""
+    end,
 })
 
 -- Initialize lualine.
