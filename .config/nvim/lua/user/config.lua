@@ -84,8 +84,6 @@ vim.cmd([[
   "search selected text with //
   vnoremap // y/<C-R>"<CR>
   
-  let g:python3_host_prog = "/Users/Stevan.Milic/Applications/neovim-venv/bin/python"
-  
   " breakpoints mapping
   au FileType python map <silent> <leader>b obreakpoint()<esc>
   au FileType python map <silent> <leader>B Obreakpoint()<esc>

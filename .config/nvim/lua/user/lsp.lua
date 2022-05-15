@@ -87,37 +87,40 @@ local has_words_before = function()
 	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
+local luasnip = require("luasnip")
 local cmp = require("cmp")
 local lspkind = require("lspkind")
+
 cmp.setup({
-	snippet = nil,
+	snippet = {
+		expand = function(args)
+			require("luasnip").lsp_expand(args.body)
+		end,
+	},
 	mapping = {
-		["<C-b>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
-		["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
-		["<C-Space>"] = cmp.mapping(
-			cmp.mapping.complete({
-				reason = cmp.ContextReason.Auto,
-			}),
-			{ "i", "c" }
-		),
-		["<Tab>"] = function(fallback)
-			if not cmp.select_next_item() then
-				if vim.bo.buftype ~= "prompt" and has_words_before() then
-					cmp.complete()
-				else
-					fallback()
-				end
+		["<C-b>"] = cmp.mapping.scroll_docs(-4),
+		["<C-f>"] = cmp.mapping.scroll_docs(4),
+		["<C-Space>"] = cmp.mapping.complete(),
+		["<Tab>"] = cmp.mapping(function(fallback)
+			if cmp.visible() then
+				cmp.select_next_item()
+			elseif luasnip.expand_or_jumpable() then
+				luasnip.expand_or_jump()
+			elseif has_words_before() then
+				cmp.complete()
+			else
+				fallback()
 			end
-		end,
-		["<S-Tab>"] = function(fallback)
-			if not cmp.select_prev_item() then
-				if vim.bo.buftype ~= "prompt" and has_words_before() then
-					cmp.complete()
-				else
-					fallback()
-				end
+		end, { "i", "s" }),
+		["<S-Tab>"] = cmp.mapping(function(fallback)
+			if cmp.visible() then
+				cmp.select_prev_item()
+			elseif luasnip.jumpable(-1) then
+				luasnip.jump(-1)
+			else
+				fallback()
 			end
-		end,
+		end, { "i", "s" }),
 		["<CR>"] = cmp.mapping.confirm({
 			behavior = cmp.ConfirmBehavior.Replace,
 			select = true,
@@ -126,6 +129,7 @@ cmp.setup({
 	sources = {
 		{ name = "nvim_lsp" },
 		{ name = "nvim_lsp_signature_help" },
+		{ name = "luasnip" },
 	},
 	window = {
 		documentation = { border = border },
@@ -182,18 +186,8 @@ end
 -- trouble setup
 ----------------
 require("trouble").setup({})
-vim.api.nvim_set_keymap("n", "<leader>xw", "<cmd>Trouble workspace_diagnostics<cr>",
-  {silent = true, noremap = true}
-)
-vim.api.nvim_set_keymap("n", "<leader>xd", "<cmd>Trouble document_diagnostics<cr>",
-  {silent = true, noremap = true}
-)
-vim.api.nvim_set_keymap("n", "<leader>xl", "<cmd>Trouble loclist<cr>",
-  {silent = true, noremap = true}
-)
-vim.api.nvim_set_keymap("n", "<leader>xq", "<cmd>Trouble quickfix<cr>",
-  {silent = true, noremap = true}
-)
-vim.api.nvim_set_keymap("n", "<leader>u", "<cmd>Trouble lsp_references<cr>",
-  {silent = true, noremap = true}
-)
+vim.api.nvim_set_keymap("n", "<leader>xw", "<cmd>Trouble workspace_diagnostics<cr>", { silent = true, noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>xd", "<cmd>Trouble document_diagnostics<cr>", { silent = true, noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>xl", "<cmd>Trouble loclist<cr>", { silent = true, noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>xq", "<cmd>Trouble quickfix<cr>", { silent = true, noremap = true })
+vim.api.nvim_set_keymap("n", "<leader>u", "<cmd>Trouble lsp_references<cr>", { silent = true, noremap = true })
