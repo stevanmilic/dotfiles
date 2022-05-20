@@ -67,9 +67,10 @@ vim.cmd([[
   nnoremap <leader>w <cmd>Telescope grep_string<cr>
 
   nnoremap <leader>a :Telescope live_grep<CR>
-  nnoremap <silent> <Leader>c :Telescope grep_string search=class\ <C-R><C-W>(<CR>
-  nnoremap <silent> <Leader>f :Telescope grep_string search=def\ <C-R><C-W>(<CR>
-  nnoremap <silent> <leader>x :lua require('telescope.builtin').lsp_dynamic_workspace_symbols()<cr>
+  nnoremap <silent> <Leader>c :lua require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="class"})<cr>
+  nnoremap <silent> <Leader>f :lua require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="function"})<cr>
+  nnoremap <silent> <leader>x :lua require('telescope.builtin').lsp_dynamic_workspace_symbols({ignore_symbols="variable"})<cr>
+  nnoremap <silent> <leader>u :lua require('telescope.builtin').lsp_references({include_declaration=false})<cr>
   
   " Tab navigation like Firefox.
   nnoremap <silent> <S-tab> :tabprevious<CR>
@@ -170,7 +171,6 @@ require("nvim-tree").setup({
 	},
 })
 
--- toggleterm
 local toggleterm = require("toggleterm")
 toggleterm.setup({
 	size = 10,
@@ -193,14 +193,6 @@ toggleterm.setup({
 		},
 	},
 })
-
-vim.g["test#custom_strategies"] = {
-	toggleterm = function(cmd)
-		toggleterm.exec(cmd)
-	end,
-}
-
-vim.g["test#strategy"] = "toggleterm"
 
 require("pretty-fold").setup({
 	keep_indentation = true,

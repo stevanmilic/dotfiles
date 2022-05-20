@@ -64,6 +64,7 @@ local enhance_server_settings = {
             analysis = {
                 typeCheckingMode = vim.api.nvim_get_var("pyrightTypeCheckingMode"),
                 useLibraryCodeForTypes = true,
+                diagnosticMode = "openFilesOnly",
             },
         },
     },
@@ -189,9 +190,6 @@ vim.api.nvim_set_keymap("n", "<leader>iw", "<cmd>Trouble workspace_diagnostics<c
     { silent = true, noremap = true }
 )
 vim.api.nvim_set_keymap("n", "<leader>id", "<cmd>Trouble document_diagnostics<cr>",
-    { silent = true, noremap = true }
-)
-vim.api.nvim_set_keymap("n", "<leader>u", "<cmd>Trouble lsp_references<cr>",
     { silent = true, noremap = true }
 )
 

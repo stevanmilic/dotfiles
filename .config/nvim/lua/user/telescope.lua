@@ -48,6 +48,7 @@ telescope.setup({
 		live_grep = fix_folds,
 		lsp_references = fix_folds,
 		lsp_dynamic_workspace_symbols = fix_folds,
+		lsp_workspace_symbols = fix_folds,
 	},
 	extensions = {
 		fzf = {
