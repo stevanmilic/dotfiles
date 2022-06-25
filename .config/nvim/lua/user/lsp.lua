@@ -18,7 +18,7 @@ local on_attach = function(client, bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>td", "<cmd>vsp<CR>lua vim.lsp.buf.definition()<CR>", opts)
     -- vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>td", "<cmd>tab split | lua vim.lsp.buf.definition()<CR>", opts)
     vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>t", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>g", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>g", "<cmd>lua vim.lsp.buf.format { async = true }<CR>", opts)
     vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>e", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
     vim.api.nvim_buf_set_keymap(bufnr, "n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
     vim.api.nvim_buf_set_keymap(bufnr, "n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
@@ -51,9 +51,14 @@ end
 
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.foldingRange = {
+    dynamicRegistration = false,
+    lineFoldingOnly = true
+}
 capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
 
 require("nvim-lsp-installer").setup({
+
     automatic_installation = true,
 })
 
@@ -62,7 +67,6 @@ local enhance_server_settings = {
     pyright = {
         python = {
             analysis = {
-                typeCheckingMode = vim.api.nvim_get_var("pyrightTypeCheckingMode"),
                 useLibraryCodeForTypes = true,
                 diagnosticMode = "openFilesOnly",
             },
@@ -148,10 +152,11 @@ cmp.setup({
 ----------------
 local null_ls = require("null-ls")
 null_ls.setup({
+    debug = true,
     sources = {
         null_ls.builtins.formatting.black,
         null_ls.builtins.formatting.isort,
-        null_ls.builtins.diagnostics.mypy,
+        -- null_ls.builtins.diagnostics.mypy,
         null_ls.builtins.diagnostics.buf,
     },
 })
@@ -193,6 +198,85 @@ vim.api.nvim_set_keymap("n", "<leader>id", "<cmd>Trouble document_diagnostics<cr
     { silent = true, noremap = true }
 )
 
+
+------------
+-- dap setup
+------------
+local dap, dapui = require("dap"), require("dapui")
+dapui.setup({
+    layouts = {
+        {
+            elements = {
+                -- Elements can be strings or table with id and size keys.
+                { id = "scopes", size = 0.25 },
+                "breakpoints",
+                "stacks",
+            },
+            size = 40,
+            position = "left",
+        },
+    },
+})
+dap.configurations.scala = {
+    {
+        type = "scala",
+        request = "launch",
+        name = "RunList",
+        metals = {
+            runType = "run",
+            args = { "check", "examples/list.fuse" },
+        },
+    },
+    {
+        type = "scala",
+        request = "launch",
+        name = "RunOption",
+        metals = {
+            runType = "run",
+            args = { "check", "examples/option.fuse" },
+        },
+    },
+    {
+        type = "scala",
+        request = "launch",
+        name = "RunLambdaCalc",
+        metals = {
+            runType = "run",
+            args = { "check", "examples/lambda_calc.fuse" },
+        },
+    },
+}
+
+local function map(mode, lhs, rhs, opts)
+    local options = { noremap = true }
+    if opts then
+        options = vim.tbl_extend("force", options, opts)
+    end
+    vim.api.nvim_set_keymap(mode, lhs, rhs, options)
+end
+
+map("n", "<leader>jc", [[<cmd>lua require"dap".continue()<CR>]])
+map("n", "<leader>jl", [[<cmd>lua require"dap".run_last()<CR>]])
+map("n", "<leader>js", [[<cmd>lua require"dap".terminate()<CR>]])
+map("n", "<leader>jr", [[<cmd>lua require"dap".repl.toggle()<CR>]])
+map("n", "<leader>jk", [[<cmd>lua require("dapui").eval()<CR>]])
+map("n", "<leader>jt", [[<cmd>lua require("dapui").toggle()<CR>]])
+map("n", "<leader>jb", [[<cmd>lua require"dap".toggle_breakpoint()<CR>]])
+map("n", "<leader>jso", [[<cmd>lua require"dap".step_over()<CR>]])
+map("n", "<leader>jsi", [[<cmd>lua require"dap".step_into()<CR>]])
+
+vim.fn.sign_define('DapBreakpoint', { text = '🛑', texthl = '', linehl = '', numhl = '' })
+
+dap.listeners.after.event_initialized["dapui_config"] = function()
+    dapui.open()
+end
+dap.listeners.before.event_terminated["dapui_config"] = function()
+    dapui.close()
+end
+dap.listeners.before.event_exited["dapui_config"] = function()
+    dapui.close()
+end
+
 ---------------------
 -- Scala Metals Setup
 ---------------------
@@ -202,7 +286,11 @@ vim.opt_global.shortmess:remove("F"):append("c")
 local metals_config = require("metals").bare_config()
 metals_config.settings = { showImplicitArguments = true }
 metals_config.capabilities = capabilities
-metals_config.on_attach = on_attach
+metals_config.on_attach = function(client, bufnr)
+    on_attach(client, bufnr)
+    require("metals").setup_dap()
+end
+-- metals_config.on_attach = on_attach
 metals_config.init_options.statusBarProvider = "on"
 
 -- Autocmd that will actually be in charging of starting the whole thing

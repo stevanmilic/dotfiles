@@ -22,6 +22,8 @@ vim.cmd([[
   set splitright "more natural split window for vertical split
   " Gdiff vertical
   set diffopt+=vertical
+  " set cmdheight=0
+  set laststatus=0
 
   syntax enable "syntax highlight enebled
   set termguicolors
@@ -55,23 +57,24 @@ vim.cmd([[
 -- mappings, autocommands and stuff
 vim.cmd([[
   autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+  au BufRead,BufNewFile *.fuse set filetype=fuse
   
   " use space to fold/unfold
-  nnoremap <Space> za
-  vnoremap <Space> za
+  nnoremap <silent> <Space> za
+  vnoremap <silent> <Space> za
 
-  " don't give |ins-completion-menu| messages.
-  autocmd BufEnter *.tpl setlocal filetype=htmldjango
+  autocmd FileType dap-float nnoremap <buffer><silent> q <cmd>close!<CR>
   
   nnoremap <c-p> <cmd>Telescope find_files<cr>
   nnoremap <leader>w <cmd>Telescope grep_string<cr>
 
   nnoremap <leader>a :Telescope live_grep<CR>
-  nnoremap <silent> <Leader>c :lua require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="class"})<cr>
-  nnoremap <silent> <Leader>f :lua require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="function"})<cr>
+  " nnoremap <silent> <Leader>c :lua require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="class"})<cr>
+  " nnoremap <silent> <Leader>f :lua require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="function"})<cr>
+  nnoremap <silent> <Leader>c :Telescope grep_string search=class\ <C-R><C-W>(<CR>
+  nnoremap <silent> <Leader>f :Telescope grep_string search=def\ <C-R><C-W>(<CR>
   nnoremap <silent> <leader>x :lua require('telescope.builtin').lsp_dynamic_workspace_symbols({ignore_symbols="variable"})<cr>
   nnoremap <silent> <leader>u :lua require('telescope.builtin').lsp_references({include_declaration=false})<cr>
-  
   " Tab navigation like Firefox.
   nnoremap <silent> <S-tab> :tabprevious<CR>
   nnoremap <silent> <tab>   :tabnext<CR>
@@ -106,7 +109,7 @@ vim.cmd([[
   
   " enable nested neovim in terminal with nvr
   if has('nvim')
-    let $VISUAL = 'nvr -cc split --remote-wait'
+    let $GIT_EDITOR = 'nvr -cc split --remote-wait'
   endif
   
   "vim repeat plugin
@@ -118,112 +121,131 @@ vim.cmd([[
   let test#python#runner = 'pytest'
   let test#python#pytest#options = '-s --tb=short'
   
-  nmap <Leader>tn :TestNearest<CR>
-  nmap <Leader>tf :TestFile<CR>
-  nmap <Leader>ts :TestSuite<CR>
-  nmap <Leader>tl :TestLast<CR>
-  nmap <Leader>tv :TestVisit<CR>
+  nmap <Leader>tn :lua require("neotest").run.run()<CR>
+  nmap <Leader>tf :lua require("neotest").run.run(vim.fn.expand("%"))<CR>
+  nmap <Leader>to :lua require("neotest").output.open({ enter = true })<CR>
+  nmap <Leader>td :lua require("neotest").run.run({strategy = "dap"})<CR>
+  nmap <Leader>tl :lua require("neotest").run.run_last()<CR>
+  nmap <Leader>ta :lua require("neotest").run.attach()<CR>
+  nmap <Leader>ts :lua require("neotest").summary.open()<CR>
 
-  let g:ultest_output_on_run = "0"
-  let g:ultest_output_on_line = "0"
-  let g:ultest_running_sign = ''
-  let g:ultest_pass_sign = ''
-  let g:ultest_fail_sign = ''
-  
   " yank duration highlight in ms
   au TextYankPost * silent! lua vim.highlight.on_yank {timeout=500}
 
-  let g:pyrightTypeCheckingMode = "off"
   silent! so .local.vim
 ]])
 
 local colors = require("onenord.colors").load()
-
 require("onenord").setup({
-	borders = true,
-	fade_nc = false,
-	styles = {
-		comments = "NONE",
-		strings = "NONE",
-		keywords = "NONE",
-		functions = "NONE",
-		variables = "bold",
-		diagnostics = "underline",
-	},
-	disable = {
-		background = false,
-		cursorline = false,
-		eob_lines = true,
-	},
-	custom_highlights = {
-		-- TelescopePromptBorder = { bg = colors.bg, fg = colors.fg },
-		-- TelescopeResultsBorder = { bg = colors.bg, fg = colors.fg },
-		-- TelescopePreviewBorder = { bg = colors.bg, fg = colors.fg },
-		TSParameter = { fg = colors.fg },
-	},
+    borders = true,
+    fade_nc = false,
+    styles = {
+        comments = "NONE",
+        strings = "NONE",
+        keywords = "NONE",
+        functions = "NONE",
+        variables = "bold",
+        diagnostics = "underline",
+    },
+    disable = {
+        background = false,
+        cursorline = false,
+        eob_lines = true,
+    },
+    custom_highlights = {
+        TSParameter = { fg = colors.fg },
+    },
 })
 
 require("nvim-tree").setup({
-	actions = {
-		open_file = {
-			window_picker = { enable = false },
-		},
-	},
+    actions = {
+        open_file = {
+            window_picker = { enable = false },
+        },
+    },
 })
 
 local toggleterm = require("toggleterm")
 toggleterm.setup({
-	size = 10,
-	open_mapping = "<leader>m",
-	hide_numbers = true,
-	shade_filetypes = {},
-	shade_terminals = true,
-	shading_factor = 1,
-	start_in_insert = true,
-	insert_mappings = true,
-	persist_size = true,
-	direction = "float",
-	close_on_exit = true,
-	float_opts = {
-		border = "curved",
-		winblend = 0,
-		highlights = {
-			border = "Normal",
-			background = "Normal",
-		},
-	},
-})
-
-require("pretty-fold").setup({
-	keep_indentation = true,
-	fill_char = " ",
-	sections = {
-		left = {
-			"content",
-		},
-		right = { " ", "number_of_folded_lines" },
-	},
+    size = 10,
+    open_mapping = "<leader>m",
+    hide_numbers = true,
+    shade_filetypes = {},
+    shade_terminals = true,
+    shading_factor = 1,
+    start_in_insert = true,
+    insert_mappings = true,
+    persist_size = true,
+    direction = "float",
+    close_on_exit = true,
+    float_opts = {
+        border = "curved",
+        winblend = 0,
+        highlights = {
+            border = "Normal",
+            background = "Normal",
+        },
+    },
 })
 
 require("nvim_comment").setup({
-	hook = function()
-		require("ts_context_commentstring.internal").update_commentstring()
-	end,
+    hook = function()
+        require("ts_context_commentstring.internal").update_commentstring()
+    end,
 })
 
 require("fidget").setup({})
 
 -- auto-session
 local close_all_floating_wins = function()
-	for _, win in ipairs(vim.api.nvim_list_wins()) do
-		local config = vim.api.nvim_win_get_config(win)
-		if config.relative ~= "" then
-			vim.api.nvim_win_close(win, false)
-		end
-	end
+    for _, win in ipairs(vim.api.nvim_list_wins()) do
+        local config = vim.api.nvim_win_get_config(win)
+        if config.relative ~= "" then
+            vim.api.nvim_win_close(win, false)
+        end
+    end
 end
 require("auto-session").setup({
-	auto_session_suppress_dirs = { "~/" },
-	pre_save_cmds = { close_all_floating_wins },
+    auto_session_suppress_dirs = { "~/" },
+    pre_save_cmds = { close_all_floating_wins },
 })
-vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"
+vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos"
+
+-- neotest
+require("neotest").setup({
+    adapters = {
+        require("neotest-python")({
+            args = function(runner, _)
+                if runner == "pytest" then
+                    return { "-s", "--tb=short", "-p", "no:warnings", "-vv" }
+                else
+                    return {}
+                end
+            end,
+        }),
+        require("neotest-vim-test")({
+            ignore_file_types = { "python", "vim", "lua" },
+        }),
+    },
+    icons = {
+        running = "",
+        failed = "",
+        passed = "",
+    }
+})
+
+-- pretty folds
+require("ufo").setup({
+    open_fold_hl_timeout = 0,
+})
+
+require("gitlinker").setup({
+    opts = { print_url = true },
+    mappings = "<leader>y"
+})
+
+-- substitute setup 
+require("substitute").setup({})
+vim.keymap.set("n", "gr", "<cmd>lua require('substitute').operator()<cr>", { noremap = true })
+vim.keymap.set("n", "grl", "<cmd>lua require('substitute').line()<cr>", { noremap = true })
+vim.keymap.set("x", "gr", "<cmd>lua require('substitute').visual()<cr>", { noremap = true })

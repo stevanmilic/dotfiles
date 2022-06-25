@@ -42,6 +42,7 @@ return packer.startup(function(use)
     use("nvim-lua/plenary.nvim")
     use("nvim-telescope/telescope.nvim")
     use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
+    use("folke/trouble.nvim")
     use({
         "aserowy/tmux.nvim",
         config = function()
@@ -58,7 +59,6 @@ return packer.startup(function(use)
     use("kyazdani42/nvim-tree.lua")
     use({ "akinsho/bufferline.nvim", tag = "*" })
     use("kazhala/close-buffers.nvim")
-    use("nvim-lualine/lualine.nvim")
     use({
         "beauwilliams/focus.nvim",
         config = function()
@@ -68,14 +68,21 @@ return packer.startup(function(use)
     use("lewis6991/impatient.nvim")
     use({ "akinsho/toggleterm.nvim" })
     use({ "stevearc/dressing.nvim" })
-    use({ "anuvyklack/pretty-fold.nvim" })
+    use { 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' }
     use({ "rmagatti/auto-session" })
+    use {
+        "rcarriga/neotest",
+        requires = {
+            "rcarriga/neotest-python",
+            "rcarriga/neotest-vim-test",
+        },
+    }
+    use { "johmsalas/text-case.nvim", config = function() require('textcase').setup {} end }
+    use({ "gbprod/substitute.nvim" })
 
     -- vimscript plugins
-    use("tpope/vim-abolish")
     use("janko-m/vim-test")
     use("tpope/vim-repeat")
-    use("inkarkat/vim-ReplaceWithRegister")
     use("tpope/vim-surround")
     use("wellle/targets.vim")
     use({
@@ -105,7 +112,8 @@ return packer.startup(function(use)
     use("onsails/lspkind-nvim")
     use("jose-elias-alvarez/null-ls.nvim")
     use("j-hui/fidget.nvim")
-    use("folke/trouble.nvim")
+    use("mfussenegger/nvim-dap")
+    use { "rcarriga/nvim-dap-ui", requires = { "mfussenegger/nvim-dap" } }
 
     -- extendend syntax
     use("towolf/vim-helm")
@@ -114,8 +122,7 @@ return packer.startup(function(use)
 
     -- git
     use("tpope/vim-fugitive")
-    use("tpope/vim-rhubarb")
-    use("rhysd/conflict-marker.vim")
+    use("ruifm/gitlinker.nvim")
 
     -- Automatically set up your configuration after cloning packer.nvim
     -- Put this at the end after all plugins
