@@ -1,7 +1,7 @@
 -- System options
 vim.cmd([[
   set showmatch
-  set autoindent
+  " set autoindent
   set tabstop=4
   set expandtab
   set shiftwidth=4
@@ -22,8 +22,9 @@ vim.cmd([[
   set splitright "more natural split window for vertical split
   " Gdiff vertical
   set diffopt+=vertical
-  " set cmdheight=0
+  set cmdheight=0
   set laststatus=0
+  set formatexpr=
 
   syntax enable "syntax highlight enebled
   set termguicolors
@@ -42,16 +43,7 @@ vim.cmd([[
   set nobackup
   set nowritebackup
   
-  " folds
-  set foldlevelstart=1
-  set foldmethod=expr
-  set foldexpr=nvim_treesitter#foldexpr()
-  
   let mapleader = ","
-
-  " 0.7 nvim filetype detection
-  let g:do_filetype_lua = 1
-  let g:did_load_filetypes = 1
 ]])
 
 -- mappings, autocommands and stuff
@@ -112,10 +104,7 @@ vim.cmd([[
     let $GIT_EDITOR = 'nvr -cc split --remote-wait'
   endif
   
-  "vim repeat plugin
-  silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
-  
-  let test#strategy = "neovim"
+  let test#strategy = "toggleterm"
   let test#scala#runner = 'blooptest'
   
   let test#python#runner = 'pytest'
@@ -135,117 +124,163 @@ vim.cmd([[
   silent! so .local.vim
 ]])
 
+-- center the search term while iterating
+vim.keymap.set("n", "n", "nzzzv")
+vim.keymap.set("n", "N", "Nzzzv")
+
 local colors = require("onenord.colors").load()
 require("onenord").setup({
-    borders = true,
-    fade_nc = false,
-    styles = {
-        comments = "NONE",
-        strings = "NONE",
-        keywords = "NONE",
-        functions = "NONE",
-        variables = "bold",
-        diagnostics = "underline",
-    },
-    disable = {
-        background = false,
-        cursorline = false,
-        eob_lines = true,
-    },
-    custom_highlights = {
-        TSParameter = { fg = colors.fg },
-    },
+	borders = true,
+	fade_nc = false,
+	styles = {
+		comments = "NONE",
+		strings = "NONE",
+		keywords = "NONE",
+		functions = "NONE",
+		variables = "bold",
+		diagnostics = "underline",
+	},
+	disable = {
+		background = false,
+		cursorline = false,
+		eob_lines = true,
+	},
+	custom_highlights = {
+		TSParameter = { fg = colors.fg },
+	},
 })
 
 require("nvim-tree").setup({
-    actions = {
-        open_file = {
-            window_picker = { enable = false },
-        },
-    },
+	actions = {
+		open_file = {
+			window_picker = { enable = false },
+		},
+	},
+	view = {
+		adaptive_size = true,
+		signcolumn = "no",
+	},
 })
 
 local toggleterm = require("toggleterm")
 toggleterm.setup({
-    size = 10,
-    open_mapping = "<leader>m",
-    hide_numbers = true,
-    shade_filetypes = {},
-    shade_terminals = true,
-    shading_factor = 1,
-    start_in_insert = true,
-    insert_mappings = true,
-    persist_size = true,
-    direction = "float",
-    close_on_exit = true,
-    float_opts = {
-        border = "curved",
-        winblend = 0,
-        highlights = {
-            border = "Normal",
-            background = "Normal",
-        },
-    },
+	size = 10,
+	open_mapping = "<leader>m",
+	hide_numbers = true,
+	shade_filetypes = {},
+	shade_terminals = true,
+	shading_factor = 1,
+	start_in_insert = true,
+	insert_mappings = true,
+	persist_size = true,
+	direction = "float",
+	close_on_exit = true,
+	float_opts = {
+		border = "curved",
+		winblend = 0,
+		highlights = {
+			border = "Normal",
+			background = "Normal",
+		},
+	},
+	winbar = {
+		enabled = true,
+	},
 })
 
 require("nvim_comment").setup({
-    hook = function()
-        require("ts_context_commentstring.internal").update_commentstring()
-    end,
+	hook = function()
+		require("ts_context_commentstring.internal").update_commentstring()
+	end,
 })
-
-require("fidget").setup({})
 
 -- auto-session
 local close_all_floating_wins = function()
-    for _, win in ipairs(vim.api.nvim_list_wins()) do
-        local config = vim.api.nvim_win_get_config(win)
-        if config.relative ~= "" then
-            vim.api.nvim_win_close(win, false)
-        end
-    end
+	for _, win in ipairs(vim.api.nvim_list_wins()) do
+		local config = vim.api.nvim_win_get_config(win)
+		if config.relative ~= "" then
+			vim.api.nvim_win_close(win, false)
+		end
+	end
 end
 require("auto-session").setup({
-    auto_session_suppress_dirs = { "~/" },
-    pre_save_cmds = { close_all_floating_wins },
+	auto_session_suppress_dirs = { "~/" },
+	pre_save_cmds = { close_all_floating_wins },
 })
 vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos"
 
 -- neotest
 require("neotest").setup({
-    adapters = {
-        require("neotest-python")({
-            args = function(runner, _)
-                if runner == "pytest" then
-                    return { "-s", "--tb=short", "-p", "no:warnings", "-vv" }
-                else
-                    return {}
-                end
-            end,
-        }),
-        require("neotest-vim-test")({
-            ignore_file_types = { "python", "vim", "lua" },
-        }),
-    },
-    icons = {
-        running = "",
-        failed = "",
-        passed = "",
-    }
+	adapters = {
+		require("neotest-python")({
+			args = function(runner, _)
+				if runner == "pytest" then
+					return { "-s", "--tb=short", "-p", "no:warnings", "-vv" }
+				else
+					return {}
+				end
+			end,
+		}),
+		require("neotest-vim-test")({
+			ignore_file_types = { "python", "vim", "lua" },
+		}),
+	},
+	icons = {
+		running = "",
+		failed = "",
+		passed = "",
+	},
 })
 
--- pretty folds
+-- ultra fast folds
+vim.o.foldlevel = 99
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
 require("ufo").setup({
-    open_fold_hl_timeout = 0,
+	open_fold_hl_timeout = 0,
+	-- enable_fold_end_virt_text = true,
+	provider_selector = function(bufnr, filetype)
+		return "treesitter"
+	end,
 })
+vim.keymap.set("n", "zR", "<cmd> lua require('ufo').openAllFolds()<cr>")
+vim.keymap.set("n", "zM", "<cmd> lua require('ufo').closeAllFolds()<cr>")
 
 require("gitlinker").setup({
-    opts = { print_url = true },
-    mappings = "<leader>y"
+	opts = { print_url = false, highlight_duration = 300 },
+	mappings = "<leader>y",
 })
 
--- substitute setup 
+-- substitute setup
 require("substitute").setup({})
 vim.keymap.set("n", "gr", "<cmd>lua require('substitute').operator()<cr>", { noremap = true })
 vim.keymap.set("n", "grl", "<cmd>lua require('substitute').line()<cr>", { noremap = true })
 vim.keymap.set("x", "gr", "<cmd>lua require('substitute').visual()<cr>", { noremap = true })
+
+require("nvim-surround").setup({
+	highlight = {
+		duration = 300,
+	},
+})
+
+vim.notify = require("notify")
+
+require("stabilize").setup()
+
+-- smart dd
+local function smart_dd()
+	if vim.api.nvim_get_current_line():match("^%s*$") then
+		return '"_dd'
+	else
+		return "dd"
+	end
+end
+
+vim.keymap.set("n", "dd", smart_dd, { noremap = true, expr = true })
+
+require("tmux").setup({
+	navigation = {
+		-- enables default keybindings (C-hjkl) for normal mode
+		enable_default_keybindings = true,
+	},
+})

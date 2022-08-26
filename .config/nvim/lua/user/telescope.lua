@@ -1,20 +1,13 @@
 local actions = require("telescope.actions")
-local telescope_actions = require("telescope.actions.set")
-
-local fix_folds = {
-	hidden = true,
-	attach_mappings = function(_)
-		telescope_actions.select:enhance({
-			post = function()
-				vim.cmd(":normal! zx")
-			end,
-		})
-		return true
-	end,
-}
-
 local trouble = require("trouble.providers.telescope")
 local telescope = require("telescope")
+local fzf_opts = {
+	fuzzy = true, -- false will only do exact matching
+	override_generic_sorter = true, -- override the generic sorter
+	override_file_sorter = true, -- override the file sorter
+	case_mode = "smart_case", -- or "ignore_case" or "respect_case"
+	-- the default case_mode is "smart_case"
+}
 telescope.setup({
 	defaults = {
 		selection_caret = "❯ ",
@@ -39,24 +32,20 @@ telescope.setup({
 				["<c-k>"] = actions.move_selection_previous,
 				["<esc>"] = actions.close,
 				["<c-q>"] = trouble.smart_open_with_trouble,
+				["<c-f>"] = actions.to_fuzzy_refine,
 			},
 		},
 	},
 	pickers = {
-		find_files = fix_folds,
-		grep_string = fix_folds,
-		live_grep = fix_folds,
-		lsp_references = fix_folds,
-		lsp_dynamic_workspace_symbols = fix_folds,
-		lsp_workspace_symbols = fix_folds,
+		find_files = {
+			find_command = { "fd", "--type", "f", "--strip-cwd-prefix", "--hidden" },
+		},
+		lsp_dynamic_workspace_symbols = {
+			sorter = telescope.extensions.fzf.native_fzf_sorter(fzf_opts),
+		},
 	},
 	extensions = {
-		fzf = {
-			fuzzy = true,
-			override_generic_sorter = true,
-			override_file_sorter = true,
-			case_mode = "smart_case",
-		},
+		fzf = fzf_opts,
 	},
 })
 telescope.load_extension("fzf")
