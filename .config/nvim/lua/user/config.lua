@@ -22,9 +22,10 @@ vim.cmd([[
   set splitright "more natural split window for vertical split
   " Gdiff vertical
   set diffopt+=vertical
-  set cmdheight=0
+  set cmdheight=1
   set laststatus=0
   set formatexpr=
+  set updatetime=100
 
   syntax enable "syntax highlight enebled
   set termguicolors
@@ -106,27 +107,13 @@ vim.cmd([[
   
   let test#strategy = "toggleterm"
   let test#scala#runner = 'blooptest'
-  
   let test#python#runner = 'pytest'
   let test#python#pytest#options = '-s --tb=short'
   
-  nmap <Leader>tn :lua require("neotest").run.run()<CR>
-  nmap <Leader>tf :lua require("neotest").run.run(vim.fn.expand("%"))<CR>
-  nmap <Leader>to :lua require("neotest").output.open({ enter = true })<CR>
-  nmap <Leader>td :lua require("neotest").run.run({strategy = "dap"})<CR>
-  nmap <Leader>tl :lua require("neotest").run.run_last()<CR>
-  nmap <Leader>ta :lua require("neotest").run.attach()<CR>
-  nmap <Leader>ts :lua require("neotest").summary.open()<CR>
-
   " yank duration highlight in ms
   au TextYankPost * silent! lua vim.highlight.on_yank {timeout=500}
 
-  silent! so .local.vim
 ]])
-
--- center the search term while iterating
-vim.keymap.set("n", "n", "nzzzv")
-vim.keymap.set("n", "N", "Nzzzv")
 
 local colors = require("onenord.colors").load()
 require("onenord").setup({
@@ -147,6 +134,47 @@ require("onenord").setup({
 	},
 	custom_highlights = {
 		TSParameter = { fg = colors.fg },
+		TelescopeBorder = {
+			fg = colors.float,
+			bg = colors.float,
+		},
+		TelescopePromptBorder = {
+			fg = colors.float,
+			bg = colors.float,
+		},
+		TelescopeResultsBorder = { fg = colors.active, bg = colors.active },
+		TelescopePreviewBorder = { fg = colors.active, bg = colors.active },
+		TelescopePromptNormal = {
+			fg = colors.white,
+			bg = colors.float,
+		},
+		TelescopePromptPrefix = {
+			fg = colors.red,
+			bg = colors.float,
+		},
+		TelescopeNormal = { bg = colors.active },
+		TelescopePreviewTitle = {
+			fg = colors.bg,
+			bg = colors.green,
+		},
+		TelescopePromptTitle = {
+			fg = colors.bg,
+			bg = colors.red,
+		},
+		TelescopeResultsTitle = {
+			fg = colors.bg,
+			bg = colors.purple,
+		},
+		TelescopeSelection = { bg = colors.float, fg = colors.white },
+		TelescopeResultsDiffAdd = {
+			fg = colors.green,
+		},
+		TelescopeResultsDiffChange = {
+			fg = colors.yellow,
+		},
+		TelescopeResultsDiffDelete = {
+			fg = colors.red,
+		},
 	},
 })
 
@@ -221,9 +249,11 @@ require("neotest").setup({
 				end
 			end,
 		}),
-		require("neotest-vim-test")({
-			ignore_file_types = { "python", "vim", "lua" },
-		}),
+		require("neotest-jest")({}),
+		require("neotest-scala"),
+	},
+	discovery = {
+		enabled = false,
 	},
 	icons = {
 		running = "",
@@ -238,13 +268,10 @@ vim.o.foldlevelstart = 99
 vim.o.foldenable = true
 require("ufo").setup({
 	open_fold_hl_timeout = 0,
-	-- enable_fold_end_virt_text = true,
-	provider_selector = function(bufnr, filetype)
+	provider_selector = function(_, _)
 		return "treesitter"
 	end,
 })
-vim.keymap.set("n", "zR", "<cmd> lua require('ufo').openAllFolds()<cr>")
-vim.keymap.set("n", "zM", "<cmd> lua require('ufo').closeAllFolds()<cr>")
 
 require("gitlinker").setup({
 	opts = { print_url = false, highlight_duration = 300 },
@@ -253,9 +280,6 @@ require("gitlinker").setup({
 
 -- substitute setup
 require("substitute").setup({})
-vim.keymap.set("n", "gr", "<cmd>lua require('substitute').operator()<cr>", { noremap = true })
-vim.keymap.set("n", "grl", "<cmd>lua require('substitute').line()<cr>", { noremap = true })
-vim.keymap.set("x", "gr", "<cmd>lua require('substitute').visual()<cr>", { noremap = true })
 
 require("nvim-surround").setup({
 	highlight = {
@@ -284,3 +308,5 @@ require("tmux").setup({
 		enable_default_keybindings = true,
 	},
 })
+
+vim.cmd([[silent! so .local.vim]])

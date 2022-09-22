@@ -17,6 +17,7 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, bufopts)
 
 	if client.supports_method("textDocument/formatting") then
+		local filetype = tostring(vim.fn.getbufvar(bufnr, "&filetype"))
 		vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
 		vim.api.nvim_create_autocmd("BufWritePre", {
 			group = augroup,
@@ -25,8 +26,7 @@ local on_attach = function(client, bufnr)
 				vim.lsp.buf.format({
 					bufnr = bufnr,
 					filter = function(c)
-						-- apply whatever logic you want (in this example, we'll only use null-ls)
-						return c.name == "null-ls"
+						return (c.name == "null-ls" or c.name == "metals") and filetype ~= "yaml"
 					end,
 				})
 			end,
@@ -48,7 +48,6 @@ local on_attach = function(client, bufnr)
 		end,
 	})
 end
-
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
@@ -66,7 +65,7 @@ local luadev = require("lua-dev").setup({
 	},
 })
 local lspconfig = require("lspconfig")
-local servers = { "pyright", "tsserver" }
+local servers = { "pyright", "tsserver", "rust_analyzer" }
 local enhance_server_settings = {
 	pyright = {
 		python = {
@@ -89,6 +88,7 @@ for _, server in pairs(servers) do
 end
 lspconfig.sumneko_lua.setup(luadev)
 
+require("fidget").setup({})
 -----------------
 -- nvim-cmp setup
 -- --------------
@@ -193,7 +193,6 @@ vim.diagnostic.config({
 	update_in_insert = false,
 	severity_sort = false,
 })
-
 -- set lsp diagnostics icons
 local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
 for type, icon in pairs(signs) do
@@ -213,8 +212,6 @@ end
 -- trouble setup
 ----------------
 require("trouble").setup({})
-vim.api.nvim_set_keymap("n", "<leader>iw", "<cmd>Trouble workspace_diagnostics<cr>", { silent = true, noremap = true })
-vim.api.nvim_set_keymap("n", "<leader>id", "<cmd>Trouble document_diagnostics<cr>", { silent = true, noremap = true })
 
 ------------
 -- dap setup
@@ -231,6 +228,11 @@ dapui.setup({
 			},
 			size = 40,
 			position = "left",
+		},
+		{
+			elements = { "repl" },
+			size = 0.25, -- 25% of total lines
+			position = "bottom",
 		},
 	},
 })
@@ -263,24 +265,7 @@ dap.configurations.scala = {
 		},
 	},
 }
-
-local function map(mode, lhs, rhs, opts)
-	local options = { noremap = true }
-	if opts then
-		options = vim.tbl_extend("force", options, opts)
-	end
-	vim.api.nvim_set_keymap(mode, lhs, rhs, options)
-end
-
-map("n", "<leader>jc", [[<cmd>lua require"dap".continue()<CR>]])
-map("n", "<leader>jl", [[<cmd>lua require"dap".run_last()<CR>]])
-map("n", "<leader>js", [[<cmd>lua require"dap".terminate()<CR>]])
-map("n", "<leader>jr", [[<cmd>lua require"dap".repl.toggle()<CR>]])
-map("n", "<leader>jk", [[<cmd>lua require("dapui").eval()<CR>]])
-map("n", "<leader>jt", [[<cmd>lua require("dapui").toggle()<CR>]])
-map("n", "<leader>jb", [[<cmd>lua require"dap".toggle_breakpoint()<CR>]])
-map("n", "<leader>jso", [[<cmd>lua require"dap".step_over()<CR>]])
-map("n", "<leader>jsi", [[<cmd>lua require"dap".step_into()<CR>]])
+require("dap-python").setup("~/.virtualenvs/debugpy/bin/python")
 
 vim.fn.sign_define("DapBreakpoint", { text = "🛑", texthl = "", linehl = "", numhl = "" })
 
@@ -297,7 +282,7 @@ end
 ---------------------
 -- Scala Metals Setup
 ---------------------
-vim.opt_global.completeopt = { "menuone", "noinsert", "noselect" }
+-- vim.opt_global.completeopt = { "menuone", "noinsert", "noselect" }
 
 local metals_config = require("metals").bare_config()
 metals_config.settings = { showImplicitArguments = true }

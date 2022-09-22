@@ -54,28 +54,24 @@ return packer.startup(function(use)
 	use("stevearc/dressing.nvim")
 	use({ "kevinhwang91/nvim-ufo", requires = "kevinhwang91/promise-async" })
 	use("rmagatti/auto-session")
-	use({ "rcarriga/neotest", requires = { "rcarriga/neotest-python", "rcarriga/neotest-vim-test" } })
 	use({
-		"johmsalas/text-case.nvim",
-		config = function()
-			require("textcase").setup({})
-		end,
+		"rcarriga/neotest",
+		requires = {
+			"rcarriga/neotest-python",
+			"haydenmeade/neotest-jest",
+			"stevanmilic/neotest-scala",
+		},
 	})
 	use("gbprod/substitute.nvim")
 	use("kylechui/nvim-surround")
 	use("luukvbaal/stabilize.nvim")
 	use("rcarriga/nvim-notify")
+	use("folke/which-key.nvim")
+	use("johmsalas/text-case.nvim")
 
 	-- vimscript plugins
 	use("janko-m/vim-test")
 	use("wellle/targets.vim")
-	use({
-		"antoinemadec/FixCursorHold.nvim",
-		event = "BufRead",
-		config = function()
-			vim.g.cursorhold_updatetime = 100
-		end,
-	})
 
 	-- tree-sitter
 	use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
@@ -91,13 +87,9 @@ return packer.startup(function(use)
 	use("williamboman/mason-lspconfig.nvim")
 	use("onsails/lspkind-nvim")
 	use("jose-elias-alvarez/null-ls.nvim")
-	use({
-		"j-hui/fidget.nvim",
-		config = function()
-			require("fidget").setup({})
-		end,
-	})
+	use("j-hui/fidget.nvim")
 	use("mfussenegger/nvim-dap")
+	use("mfussenegger/nvim-dap-python")
 	use({ "rcarriga/nvim-dap-ui", requires = { "mfussenegger/nvim-dap" } })
 	use("folke/lua-dev.nvim")
 
@@ -118,9 +110,9 @@ return packer.startup(function(use)
 
 	-- git
 	use("tpope/vim-fugitive")
+	use({ "sindrets/diffview.nvim", requires = "nvim-lua/plenary.nvim" })
 	-- TODO: revert to original repo once the PR is merged.
 	use("stevanmilic/gitlinker.nvim")
-	use({ "sindrets/diffview.nvim", requires = "nvim-lua/plenary.nvim" })
 
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
