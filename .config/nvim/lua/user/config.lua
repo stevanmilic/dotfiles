@@ -22,10 +22,9 @@ vim.cmd([[
   set splitright "more natural split window for vertical split
   " Gdiff vertical
   set diffopt+=vertical
-  set cmdheight=1
-  set laststatus=0
   set formatexpr=
   set updatetime=100
+  set splitkeep=screen
 
   syntax enable "syntax highlight enebled
   set termguicolors
@@ -43,6 +42,14 @@ vim.cmd([[
   set hidden
   set nobackup
   set nowritebackup
+
+  " hide cmdline and statusline
+  set cmdheight=0
+  " set shortmess+=Fc
+  set laststatus=0
+  set noruler
+  set statusline=─
+  set fillchars+=stl:─,stlnc:─
   
   let mapleader = ","
 ]])
@@ -105,11 +112,6 @@ vim.cmd([[
     let $GIT_EDITOR = 'nvr -cc split --remote-wait'
   endif
   
-  let test#strategy = "toggleterm"
-  let test#scala#runner = 'blooptest'
-  let test#python#runner = 'pytest'
-  let test#python#pytest#options = '-s --tb=short'
-  
   " yank duration highlight in ms
   au TextYankPost * silent! lua vim.highlight.on_yank {timeout=500}
 
@@ -133,6 +135,8 @@ require("onenord").setup({
 		eob_lines = true,
 	},
 	custom_highlights = {
+		StatusLineNC = { bg = "NONE" },
+		StatusLine = { bg = "NONE" },
 		TSParameter = { fg = colors.fg },
 		TelescopeBorder = {
 			fg = colors.float,
@@ -192,17 +196,22 @@ require("nvim-tree").setup({
 
 local toggleterm = require("toggleterm")
 toggleterm.setup({
-	size = 10,
+	size = function(_)
+		return vim.o.lines * 0.45
+	end,
 	open_mapping = "<leader>m",
-	hide_numbers = true,
+	hide_numbers = false,
 	shade_filetypes = {},
 	shade_terminals = true,
 	shading_factor = 1,
 	start_in_insert = true,
 	insert_mappings = true,
 	persist_size = true,
-	direction = "float",
+	direction = "horizontal",
 	close_on_exit = true,
+	on_open = function(_)
+		vim.cmd("setlocal number relativenumber")
+	end,
 	float_opts = {
 		border = "curved",
 		winblend = 0,
@@ -250,7 +259,7 @@ require("neotest").setup({
 			end,
 		}),
 		require("neotest-jest")({}),
-		require("neotest-scala"),
+		require("neotest-scala")({ framework = "utest" }),
 	},
 	discovery = {
 		enabled = false,
@@ -287,10 +296,6 @@ require("nvim-surround").setup({
 	},
 })
 
-vim.notify = require("notify")
-
-require("stabilize").setup()
-
 -- smart dd
 local function smart_dd()
 	if vim.api.nvim_get_current_line():match("^%s*$") then
@@ -307,6 +312,58 @@ require("tmux").setup({
 		-- enables default keybindings (C-hjkl) for normal mode
 		enable_default_keybindings = true,
 	},
+	copy_sync = {
+		enable = false,
+	},
 })
 
-vim.cmd([[silent! so .local.vim]])
+require("delaytrain").setup({
+	delay_ms = 1000,
+	grace_period = 2,
+	keys = {
+		["nv"] = { "h", "j", "k", "l" },
+	},
+})
+
+vim.keymap.set({ "n", "v" }, "<ScrollWheelUp>", "<C-y>")
+vim.keymap.set({ "n", "v" }, "<ScrollWheelDown>", "<C-e>")
+
+require("neoscroll").setup({
+	mappings = { "<C-y>", "<C-e>" },
+	respect_scrolloff = true,
+	cursor_scrolls_alone = false,
+})
+require("neoscroll.config").set_mappings({
+	["<C-b>"] = { "scroll", { "-0.25", "false", "200" } },
+	["<C-f>"] = { "scroll", { "0.25", "false", "200" } },
+})
+
+require("noice").setup({
+	cmdline = { view = "cmdline" },
+	popupmenu = { enabled = false },
+	notify = { enabled = true },
+	routes = {
+		{
+			filter = { event = "msg_show", kind = "search_count" },
+			opts = { skip = true },
+		},
+		{
+			filter = {
+				event = "msg_show",
+				kind = "",
+				find = "written",
+			},
+			opts = { skip = true },
+		},
+		{
+			filter = {
+				event = "notify",
+				find = "Session restored",
+			},
+			view = "notify",
+			opts = { skip = true },
+		},
+	},
+})
+
+vim.cmd([[silent! luafile .local.lua]])

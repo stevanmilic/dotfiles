@@ -1,8 +1,7 @@
 -- Automatically install packer
-local fn = vim.fn
-local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
-if fn.empty(fn.glob(install_path)) > 0 then
-	packer_bootstrap = fn.system({
+local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
+if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+	packer_bootstrap = vim.fn.system({
 		"git",
 		"clone",
 		"--depth",
@@ -64,13 +63,14 @@ return packer.startup(function(use)
 	})
 	use("gbprod/substitute.nvim")
 	use("kylechui/nvim-surround")
-	use("luukvbaal/stabilize.nvim")
 	use("rcarriga/nvim-notify")
 	use("folke/which-key.nvim")
 	use("johmsalas/text-case.nvim")
+	use("ja-ford/delaytrain.nvim")
+	use("karb94/neoscroll.nvim")
+	use({ "folke/noice.nvim", event = "VimEnter", requires = { "MunifTanjim/nui.nvim" } })
 
 	-- vimscript plugins
-	use("janko-m/vim-test")
 	use("wellle/targets.vim")
 
 	-- tree-sitter

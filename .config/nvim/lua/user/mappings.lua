@@ -36,8 +36,8 @@ local keymap = {
 	},
 	i = {
 		name = "Diagnostics",
-		i = { "<cmd>lua Trouble workspace_diagnostics<cr>", "Workspace" },
-		d = { "<cmd>lua Trouble document_diagnostics<cr>", "Document" },
+		w = { "<cmd>Trouble workspace_diagnostics<cr>", "Workspace" },
+		d = { "<cmd>Trouble document_diagnostics<cr>", "Document" },
 	},
 	t = {
 		name = "Testing",
