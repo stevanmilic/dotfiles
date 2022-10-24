@@ -1,7 +1,6 @@
 -- System options
 vim.cmd([[
   set showmatch
-  " set autoindent
   set tabstop=4
   set expandtab
   set shiftwidth=4
@@ -25,6 +24,7 @@ vim.cmd([[
   set formatexpr=
   set updatetime=100
   set splitkeep=screen
+  set nolazyredraw
 
   syntax enable "syntax highlight enebled
   set termguicolors
@@ -45,7 +45,6 @@ vim.cmd([[
 
   " hide cmdline and statusline
   set cmdheight=0
-  " set shortmess+=Fc
   set laststatus=0
   set noruler
   set statusline=─
@@ -54,27 +53,23 @@ vim.cmd([[
   let mapleader = ","
 ]])
 
--- mappings, autocommands and stuff
+-- mappings & autocommands
 vim.cmd([[
-  autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
-  au BufRead,BufNewFile *.fuse set filetype=fuse
-  
   " use space to fold/unfold
   nnoremap <silent> <Space> za
   vnoremap <silent> <Space> za
 
-  autocmd FileType dap-float nnoremap <buffer><silent> q <cmd>close!<CR>
-  
+  " Telescope mappings
   nnoremap <c-p> <cmd>Telescope find_files<cr>
   nnoremap <leader>w <cmd>Telescope grep_string<cr>
+  nnoremap <leader>a <cmd>Telescope live_grep<CR>
+  nnoremap <silent> <Leader>c <cmd>lua require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="class"})<cr>
+  nnoremap <silent> <Leader>f <cmd>lua require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="function"})<cr>
+  au FileType python nnoremap <silent> <Leader>c <cmd>Telescope grep_string search=class\ <C-R><C-W>(<CR>
+  au FileType python nnoremap <silent> <Leader>f <cmd>Telescope grep_string search=def\ <C-R><C-W>(<CR>
+  nnoremap <silent> <leader>x <cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols({ignore_symbols="variable"})<cr>
+  nnoremap <silent> <leader>u <cmd>lua require('telescope.builtin').lsp_references({include_declaration=false})<cr>
 
-  nnoremap <leader>a :Telescope live_grep<CR>
-  " nnoremap <silent> <Leader>c :lua require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="class"})<cr>
-  " nnoremap <silent> <Leader>f :lua require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="function"})<cr>
-  nnoremap <silent> <Leader>c :Telescope grep_string search=class\ <C-R><C-W>(<CR>
-  nnoremap <silent> <Leader>f :Telescope grep_string search=def\ <C-R><C-W>(<CR>
-  nnoremap <silent> <leader>x :lua require('telescope.builtin').lsp_dynamic_workspace_symbols({ignore_symbols="variable"})<cr>
-  nnoremap <silent> <leader>u :lua require('telescope.builtin').lsp_references({include_declaration=false})<cr>
   " Tab navigation like Firefox.
   nnoremap <silent> <S-tab> :tabprevious<CR>
   nnoremap <silent> <tab>   :tabnext<CR>
@@ -87,15 +82,6 @@ vim.cmd([[
 
   "search selected text with //
   vnoremap // y/<C-R>"<CR>
-  
-  " breakpoints mapping
-  au FileType python map <silent> <leader>b obreakpoint()<esc>
-  au FileType python map <silent> <leader>B Obreakpoint()<esc>
-  au FileType javascript,typescript,typescriptreact map <silent> <leader>b odebugger;<esc>
-  au FileType javascript,typescript,typescriptreact  map <silent> <leader>B Odebugger;<esc>
-  
-  "no line numbers in terminal mode
-  au TermOpen * setlocal nonumber norelativenumber
   
   " nvim tree
   nnoremap <leader>n :NvimTreeToggle<CR>
@@ -115,72 +101,16 @@ vim.cmd([[
   " yank duration highlight in ms
   au TextYankPost * silent! lua vim.highlight.on_yank {timeout=500}
 
-]])
+  " exit dap on q
+  au FileType dap-float nnoremap <buffer><silent> q <cmd>close!<CR>
 
-local colors = require("onenord.colors").load()
-require("onenord").setup({
-	borders = true,
-	fade_nc = false,
-	styles = {
-		comments = "NONE",
-		strings = "NONE",
-		keywords = "NONE",
-		functions = "NONE",
-		variables = "bold",
-		diagnostics = "underline",
-	},
-	disable = {
-		background = false,
-		cursorline = false,
-		eob_lines = true,
-	},
-	custom_highlights = {
-		StatusLineNC = { bg = "NONE" },
-		StatusLine = { bg = "NONE" },
-		TSParameter = { fg = colors.fg },
-		TelescopeBorder = {
-			fg = colors.float,
-			bg = colors.float,
-		},
-		TelescopePromptBorder = {
-			fg = colors.float,
-			bg = colors.float,
-		},
-		TelescopeResultsBorder = { fg = colors.active, bg = colors.active },
-		TelescopePreviewBorder = { fg = colors.active, bg = colors.active },
-		TelescopePromptNormal = {
-			fg = colors.white,
-			bg = colors.float,
-		},
-		TelescopePromptPrefix = {
-			fg = colors.red,
-			bg = colors.float,
-		},
-		TelescopeNormal = { bg = colors.active },
-		TelescopePreviewTitle = {
-			fg = colors.bg,
-			bg = colors.green,
-		},
-		TelescopePromptTitle = {
-			fg = colors.bg,
-			bg = colors.red,
-		},
-		TelescopeResultsTitle = {
-			fg = colors.bg,
-			bg = colors.purple,
-		},
-		TelescopeSelection = { bg = colors.float, fg = colors.white },
-		TelescopeResultsDiffAdd = {
-			fg = colors.green,
-		},
-		TelescopeResultsDiffChange = {
-			fg = colors.yellow,
-		},
-		TelescopeResultsDiffDelete = {
-			fg = colors.red,
-		},
-	},
-})
+  " breakpoints mapping
+  au FileType python map <silent> <leader>b obreakpoint()<esc>
+  au FileType python map <silent> <leader>B Obreakpoint()<esc>
+  au FileType javascript,typescript,typescriptreact map <silent> <leader>b odebugger;<esc>
+  au FileType javascript,typescript,typescriptreact  map <silent> <leader>B Odebugger;<esc>
+
+]])
 
 require("nvim-tree").setup({
 	actions = {
@@ -209,9 +139,6 @@ toggleterm.setup({
 	persist_size = true,
 	direction = "horizontal",
 	close_on_exit = true,
-	on_open = function(_)
-		vim.cmd("setlocal number relativenumber")
-	end,
 	float_opts = {
 		border = "curved",
 		winblend = 0,
@@ -304,7 +231,6 @@ local function smart_dd()
 		return "dd"
 	end
 end
-
 vim.keymap.set("n", "dd", smart_dd, { noremap = true, expr = true })
 
 require("tmux").setup({
@@ -325,9 +251,9 @@ require("delaytrain").setup({
 	},
 })
 
+-- neoscroll config
 vim.keymap.set({ "n", "v" }, "<ScrollWheelUp>", "<C-y>")
 vim.keymap.set({ "n", "v" }, "<ScrollWheelDown>", "<C-e>")
-
 require("neoscroll").setup({
 	mappings = { "<C-y>", "<C-e>" },
 	respect_scrolloff = true,
@@ -338,32 +264,6 @@ require("neoscroll.config").set_mappings({
 	["<C-f>"] = { "scroll", { "0.25", "false", "200" } },
 })
 
-require("noice").setup({
-	cmdline = { view = "cmdline" },
-	popupmenu = { enabled = false },
-	notify = { enabled = true },
-	routes = {
-		{
-			filter = { event = "msg_show", kind = "search_count" },
-			opts = { skip = true },
-		},
-		{
-			filter = {
-				event = "msg_show",
-				kind = "",
-				find = "written",
-			},
-			opts = { skip = true },
-		},
-		{
-			filter = {
-				event = "notify",
-				find = "Session restored",
-			},
-			view = "notify",
-			opts = { skip = true },
-		},
-	},
-})
+require("leap").add_default_mappings()
 
 vim.cmd([[silent! luafile .local.lua]])

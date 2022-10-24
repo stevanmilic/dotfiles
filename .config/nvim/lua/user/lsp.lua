@@ -49,23 +49,18 @@ local on_attach = function(client, bufnr)
 	})
 end
 -- Add additional capabilities supported by nvim-cmp
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
+local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 require("mason").setup()
 require("mason-lspconfig").setup({
 	automatic_installation = true,
 })
 
-local luadev = require("lua-dev").setup({
-	library = { plugins = { "neotest" }, types = true },
-	lspconfig = {
-		on_attach = on_attach,
-		capabilities = capabilities,
-	},
+require("neodev").setup({
+	library = { plugins = { "neotest" } },
 })
 local lspconfig = require("lspconfig")
-local servers = { "pyright", "tsserver", "rust_analyzer" }
+local servers = { "pyright", "tsserver", "rust_analyzer", "sumneko_lua" }
 local enhance_server_settings = {
 	pyright = {
 		python = {
@@ -86,9 +81,7 @@ for _, server in pairs(servers) do
 		settings = enhance_server_settings[server],
 	})
 end
-lspconfig.sumneko_lua.setup(luadev)
 
-require("fidget").setup({})
 -----------------
 -- nvim-cmp setup
 -- --------------
@@ -149,6 +142,9 @@ cmp.setup({
 			mode = "symbol", -- show only symbol annotations
 			maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
 		}),
+	},
+	experimental = {
+		ghost_text = true,
 	},
 })
 require("cmp").setup.cmdline(":", {
@@ -282,8 +278,6 @@ end
 ---------------------
 -- Scala Metals Setup
 ---------------------
--- vim.opt_global.completeopt = { "menuone", "noinsert", "noselect" }
-
 local metals_config = require("metals").bare_config()
 metals_config.settings = { showImplicitArguments = true }
 metals_config.capabilities = capabilities
@@ -292,7 +286,7 @@ metals_config.on_attach = function(client, bufnr)
 	require("metals").setup_dap()
 end
 
--- Autocmd that will actually be in charging of starting the whole thing
+-- Autocmd that will actually be in charging of starting the whole thing.
 local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "scala", "sbt", "java" },

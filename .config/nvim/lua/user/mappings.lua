@@ -1,17 +1,21 @@
 local whichkey = require("which-key")
 whichkey.setup({
 	ignore_missing = true,
-	spelling = {
-		enabled = true,
-	},
-	presets = {
-		operators = false,
-		motions = false,
-		text_objects = false,
-		windows = false,
-		nav = false,
-		z = false,
-		g = false,
+	plugins = {
+		marks = false,
+		registers = false,
+		spelling = {
+			enabled = true,
+		},
+		presets = {
+			operators = false,
+			motions = false,
+			text_objects = false,
+			windows = false,
+			nav = false,
+			z = false,
+			g = false,
+		},
 	},
 	show_help = false,
 })

@@ -1,7 +1,10 @@
 require("impatient")
 
 require("user.plugins")
+require("user.theme")
+require("user.mappings")
 require("user.config")
+require("user.noice")
 require("user.bufferline")
 require("user.lsp")
 require("user.treesitter")

@@ -68,7 +68,11 @@ return packer.startup(function(use)
 	use("johmsalas/text-case.nvim")
 	use("ja-ford/delaytrain.nvim")
 	use("karb94/neoscroll.nvim")
-	use({ "folke/noice.nvim", event = "VimEnter", requires = { "MunifTanjim/nui.nvim" } })
+	use("ggandor/leap.nvim")
+	use({
+		"folke/noice.nvim",
+		requires = { "MunifTanjim/nui.nvim" },
+	})
 
 	-- vimscript plugins
 	use("wellle/targets.vim")
@@ -87,11 +91,10 @@ return packer.startup(function(use)
 	use("williamboman/mason-lspconfig.nvim")
 	use("onsails/lspkind-nvim")
 	use("jose-elias-alvarez/null-ls.nvim")
-	use("j-hui/fidget.nvim")
 	use("mfussenegger/nvim-dap")
 	use("mfussenegger/nvim-dap-python")
 	use({ "rcarriga/nvim-dap-ui", requires = { "mfussenegger/nvim-dap" } })
-	use("folke/lua-dev.nvim")
+	use("folke/neodev.nvim")
 
 	-- cmp
 	use("hrsh7th/nvim-cmp")

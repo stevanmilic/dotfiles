@@ -52,6 +52,8 @@ parser_config.fuse = {
 		files = { "src/parser.c", "src/scanner.cc" },
 	},
 }
+
+local query_config = require("vim.treesitter.query")
 local python_folds_query = [[
     [
       (function_definition)
@@ -60,4 +62,22 @@ local python_folds_query = [[
       (string)
     ] @fold
 ]]
-require("vim.treesitter.query").set_query("python", "folds", python_folds_query)
+query_config.set_query("python", "folds", python_folds_query)
+
+local python_graphql_injection_query = [[
+    (call
+     function: ((identifier) @_name
+       (#eq? @_name "gql"))
+     arguments: (argument_list (string) @graphql
+       (#offset! @graphql 0 3 0 -3)))
+]]
+query_config.set_query("python", "injections", python_graphql_injection_query)
+
+local scala_injections_query = [[
+    (call_expression
+     function: ((identifier) @_name
+       (#eq? @_name "fuse"))
+     arguments: (arguments (string) @fuse
+       (#offset! @fuse 0 1 0 -1)))
+]]
+query_config.set_query("scala", "injections", scala_injections_query)
