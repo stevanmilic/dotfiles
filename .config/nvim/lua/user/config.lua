@@ -65,13 +65,16 @@ vim.cmd([[
   nnoremap <leader>a <cmd>Telescope live_grep<CR>
   nnoremap <silent> <Leader>c <cmd>lua require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="class"})<cr>
   nnoremap <silent> <Leader>f <cmd>lua require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="function"})<cr>
-  au FileType python nnoremap <silent> <Leader>c <cmd>Telescope grep_string search=class\ <C-R><C-W>(<CR>
-  au FileType python nnoremap <silent> <Leader>f <cmd>Telescope grep_string search=def\ <C-R><C-W>(<CR>
+  au FileType python nnoremap <silent> <Leader>c <cmd>lua require('telescope.builtin').grep_string({search="class " .. vim.fn.expand("<cword>")})<cr>
+  au FileType python nnoremap <silent> <Leader>f <cmd>lua require('telescope.builtin').grep_string({search="def " .. vim.fn.expand("<cword>") .. "("})<cr>
   nnoremap <silent> <leader>x <cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols({ignore_symbols="variable"})<cr>
   nnoremap <silent> <leader>u <cmd>lua require('telescope.builtin').lsp_references({include_declaration=false})<cr>
 
   " Tab navigation like Firefox.
   nnoremap <silent> <S-tab> :tabprevious<CR>
+  " NOTE: Remapping tab also remaps <c-i> this can be fixed by remaping CTRL-n
+  " to <tab> to keep the functionality _somewhere_.
+  nnoremap <c-n> <tab>
   nnoremap <silent> <tab>   :tabnext<CR>
   nnoremap <silent> <C-t>     :tabnew<CR>
   nnoremap <silent> gb :BufferLinePick<CR>
@@ -97,7 +100,7 @@ vim.cmd([[
   if has('nvim')
     let $GIT_EDITOR = 'nvr -cc split --remote-wait'
   endif
-  
+
   " yank duration highlight in ms
   au TextYankPost * silent! lua vim.highlight.on_yank {timeout=500}
 
@@ -109,7 +112,6 @@ vim.cmd([[
   au FileType python map <silent> <leader>B Obreakpoint()<esc>
   au FileType javascript,typescript,typescriptreact map <silent> <leader>b odebugger;<esc>
   au FileType javascript,typescript,typescriptreact  map <silent> <leader>B Odebugger;<esc>
-
 ]])
 
 require("nvim-tree").setup({
@@ -121,6 +123,12 @@ require("nvim-tree").setup({
 	view = {
 		adaptive_size = true,
 		signcolumn = "no",
+		mappings = {
+			list = {
+				{ key = "s", action = "" },
+				{ key = "S", action = "" },
+			},
+		},
 	},
 })
 
@@ -265,5 +273,7 @@ require("neoscroll.config").set_mappings({
 })
 
 require("leap").add_default_mappings()
+
+require("mini.ai").setup()
 
 vim.cmd([[silent! luafile .local.lua]])

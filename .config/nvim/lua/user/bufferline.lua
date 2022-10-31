@@ -4,13 +4,17 @@ require("bufferline").setup({
 		show_buffer_close_icons = false,
 		show_close_icon = false,
 		sort_by = "tabs",
-		max_name_length = 50,
+		max_name_length = 55,
 		name_formatter = function(buf)
 			if next(vim.fn.win_findbuf(buf.bufnr)) == nil then
 				return "ℍ  " .. buf.name
 			end
 			if buf.bufnr == vim.api.nvim_get_current_buf() then
-				return vim.fn.expand("%:~:.")
+				local name = vim.fn.expand("%:~:.")
+				if name:len() > 50 then
+					return "..." .. string.sub(name, -50)
+				end
+				return name
 			end
 			return buf.name
 		end,

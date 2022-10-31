@@ -34,6 +34,7 @@ local keymap = {
 		s = { "<cmd>lua require'dap'.step_into()<cr>", "Step Into" },
 		r = { "<cmd>lua require'dap'.repl.toggle()<cr>", "Toggle Repl" },
 		b = { "<cmd>lua require'dap'.toggle_breakpoint()<cr>", "Toggle Breakpoint" },
+		f = { "<cmd>lua require'dap'.clear_breakpoints()<cr>", "Clear Breakpoints" },
 		x = { "<cmd>lua require'dap'.terminate()<cr>", "Terminate" },
 		u = { "<cmd>lua require'dap'.step_out()<cr>", "Step Out" },
 		j = { "<cmd>lua require'dap'.goto_()<cr>", "Jump To Cursor" },
@@ -60,6 +61,11 @@ local keymap = {
 			"Close hidden buffers",
 		},
 		b = { "<CMD>lua require('close_buffers').delete({type = 'this', force = true})<CR>", "Close buffer" },
+	},
+	g = {
+		name = "Git",
+		d = { "<CMD>Gdiff<CR>", "Git diff" },
+		b = { "<CMD>Git blame<CR>", "Git blame" },
 	},
 }
 

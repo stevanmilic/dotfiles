@@ -53,14 +53,6 @@ return packer.startup(function(use)
 	use("stevearc/dressing.nvim")
 	use({ "kevinhwang91/nvim-ufo", requires = "kevinhwang91/promise-async" })
 	use("rmagatti/auto-session")
-	use({
-		"rcarriga/neotest",
-		requires = {
-			"rcarriga/neotest-python",
-			"haydenmeade/neotest-jest",
-			"stevanmilic/neotest-scala",
-		},
-	})
 	use("gbprod/substitute.nvim")
 	use("kylechui/nvim-surround")
 	use("rcarriga/nvim-notify")
@@ -69,13 +61,16 @@ return packer.startup(function(use)
 	use("ja-ford/delaytrain.nvim")
 	use("karb94/neoscroll.nvim")
 	use("ggandor/leap.nvim")
+	use("echasnovski/mini.ai")
+	use({ "folke/noice.nvim", requires = { "MunifTanjim/nui.nvim" } })
 	use({
-		"folke/noice.nvim",
-		requires = { "MunifTanjim/nui.nvim" },
+		"rcarriga/neotest",
+		requires = {
+			"rcarriga/neotest-python",
+			"haydenmeade/neotest-jest",
+			"stevanmilic/neotest-scala",
+		},
 	})
-
-	-- vimscript plugins
-	use("wellle/targets.vim")
 
 	-- tree-sitter
 	use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
@@ -99,7 +94,6 @@ return packer.startup(function(use)
 	-- cmp
 	use("hrsh7th/nvim-cmp")
 	use("hrsh7th/cmp-nvim-lsp")
-	use("hrsh7th/cmp-nvim-lsp-signature-help")
 	use("hrsh7th/cmp-buffer")
 	use("hrsh7th/cmp-path")
 	use("hrsh7th/cmp-cmdline")
@@ -113,7 +107,6 @@ return packer.startup(function(use)
 
 	-- git
 	use("tpope/vim-fugitive")
-	use({ "sindrets/diffview.nvim", requires = "nvim-lua/plenary.nvim" })
 	-- TODO: revert to original repo once the PR is merged.
 	use("stevanmilic/gitlinker.nvim")
 
