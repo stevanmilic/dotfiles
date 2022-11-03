@@ -1,6 +1,8 @@
 require("impatient")
 
 require("user.plugins")
+require("user.options")
+require("user.autocmds")
 require("user.theme")
 require("user.mappings")
 require("user.config")

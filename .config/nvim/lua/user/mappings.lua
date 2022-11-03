@@ -90,3 +90,49 @@ vim.keymap.set("n", "zM", "<cmd> lua require('ufo').closeAllFolds()<cr>")
 -- center the search term while iterating
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
+
+-- additional mappings
+vim.cmd([[
+  " use space to fold/unfold
+  nnoremap <silent> <Space> za
+  vnoremap <silent> <Space> za
+
+  " Telescope mappings
+  nnoremap <c-p> <cmd>Telescope find_files<cr>
+  nnoremap <leader>w <cmd>Telescope grep_string<cr>
+  nnoremap <leader>a <cmd>Telescope live_grep<CR>
+  nnoremap <silent> <Leader>c <cmd>lua require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="class"})<cr>
+  nnoremap <silent> <Leader>f <cmd>lua require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="function"})<cr>
+  nnoremap <silent> <leader>x <cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols({ignore_symbols="variable"})<cr>
+  nnoremap <silent> <leader>u <cmd>lua require('telescope.builtin').lsp_references({include_declaration=false})<cr>
+
+  " Tab navigation like Firefox.
+  nnoremap <silent> <S-tab> :tabprevious<CR>
+  " NOTE: Remapping tab also remaps <c-i> this can be fixed by remaping CTRL-n
+  " to <tab> to keep the functionality _somewhere_.
+  nnoremap <c-n> <tab>
+  nnoremap <silent> <tab>   :tabnext<CR>
+  nnoremap <silent> <C-t>     :tabnew<CR>
+  nnoremap <silent> gb :BufferLinePick<CR>
+  nnoremap <silent> <leader>st :windo bd!<CR>
+  
+  "escape nvim terminal
+  tnoremap <Esc> <C-\><C-n>
+
+  "search selected text with //
+  vnoremap // y/<C-R>"<CR>
+  
+  " Align blocks of text and keep them selected
+  vmap < <gv
+  vmap > >gv
+  
+  " nvim tree
+  nnoremap <leader>n :NvimTreeToggle<CR>
+  
+  " vertical split with new file
+  nnoremap <leader>v :vnew<CR>
+  
+  " move tabs left and right
+  nnoremap <leader>h :tabm -1<CR>
+  nnoremap <leader>l :tabm +1<CR>
+]])
