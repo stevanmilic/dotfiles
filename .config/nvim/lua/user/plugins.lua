@@ -54,6 +54,7 @@ return packer.startup(function(use)
 	use("karb94/neoscroll.nvim")
 	use("ggandor/leap.nvim")
 	use("echasnovski/mini.ai")
+	use("windwp/nvim-autopairs")
 	use({ "folke/noice.nvim", requires = { "MunifTanjim/nui.nvim" } })
 	use({
 		"rcarriga/neotest",

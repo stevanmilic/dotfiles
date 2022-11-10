@@ -20,24 +20,25 @@ whichkey.setup({
 	show_help = false,
 })
 
+-- stylua: ignore start
 local keymap = {
 	j = {
 		name = "Debug",
-		R = { "<cmd>lua require'dap'.run_to_cursor()<cr>", "Run to Cursor" },
-		E = { "<cmd>lua require'dapui'.eval(vim.fn.input '[Expression] > ')<cr>", "Evaluate Input" },
-		t = { "<cmd>lua require'dapui'.toggle()<cr>", "Toggle UI" },
-		c = { "<cmd>lua require'dap'.continue()<cr>", "Continue" },
-		d = { "<cmd>lua require'dap'.disconnect()<cr>", "Disconnect" },
-		e = { "<cmd>lua require'dapui'.eval()<cr>", "Evaluate" },
-		h = { "<cmd>lua require'dap.ui.widgets'.hover()<cr>", "Hover Variables" },
-		n = { "<cmd>lua require'dap'.step_over()<cr>", "Step Over" },
-		s = { "<cmd>lua require'dap'.step_into()<cr>", "Step Into" },
-		r = { "<cmd>lua require'dap'.repl.toggle()<cr>", "Toggle Repl" },
-		b = { "<cmd>lua require'dap'.toggle_breakpoint()<cr>", "Toggle Breakpoint" },
-		f = { "<cmd>lua require'dap'.clear_breakpoints()<cr>", "Clear Breakpoints" },
-		x = { "<cmd>lua require'dap'.terminate()<cr>", "Terminate" },
-		u = { "<cmd>lua require'dap'.step_out()<cr>", "Step Out" },
-		j = { "<cmd>lua require'dap'.goto_()<cr>", "Jump To Cursor" },
+		R = { function() require'dap'.run_to_cursor() end, "Run to Cursor" },
+		E = { function() require'dapui'.eval(vim.fn.input .. '[Expression] > ') end, "Evaluate Input" },
+		t = { function() require'dapui'.toggle() end, "Toggle UI" },
+		c = { function() require'dap'.continue() end, "Continue" },
+		d = { function() require'dap'.disconnect() end, "Disconnect" },
+		e = { function() require'dapui'.eval() end, "Evaluate" },
+		h = { function() require'dap.ui.widgets'.hover() end, "Hover Variables" },
+		n = { function() require'dap'.step_over() end, "Step Over" },
+		s = { function() require'dap'.step_into() end, "Step Into" },
+		r = { function() require'dap'.repl.toggle() end, "Toggle Repl" },
+		b = { function() require'dap'.toggle_breakpoint() end, "Toggle Breakpoint" },
+		f = { function() require'dap'.clear_breakpoints() end, "Clear Breakpoints" },
+		x = { function() require'dap'.terminate() end, "Terminate" },
+		u = { function() require'dap'.step_out() end, "Step Out" },
+		j = { function() require'dap'.goto_() end, "Jump To Cursor" },
 	},
 	i = {
 		name = "Diagnostics",
@@ -46,26 +47,26 @@ local keymap = {
 	},
 	t = {
 		name = "Testing",
-		n = { "<cmd>lua require('neotest').run.run()<cr>", "Run Nearest" },
-		f = { "<cmd>lua require('neotest').run.run(vim.fn.expand('%'))<cr>", "Run File" },
-		d = { "<cmd>lua require('neotest').run.run({strategy = 'dap'})<cr>", "Run Debug" },
-		l = { "<cmd>lua require('neotest').run.run_last()<cr>", "Run Last" },
-		o = { "<cmd>lua require('neotest').output.open({ enter = true })<cr>", "Output" },
-		a = { "<cmd>lua require('neotest').run.attach()<cr>", "Attach" },
-		s = { "<cmd>lua require('neotest').summary.open()<cr>", "Summary" },
+		n = { function() require('neotest').run.run() end, "Run Nearest" },
+		f = { function() require('neotest').run.run(vim.fn.expand('%')) end, "Run File" },
+		d = { function() require('neotest').run.run({strategy = 'dap'}) end, "Run Debug" },
+		l = { function() require('neotest').run.run_last() end, "Run Last" },
+		o = { function() require('neotest').output.open({ enter = true }) end, "Output" },
+		a = { function() require('neotest').run.attach() end, "Attach" },
+		s = { function() require('neotest').summary.open() end, "Summary" },
 	},
 	s = {
 		name = "Buffer",
 		u = {
-			"<CMD>lua require('close_buffers').delete({type = 'hidden', force = true})<CR>",
+			function () require('close_buffers').delete({type = 'hidden', force = true}) end,
 			"Close hidden buffers",
 		},
-		b = { "<CMD>lua require('close_buffers').delete({type = 'this', force = true})<CR>", "Close buffer" },
+		b = { function() require('close_buffers').delete({type = 'this', force = true}) end, "Close buffer" },
 	},
 	g = {
 		name = "Git",
-		d = { "<CMD>Gdiff<CR>", "Git diff" },
-		b = { "<CMD>Git blame<CR>", "Git blame" },
+		d = { "<cmd>Gdiff<CR>", "Git diff" },
+		b = { "<cmd>Git blame<CR>", "Git blame" },
 	},
 }
 
@@ -78,14 +79,15 @@ whichkey.register(keymap, {
 	nowait = false,
 })
 
+
 -- set-up go replace mappings
-vim.keymap.set("n", "gr", "<cmd>lua require('substitute').operator()<cr>", { noremap = true })
-vim.keymap.set("n", "grl", "<cmd>lua require('substitute').line()<cr>", { noremap = true })
-vim.keymap.set("x", "gr", "<cmd>lua require('substitute').visual()<cr>", { noremap = true })
+vim.keymap.set("n", "gr", function() require('substitute').operator() end, { noremap = true })
+vim.keymap.set("n", "grl", function() require('substitute').line() end, { noremap = true })
+vim.keymap.set("x", "gr", function() require('substitute').visual() end, { noremap = true })
 
 -- use ufo to close/open all folds
-vim.keymap.set("n", "zR", "<cmd> lua require('ufo').openAllFolds()<cr>")
-vim.keymap.set("n", "zM", "<cmd> lua require('ufo').closeAllFolds()<cr>")
+vim.keymap.set("n", "zR", function() require('ufo').openAllFolds() end)
+vim.keymap.set("n", "zM", function() require('ufo').closeAllFolds() end)
 
 -- center the search term while iterating
 vim.keymap.set("n", "n", "nzzzv")
@@ -96,6 +98,9 @@ vim.cmd([[
   " use space to fold/unfold
   nnoremap <silent> <Space> za
   vnoremap <silent> <Space> za
+
+  " open nested folds
+  nnoremap <leader>z zczA
 
   " Telescope mappings
   nnoremap <c-p> <cmd>Telescope find_files<cr>

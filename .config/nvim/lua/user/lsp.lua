@@ -5,9 +5,15 @@ local border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }
 --------------------
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
+-- Workaround for hover not working when there is diagnostic float
+-- https://www.reddit.com/r/neovim/comments/pg1o6k/neovim_lsp_hover_window_is_hidden_behind_line
+
+-- Use an on_attach function to only map the following keys after the language
+-- server attaches to the current buffer
 local on_attach = function(client, bufnr)
+	-- Reset formatexpr set by lsp module.
+	vim.opt_local.formatexpr = ""
+
 	-- Mappings.
 	local bufopts = { noremap = true, silent = true, buffer = bufnr }
 	vim.keymap.set("n", "<leader>D", vim.lsp.buf.declaration, bufopts)
@@ -48,6 +54,7 @@ local on_attach = function(client, bufnr)
 		end,
 	})
 end
+
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
@@ -93,6 +100,8 @@ end
 local luasnip = require("luasnip")
 local cmp = require("cmp")
 local lspkind = require("lspkind")
+local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+require("nvim-autopairs").setup({})
 
 cmp.setup({
 	snippet = {
@@ -146,7 +155,7 @@ cmp.setup({
 		ghost_text = true,
 	},
 })
-require("cmp").setup.cmdline(":", {
+cmp.setup.cmdline(":", {
 	mapping = cmp.mapping.preset.cmdline(),
 	sources = cmp.config.sources({
 		{ name = "path" },
@@ -160,6 +169,7 @@ cmp.setup.cmdline("/", {
 		{ name = "buffer", keyword_length = 3 },
 	}),
 })
+cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
 ----------------
 -- null-ls setup
