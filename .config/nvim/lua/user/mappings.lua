@@ -68,6 +68,21 @@ local keymap = {
 		d = { "<cmd>Gdiff<CR>", "Git diff" },
 		b = { "<cmd>Git blame<CR>", "Git blame" },
 	},
+    f = {
+		name = "Finder",
+		w = { function () require("telescope.builtin").grep_string() end, "Find word", },
+		a = { function () require("telescope.builtin").live_grep() end, "Find all", },
+		c = { function () require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="class"}) end, "Find class", },
+		f = { function () require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="function"}) end, "Find function", },
+		x = { function () require('telescope.builtin').lsp_dynamic_workspace_symbols({ignore_symbols="variable"}) end, "Find workspace symbol", },
+		d = { function () require('telescope.builtin').lsp_document_symbols() end, "Find document symbol", },
+		u = { function () require('telescope.builtin').lsp_references({include_declaration=false}) end, "Find references", },
+		r = { function () require('telescope.builtin').resume() end, "Resume finder", },
+	},
+    n = {
+        function () require("nvim-tree.api").tree.toggle() end,
+        "Nvim tree"
+    }
 }
 
 whichkey.register(keymap, {
@@ -78,7 +93,6 @@ whichkey.register(keymap, {
 	noremap = true,
 	nowait = false,
 })
-
 
 -- set-up go replace mappings
 vim.keymap.set("n", "gr", function() require('substitute').operator() end, { noremap = true })
@@ -93,23 +107,18 @@ vim.keymap.set("n", "zM", function() require('ufo').closeAllFolds() end)
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
+-- stylua: ignore end
+
 -- additional mappings
 vim.cmd([[
   " use space to fold/unfold
   nnoremap <silent> <Space> za
-  vnoremap <silent> <Space> za
 
   " open nested folds
   nnoremap <leader>z zczA
 
   " Telescope mappings
   nnoremap <c-p> <cmd>Telescope find_files<cr>
-  nnoremap <leader>w <cmd>Telescope grep_string<cr>
-  nnoremap <leader>a <cmd>Telescope live_grep<CR>
-  nnoremap <silent> <Leader>c <cmd>lua require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="class"})<cr>
-  nnoremap <silent> <Leader>f <cmd>lua require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="function"})<cr>
-  nnoremap <silent> <leader>x <cmd>lua require('telescope.builtin').lsp_dynamic_workspace_symbols({ignore_symbols="variable"})<cr>
-  nnoremap <silent> <leader>u <cmd>lua require('telescope.builtin').lsp_references({include_declaration=false})<cr>
 
   " Tab navigation like Firefox.
   nnoremap <silent> <S-tab> :tabprevious<CR>
@@ -130,9 +139,6 @@ vim.cmd([[
   " Align blocks of text and keep them selected
   vmap < <gv
   vmap > >gv
-  
-  " nvim tree
-  nnoremap <leader>n :NvimTreeToggle<CR>
   
   " vertical split with new file
   nnoremap <leader>v :vnew<CR>

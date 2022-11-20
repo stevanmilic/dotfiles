@@ -1,11 +1,38 @@
+local select_on_complete = function(picker)
+	-- if we have exactly one match, select it
+	if picker.manager.linked_states.size == 1 then
+		require("telescope.actions").select_default(picker.prompt_bufnr)
+	end
+end
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "python" },
+	callback = function()
+		vim.keymap.set("n", "<leader>fc", function()
+			require("telescope.builtin").grep_string({
+				search = "class " .. vim.fn.expand("<cword>"),
+				on_complete = { select_on_complete },
+				additional_args = function()
+					return { "-g*.py" }
+				end,
+			})
+		end)
+		vim.keymap.set("n", "<leader>ff", function()
+			require("telescope.builtin").grep_string({
+				search = "def " .. vim.fn.expand("<cword>") .. "(",
+				on_complete = { select_on_complete },
+				additional_args = function()
+					return { "-g*.py" }
+				end,
+			})
+		end)
+	end,
+})
+
 vim.cmd([[
   " enable nested neovim in terminal with nvr
   if has('nvim')
     let $GIT_EDITOR = 'nvr -cc split --remote-wait'
   endif
-
-  au FileType python nnoremap <silent> <Leader>c <cmd>lua require('telescope.builtin').grep_string({search="class " .. vim.fn.expand("<cword>")})<cr>
-  au FileType python nnoremap <silent> <Leader>f <cmd>lua require('telescope.builtin').grep_string({search="def " .. vim.fn.expand("<cword>") .. "("})<cr>
 
   " Autocommand that reloads neovim whenever you save the plugins.lua file
   augroup packer_user_config
