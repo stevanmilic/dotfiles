@@ -4,6 +4,14 @@ local select_on_complete = function(picker)
 		require("telescope.actions").select_default(picker.prompt_bufnr)
 	end
 end
+local copy_import_statement = function()
+	local file_name = vim.fn.expand("%:~:.")
+	local module_name = file_name:gsub(".py", ""):gsub("/", ".")
+	local symbol_name = vim.fn.expand("<cword>")
+	local import_statement = "from " .. module_name .. " import " .. symbol_name
+	vim.api.nvim_command("let @+ = '" .. import_statement .. "'")
+	-- TODO: Add highlighting of the line after yank.
+end
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "python" },
 	callback = function()
@@ -24,6 +32,9 @@ vim.api.nvim_create_autocmd("FileType", {
 					return { "-g*.py" }
 				end,
 			})
+		end)
+		vim.keymap.set("n", "<leader>ys", function()
+			copy_import_statement()
 		end)
 	end,
 })
