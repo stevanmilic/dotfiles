@@ -1,4 +1,9 @@
 require("bufferline").setup({
+	highlights = {
+		buffer_selected = {
+			italic = false,
+		},
+	},
 	options = {
 		view = "default",
 		show_buffer_close_icons = false,

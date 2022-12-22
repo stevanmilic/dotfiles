@@ -5,13 +5,13 @@ return {
 	{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 	"folke/trouble.nvim",
 	"aserowy/tmux.nvim",
-	{ "rmehri01/onenord.nvim", lazy = false },
+	"rmehri01/onenord.nvim",
 	"terrortylor/nvim-comment",
 	"kyazdani42/nvim-tree.lua",
 	"akinsho/bufferline.nvim",
 	"kazhala/close-buffers.nvim",
 	"akinsho/toggleterm.nvim",
-	"stevearc/dressing.nvim",
+	{ "stevearc/dressing.nvim", event = "VeryLazy" },
 	{ "kevinhwang91/nvim-ufo", dependencies = "kevinhwang91/promise-async" },
 	{ "rmagatti/auto-session", lazy = false },
 	"gbprod/substitute.nvim",
@@ -35,11 +35,20 @@ return {
 	},
 
 	-- tree-sitter
-	{ "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+	{
+		"nvim-treesitter/nvim-treesitter",
+		build = ":TSUpdate",
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter-textobjects",
+			"nvim-treesitter/playground",
+			"JoosepAlviste/nvim-ts-context-commentstring",
+			"yioneko/nvim-yati",
+		},
+	},
 	"nvim-treesitter/nvim-treesitter-textobjects",
 	"nvim-treesitter/playground",
 	"JoosepAlviste/nvim-ts-context-commentstring",
-	{ "yioneko/nvim-yati", dependencies = "nvim-treesitter/nvim-treesitter" },
+	"yioneko/nvim-yati",
 
 	-- lsp
 	"neovim/nvim-lspconfig",
@@ -53,14 +62,18 @@ return {
 	{ "rcarriga/nvim-dap-ui", dependencies = { "mfussenegger/nvim-dap" } },
 	"folke/neodev.nvim",
 
-	-- cmp
-	"hrsh7th/nvim-cmp",
-	"hrsh7th/cmp-nvim-lsp",
-	"hrsh7th/cmp-buffer",
-	"hrsh7th/cmp-path",
-	"hrsh7th/cmp-cmdline",
-	"L3MON4D3/LuaSnip",
-	"saadparwaiz1/cmp_luasnip",
+	{
+		"hrsh7th/nvim-cmp",
+		event = "InsertEnter",
+		dependencies = {
+			"hrsh7th/cmp-nvim-lsp",
+			"hrsh7th/cmp-buffer",
+			"hrsh7th/cmp-path",
+			"hrsh7th/cmp-cmdline",
+			"L3MON4D3/LuaSnip",
+			"saadparwaiz1/cmp_luasnip",
+		},
+	},
 
 	-- extendend syntax
 	"towolf/vim-helm",
@@ -68,7 +81,7 @@ return {
 	"vim-scripts/ebnf.vim",
 
 	-- git
-	"tpope/vim-fugitive",
+	{ "tpope/vim-fugitive", lazy = false },
 	-- TODO: revert to original repo once the PR is merged.
 	"stevanmilic/gitlinker.nvim",
 }
