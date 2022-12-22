@@ -1,25 +1,11 @@
--- Automatically install lazy.nvim
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-	vim.fn.system({
-		"git",
-		"clone",
-		"--filter=blob:none",
-		"--single-branch",
-		"https://github.com/folke/lazy.nvim.git",
-		lazypath,
-	})
-end
-vim.opt.runtimepath:prepend(lazypath)
-
-require("lazy").setup({
+return {
 	"kyazdani42/nvim-web-devicons",
 	"nvim-lua/plenary.nvim",
 	"nvim-telescope/telescope.nvim",
 	{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 	"folke/trouble.nvim",
 	"aserowy/tmux.nvim",
-	"rmehri01/onenord.nvim",
+	{ "rmehri01/onenord.nvim", lazy = false },
 	"terrortylor/nvim-comment",
 	"kyazdani42/nvim-tree.lua",
 	"akinsho/bufferline.nvim",
@@ -27,7 +13,7 @@ require("lazy").setup({
 	"akinsho/toggleterm.nvim",
 	"stevearc/dressing.nvim",
 	{ "kevinhwang91/nvim-ufo", dependencies = "kevinhwang91/promise-async" },
-	"rmagatti/auto-session",
+	{ "rmagatti/auto-session", lazy = false },
 	"gbprod/substitute.nvim",
 	"kylechui/nvim-surround",
 	"rcarriga/nvim-notify",
@@ -85,4 +71,4 @@ require("lazy").setup({
 	"tpope/vim-fugitive",
 	-- TODO: revert to original repo once the PR is merged.
 	"stevanmilic/gitlinker.nvim",
-})
+}
