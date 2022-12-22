@@ -57,10 +57,13 @@ local keymap = {
 	},
 	s = {
 		name = "Buffer",
-		u = {
-			function () require('close_buffers').delete({type = 'hidden', force = true}) end,
-			"Close hidden buffers",
-		},
+        u = {
+          function ()
+                    require('close_buffers').delete({type = 'hidden', force = true})
+                    require('bufferline.ui').refresh()
+                end,
+          "Close hidden buffers",
+        },
 		b = { function() require('close_buffers').delete({type = 'this', force = true}) end, "Close buffer" },
 	},
 	g = {

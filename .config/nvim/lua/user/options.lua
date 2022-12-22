@@ -20,11 +20,12 @@ vim.cmd([[
   set splitbelow "more natural split window for horizontal split
   set splitright "more natural split window for vertical split
   " Gdiff vertical
-  set diffopt+=vertical
+  set diffopt+=vertical,linematch:60
   set formatexpr=
   set updatetime=100
   set splitkeep=screen
   set nolazyredraw
+  set jumpoptions=stack
 
   syntax enable "syntax highlight enebled
   set termguicolors

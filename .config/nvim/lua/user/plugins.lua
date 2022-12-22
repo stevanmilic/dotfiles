@@ -1,111 +1,88 @@
--- Automatically install packer
-local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
-if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-	packer_bootstrap = vim.fn.system({
+-- Automatically install lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+	vim.fn.system({
 		"git",
 		"clone",
-		"--depth",
-		"1",
-		"https://github.com/wbthomason/packer.nvim",
-		install_path,
+		"--filter=blob:none",
+		"--single-branch",
+		"https://github.com/folke/lazy.nvim.git",
+		lazypath,
 	})
 end
+vim.opt.runtimepath:prepend(lazypath)
 
--- Use a protected call so we don't error out on first use
-local status_ok, packer = pcall(require, "packer")
-if not status_ok then
-	return
-end
-
--- Have packer use a popup window
-packer.init({
-	display = {
-		open_fn = function()
-			return require("packer.util").float({ border = "rounded" })
-		end,
-	},
-})
-
--- Install your plugins here
-return packer.startup(function(use)
-	use("wbthomason/packer.nvim") -- Have packer manage itself
-	use("kyazdani42/nvim-web-devicons")
-	use("nvim-lua/plenary.nvim")
-	use("nvim-telescope/telescope.nvim")
-	use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
-	use("folke/trouble.nvim")
-	use("aserowy/tmux.nvim")
-	use("rmehri01/onenord.nvim")
-	use("terrortylor/nvim-comment")
-	use("kyazdani42/nvim-tree.lua")
-	use({ "akinsho/bufferline.nvim", tag = "*" })
-	use("kazhala/close-buffers.nvim")
-	use("lewis6991/impatient.nvim")
-	use("akinsho/toggleterm.nvim")
-	use("stevearc/dressing.nvim")
-	use({ "kevinhwang91/nvim-ufo", requires = "kevinhwang91/promise-async" })
-	use("rmagatti/auto-session")
-	use("gbprod/substitute.nvim")
-	use("kylechui/nvim-surround")
-	use("rcarriga/nvim-notify")
-	use("folke/which-key.nvim")
-	use("johmsalas/text-case.nvim")
-	use("ja-ford/delaytrain.nvim")
-	use("karb94/neoscroll.nvim")
-	use("ggandor/leap.nvim")
-	use("echasnovski/mini.ai")
-	use("windwp/nvim-autopairs")
-	use({ "folke/noice.nvim", requires = { "MunifTanjim/nui.nvim" } })
-	use({
+require("lazy").setup({
+	"kyazdani42/nvim-web-devicons",
+	"nvim-lua/plenary.nvim",
+	"nvim-telescope/telescope.nvim",
+	{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+	"folke/trouble.nvim",
+	"aserowy/tmux.nvim",
+	"rmehri01/onenord.nvim",
+	"terrortylor/nvim-comment",
+	"kyazdani42/nvim-tree.lua",
+	"akinsho/bufferline.nvim",
+	"kazhala/close-buffers.nvim",
+	"akinsho/toggleterm.nvim",
+	"stevearc/dressing.nvim",
+	{ "kevinhwang91/nvim-ufo", dependencies = "kevinhwang91/promise-async" },
+	"rmagatti/auto-session",
+	"gbprod/substitute.nvim",
+	"kylechui/nvim-surround",
+	"rcarriga/nvim-notify",
+	"folke/which-key.nvim",
+	"johmsalas/text-case.nvim",
+	"ja-ford/delaytrain.nvim",
+	"karb94/neoscroll.nvim",
+	"ggandor/leap.nvim",
+	"echasnovski/mini.ai",
+	"windwp/nvim-autopairs",
+	{ "folke/noice.nvim", dependencies = { "MunifTanjim/nui.nvim" } },
+	{
 		"rcarriga/neotest",
-		requires = {
+		dependencies = {
 			"rcarriga/neotest-python",
 			"haydenmeade/neotest-jest",
 			"stevanmilic/neotest-scala",
 		},
-	})
+	},
 
 	-- tree-sitter
-	use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
-	use("nvim-treesitter/nvim-treesitter-textobjects")
-	use("nvim-treesitter/playground")
-	use("JoosepAlviste/nvim-ts-context-commentstring")
-	use({ "yioneko/nvim-yati", requires = "nvim-treesitter/nvim-treesitter" })
+	{ "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+	"nvim-treesitter/nvim-treesitter-textobjects",
+	"nvim-treesitter/playground",
+	"JoosepAlviste/nvim-ts-context-commentstring",
+	{ "yioneko/nvim-yati", dependencies = "nvim-treesitter/nvim-treesitter" },
 
 	-- lsp
-	use("neovim/nvim-lspconfig")
-	use("scalameta/nvim-metals")
-	use("williamboman/mason.nvim")
-	use("williamboman/mason-lspconfig.nvim")
-	use("onsails/lspkind-nvim")
-	use("jose-elias-alvarez/null-ls.nvim")
-	use("mfussenegger/nvim-dap")
-	use("mfussenegger/nvim-dap-python")
-	use({ "rcarriga/nvim-dap-ui", requires = { "mfussenegger/nvim-dap" } })
-	use("folke/neodev.nvim")
+	"neovim/nvim-lspconfig",
+	"scalameta/nvim-metals",
+	"williamboman/mason.nvim",
+	"williamboman/mason-lspconfig.nvim",
+	"onsails/lspkind-nvim",
+	"jose-elias-alvarez/null-ls.nvim",
+	"mfussenegger/nvim-dap",
+	"mfussenegger/nvim-dap-python",
+	{ "rcarriga/nvim-dap-ui", dependencies = { "mfussenegger/nvim-dap" } },
+	"folke/neodev.nvim",
 
 	-- cmp
-	use("hrsh7th/nvim-cmp")
-	use("hrsh7th/cmp-nvim-lsp")
-	use("hrsh7th/cmp-buffer")
-	use("hrsh7th/cmp-path")
-	use("hrsh7th/cmp-cmdline")
-	use("L3MON4D3/LuaSnip")
-	use("saadparwaiz1/cmp_luasnip")
+	"hrsh7th/nvim-cmp",
+	"hrsh7th/cmp-nvim-lsp",
+	"hrsh7th/cmp-buffer",
+	"hrsh7th/cmp-path",
+	"hrsh7th/cmp-cmdline",
+	"L3MON4D3/LuaSnip",
+	"saadparwaiz1/cmp_luasnip",
 
 	-- extendend syntax
-	use("towolf/vim-helm")
-	use("gf3/peg.vim")
-	use("vim-scripts/ebnf.vim")
+	"towolf/vim-helm",
+	"gf3/peg.vim",
+	"vim-scripts/ebnf.vim",
 
 	-- git
-	use("tpope/vim-fugitive")
+	"tpope/vim-fugitive",
 	-- TODO: revert to original repo once the PR is merged.
-	use("stevanmilic/gitlinker.nvim")
-
-	-- Automatically set up your configuration after cloning packer.nvim
-	-- Put this at the end after all plugins
-	if packer_bootstrap then
-		require("packer").sync()
-	end
-end)
+	"stevanmilic/gitlinker.nvim",
+})
