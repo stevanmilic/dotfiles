@@ -1,66 +1,41 @@
-# zsh version 5.1.1
+# aliases
+alias k=kubectl
+alias python=python3.10
+alias kctx=kubectx
+alias kns=kubens
+
 # setup antigen, plugin manager for zsh
 source ~/Applications/antigen/antigen.zsh
 
-antigen use oh-my-zsh
+antigen init ~/.antigenrc
 
-antigen bundle git
-antigen bundle common-aliases
-antigen bundle command-not-found
-antigen bundle pip
-
-# Syntax highlighting bundle.
-antigen bundle zsh-users/zsh-syntax-highlighting
-
-# ls solarized
-# antigen bundle joel-porquet/zsh-dircolors-solarized
-eval `dircolors ~/.dir_colors/dircolors`
-
-# my theme ftw
-antigen theme agnoster
-
-# git root command
-antigen bundle mollifier/cd-gitroot
-
-# cool autosuggestion
-# antigen bundle zsh-users/zsh-autosuggestions
-
-# Tell antigen that you're done.
-antigen apply
+eval `gdircolors ~/.dir_colors/dircolors`
 
 # used by agnoster theme
 export DEFAULT_USER=$USER
 
-# set bat theme
-export BAT_THEME="Solarized (dark)"
+# Set the default python virtualenv directory for python projects.
+export AUTOSWITCH_FILE=".env"
+export AUTOSWITCH_VIRTUAL_ENV_DIR=".env"
 
 # Neovim default editor
 export EDITOR=nvim
 
+export PYTHONBREAKPOINT=ipdb.set_trace
+export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+export GOPATH=$HOME/Applications/go
+export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket
+
+PATH=$HOME/.local/bin:$GOPATH/bin/:$PATH
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$HOME/.poetry/bin:$HOME/.cargo/bin:$PATH"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export FZF_DEFAULT_OPTS='
+  --color fg:#D8DEE9,bg:#2E3440,hl:#A3BE8C,fg+:#D8DEE9,bg+:#434C5E,hl+:#A3BE8C
+  --color pointer:#BF616A,info:#4C566A,spinner:#4C566A,header:#4C566A,prompt:#81A1C1,marker:#EBCB8B
+'
+
 if ! { [ -n "$TMUX" ]; } then
   tmux
 fi
-
-export PYTHONBREAKPOINT=ipdb.set_trace
-
-export GOPATH=$HOME/Applications/go
-PATH=$HOME/.gem/ruby/2.5.0/bin:$HOME/.local/bin:$GOPATH/bin/:$PATH
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-# aliases
-alias fzo='nvim $(fzf)'
-alias greylabel='cd ~/tradecore/brokeriq/greylabel/ && source .env/bin/activate && nvim'
-alias castle-dir='cd ~/tradecore/castle/ && source .env/bin/activate && nvim'
-alias remap='xmodmap ~/.Xmodmap'
-alias tcvpn='sudo openvpn ~/tradecore/smilic.ovpn'
-alias rurxvt='~/restart_urxvt.sh -checkout'
-alias fd=fd
-alias git=hub
-alias k=kubectl
-
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$HOME/.poetry/bin:$PATH"
