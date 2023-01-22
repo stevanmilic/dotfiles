@@ -18,6 +18,7 @@ local on_attach = function(client, bufnr)
 	local bufopts = { noremap = true, silent = true, buffer = bufnr }
 	vim.keymap.set("n", "<leader>D", vim.lsp.buf.declaration, bufopts)
 	vim.keymap.set("n", "<leader>d", vim.lsp.buf.definition, bufopts)
+	-- vim.keymap.set("n", "<leader>d", "<cmd>Trouble lsp_definitions<cr>", bufopts)
 	vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
 	vim.keymap.set("n", "<leader>e", vim.lsp.buf.code_action, bufopts)
 	vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, bufopts)
@@ -67,7 +68,7 @@ require("neodev").setup({
 	library = { plugins = { "neotest" } },
 })
 local lspconfig = require("lspconfig")
-local servers = { "pyright", "tsserver", "rust_analyzer", "sumneko_lua" }
+local servers = { "pyright", "tsserver", "rust_analyzer", "sumneko_lua", "gopls" }
 local enhance_server_settings = {
 	pyright = {
 		python = {

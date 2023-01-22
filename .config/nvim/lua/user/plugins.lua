@@ -45,23 +45,21 @@ return {
 			"yioneko/nvim-yati",
 		},
 	},
-	"nvim-treesitter/nvim-treesitter-textobjects",
-	"nvim-treesitter/playground",
-	"JoosepAlviste/nvim-ts-context-commentstring",
-	"yioneko/nvim-yati",
 
 	-- lsp
-	"neovim/nvim-lspconfig",
+	{
+		"neovim/nvim-lspconfig",
+		name = "lsp",
+		event = "BufReadPre",
+		dependencies = { "hrsh7th/cmp-nvim-lsp", "jose-elias-alvarez/null-ls.nvim" },
+	},
 	"scalameta/nvim-metals",
 	"williamboman/mason.nvim",
 	"williamboman/mason-lspconfig.nvim",
-	"onsails/lspkind-nvim",
-	"jose-elias-alvarez/null-ls.nvim",
-	"mfussenegger/nvim-dap",
-	"mfussenegger/nvim-dap-python",
-	{ "rcarriga/nvim-dap-ui", dependencies = { "mfussenegger/nvim-dap" } },
-	"folke/neodev.nvim",
-
+	{
+		"mfussenegger/nvim-dap",
+		dependencies = { "rcarriga/nvim-dap-ui", "mfussenegger/nvim-dap-python" },
+	},
 	{
 		"hrsh7th/nvim-cmp",
 		event = "InsertEnter",
@@ -72,16 +70,18 @@ return {
 			"hrsh7th/cmp-cmdline",
 			"L3MON4D3/LuaSnip",
 			"saadparwaiz1/cmp_luasnip",
+			"onsails/lspkind-nvim",
 		},
 	},
+	"folke/neodev.nvim",
 
 	-- extendend syntax
-	"towolf/vim-helm",
+	{ "towolf/vim-helm", lazy = false },
 	"gf3/peg.vim",
 	"vim-scripts/ebnf.vim",
 
 	-- git
-	{ "tpope/vim-fugitive", lazy = false },
+	{ "tpope/vim-fugitive", event = "VeryLazy" },
 	-- TODO: revert to original repo once the PR is merged.
 	"stevanmilic/gitlinker.nvim",
 }

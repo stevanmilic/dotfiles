@@ -16,8 +16,7 @@ require("nvim-tree").setup({
 	},
 })
 
-local toggleterm = require("toggleterm")
-toggleterm.setup({
+require("toggleterm").setup({
 	size = function(_)
 		return vim.o.lines * 0.45
 	end,
@@ -83,6 +82,9 @@ require("neotest").setup({
 	discovery = {
 		enabled = false,
 	},
+	quickfix = {
+		open = false,
+	},
 	icons = {
 		running = "",
 		failed = "",
@@ -143,6 +145,8 @@ require("delaytrain").setup({
 	},
 })
 
+require("textcase").setup({})
+
 -- neoscroll config
 vim.keymap.set({ "n", "v" }, "<ScrollWheelUp>", "<C-y>")
 vim.keymap.set({ "n", "v" }, "<ScrollWheelDown>", "<C-e>")
@@ -156,8 +160,15 @@ require("neoscroll.config").set_mappings({
 	["<C-f>"] = { "scroll", { "0.25", "false", "200" } },
 })
 
-require("leap").add_default_mappings()
+local leap = require("leap")
+leap.add_default_mappings()
+-- leap.max_phase_one_targets = 0
 
 require("mini.ai").setup()
-
+require("dressing").setup({
+	select = {
+		-- TODO: Re-enable telescope once it gets to work again.
+		backend = { "builtin", "nui" },
+	},
+})
 vim.cmd([[silent! luafile .local.lua]])

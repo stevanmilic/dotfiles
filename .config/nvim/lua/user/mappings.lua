@@ -42,8 +42,8 @@ local keymap = {
 	},
 	i = {
 		name = "Diagnostics",
-		w = { "<cmd>Trouble workspace_diagnostics<cr>", "Workspace" },
-		d = { "<cmd>Trouble document_diagnostics<cr>", "Document" },
+		w = { "<cmd>TroubleToggle workspace_diagnostics<cr>", "Workspace" },
+		d = { "<cmd>TroubleToggle document_diagnostics<cr>", "Document" },
 	},
 	t = {
 		name = "Testing",
@@ -54,6 +54,7 @@ local keymap = {
 		o = { function() require('neotest').output.open({ enter = true }) end, "Output" },
 		a = { function() require('neotest').run.attach() end, "Attach" },
 		s = { function() require('neotest').summary.open() end, "Summary" },
+		q = { "<cmd>TroubleToggle quickfix<cr>", "Quickfix" },
 	},
 	s = {
 		name = "Buffer",

@@ -28,3 +28,6 @@ require("lazy").setup("user.plugins", {
 		},
 	},
 })
+
+-- Don't use C-f for filtering.
+require("lazy.view.config").keys.profile_filter = "<C-y>"
