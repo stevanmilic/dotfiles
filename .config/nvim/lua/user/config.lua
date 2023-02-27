@@ -18,14 +18,16 @@ require("nvim-tree").setup({
 
 require("toggleterm").setup({
 	size = function(_)
-		return vim.o.lines * 0.45
+		return vim.o.lines * 0.48
 	end,
 	open_mapping = "<leader>m",
 	hide_numbers = false,
 	shade_filetypes = {},
+	auto_scroll = false,
 	shade_terminals = true,
 	shading_factor = 1,
 	start_in_insert = true,
+	persist_mode = true,
 	insert_mappings = false,
 	persist_size = true,
 	direction = "horizontal",
@@ -62,7 +64,7 @@ require("auto-session").setup({
 	auto_session_suppress_dirs = { "~/" },
 	pre_save_cmds = { close_all_floating_wins },
 })
-vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos"
+vim.o.sessionoptions = "blank,buffers,curdir,help,tabpages,winsize,winpos"
 
 -- neotest
 require("neotest").setup({
@@ -77,6 +79,7 @@ require("neotest").setup({
 			end,
 		}),
 		require("neotest-jest")({}),
+		require("neotest-plenary")({}),
 		require("neotest-scala")({ framework = "utest" }),
 	},
 	discovery = {
@@ -154,6 +157,18 @@ require("neoscroll").setup({
 	mappings = { "<C-y>", "<C-e>" },
 	respect_scrolloff = true,
 	cursor_scrolls_alone = false,
+	pre_hook = function()
+		vim.opt.eventignore:append({
+			"WinScrolled",
+			"CursorMoved",
+		})
+	end,
+	post_hook = function()
+		vim.opt.eventignore:remove({
+			"WinScrolled",
+			"CursorMoved",
+		})
+	end,
 })
 require("neoscroll.config").set_mappings({
 	["<C-b>"] = { "scroll", { "-0.25", "false", "200" } },
@@ -167,8 +182,7 @@ leap.add_default_mappings()
 require("mini.ai").setup()
 require("dressing").setup({
 	select = {
-		-- TODO: Re-enable telescope once it gets to work again.
-		backend = { "builtin", "nui" },
+		backend = { "telescope", "builtin", "nui" },
 	},
 })
 vim.cmd([[silent! luafile .local.lua]])

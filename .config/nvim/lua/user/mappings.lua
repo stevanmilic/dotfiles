@@ -22,80 +22,81 @@ whichkey.setup({
 
 -- stylua: ignore start
 local keymap = {
-	j = {
-		name = "Debug",
-		R = { function() require'dap'.run_to_cursor() end, "Run to Cursor" },
-		E = { function() require'dapui'.eval(vim.fn.input .. '[Expression] > ') end, "Evaluate Input" },
-		t = { function() require'dapui'.toggle() end, "Toggle UI" },
-		c = { function() require'dap'.continue() end, "Continue" },
-		d = { function() require'dap'.disconnect() end, "Disconnect" },
-		e = { function() require'dapui'.eval() end, "Evaluate" },
-		h = { function() require'dap.ui.widgets'.hover() end, "Hover Variables" },
-		n = { function() require'dap'.step_over() end, "Step Over" },
-		s = { function() require'dap'.step_into() end, "Step Into" },
-		r = { function() require'dap'.repl.toggle() end, "Toggle Repl" },
-		b = { function() require'dap'.toggle_breakpoint() end, "Toggle Breakpoint" },
-		f = { function() require'dap'.clear_breakpoints() end, "Clear Breakpoints" },
-		x = { function() require'dap'.terminate() end, "Terminate" },
-		u = { function() require'dap'.step_out() end, "Step Out" },
-		j = { function() require'dap'.goto_() end, "Jump To Cursor" },
-	},
-	i = {
-		name = "Diagnostics",
-		w = { "<cmd>TroubleToggle workspace_diagnostics<cr>", "Workspace" },
-		d = { "<cmd>TroubleToggle document_diagnostics<cr>", "Document" },
-	},
-	t = {
-		name = "Testing",
-		n = { function() require('neotest').run.run() end, "Run Nearest" },
-		f = { function() require('neotest').run.run(vim.fn.expand('%')) end, "Run File" },
-		d = { function() require('neotest').run.run({strategy = 'dap'}) end, "Run Debug" },
-		l = { function() require('neotest').run.run_last() end, "Run Last" },
-		o = { function() require('neotest').output.open({ enter = true }) end, "Output" },
-		a = { function() require('neotest').run.attach() end, "Attach" },
-		s = { function() require('neotest').summary.open() end, "Summary" },
-		q = { "<cmd>TroubleToggle quickfix<cr>", "Quickfix" },
-	},
-	s = {
-		name = "Buffer",
+    j = {
+        name = "Debug",
+        R = { function() require'dap'.run_to_cursor() end, "Run to Cursor" },
+        E = { function() require'dapui'.eval(vim.fn.input .. '[Expression] > ') end, "Evaluate Input" },
+        t = { function() require'dapui'.toggle() end, "Toggle UI" },
+        c = { function() require'dap'.continue() end, "Continue" },
+        d = { function() require'dap'.disconnect() end, "Disconnect" },
+        e = { function() require'dapui'.eval() end, "Evaluate" },
+        h = { function() require'dap.ui.widgets'.hover() end, "Hover Variables" },
+        n = { function() require'dap'.step_over() end, "Step Over" },
+        s = { function() require'dap'.step_into() end, "Step Into" },
+        r = { function() require'dap'.repl.toggle() end, "Toggle Repl" },
+        b = { function() require'dap'.toggle_breakpoint() end, "Toggle Breakpoint" },
+        f = { function() require'dap'.clear_breakpoints() end, "Clear Breakpoints" },
+        x = { function() require'dap'.terminate() end, "Terminate" },
+        u = { function() require'dap'.step_out() end, "Step Out" },
+        j = { function() require'dap'.goto_() end, "Jump To Cursor" },
+    },
+    i = {
+        name = "Diagnostics",
+        w = { "<cmd>TroubleToggle workspace_diagnostics<cr>", "Workspace" },
+        d = { "<cmd>TroubleToggle document_diagnostics<cr>", "Document" },
+    },
+    t = {
+        name = "Testing",
+        n = { function() require('neotest').run.run() end, "Run Nearest" },
+        f = { function() require('neotest').run.run(vim.fn.expand('%')) end, "Run File" },
+        d = { function() require('neotest').run.run({strategy = 'dap'}) end, "Run Debug" },
+        l = { function() require('neotest').run.run_last() end, "Run Last" },
+        o = { function() require('neotest').output.open({ enter = true }) end, "Output" },
+        a = { function() require('neotest').run.attach() end, "Attach" },
+        s = { function() require('neotest').summary.open() end, "Summary" },
+        q = { "<cmd>TroubleToggle quickfix<cr>", "Quickfix" },
+    },
+    s = {
+        name = "Buffer",
         u = {
-          function ()
-                    require('close_buffers').delete({type = 'hidden', force = true})
-                    require('bufferline.ui').refresh()
-                end,
-          "Close hidden buffers",
+            function ()
+                require('close_buffers').delete({type = 'hidden', force = true})
+                require('bufferline.ui').refresh()
+            end,
+            "Close hidden buffers",
         },
-		b = { function() require('close_buffers').delete({type = 'this', force = true}) end, "Close buffer" },
-	},
-	g = {
-		name = "Git",
-		d = { "<cmd>Gdiff<CR>", "Git diff" },
-		b = { "<cmd>Git blame<CR>", "Git blame" },
-	},
+        b = { function() require('close_buffers').delete({type = 'this', force = true}) end, "Close buffer" },
+    },
+    g = {
+        name = "Git",
+        d = { "<cmd>Gdiff<CR>", "Git diff" },
+        b = { "<cmd>Git blame<CR>", "Git blame" },
+    },
     f = {
-		name = "Finder",
-		w = { function () require("telescope.builtin").grep_string() end, "Find word", },
-		a = { function () require("telescope.builtin").live_grep() end, "Find all", },
-		c = { function () require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="class"}) end, "Find class", },
-		f = { function () require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="function"}) end, "Find function", },
-		x = { function () require('telescope.builtin').lsp_dynamic_workspace_symbols({ignore_symbols="variable"}) end, "Find workspace symbol", },
-		d = { function () require('telescope.builtin').lsp_document_symbols() end, "Find document symbol", },
-		u = { function () require('telescope.builtin').lsp_references({include_declaration=false}) end, "Find references", },
-		r = { function () require('telescope.builtin').resume() end, "Resume finder", },
-	},
+        name = "Finder",
+        w = { function () require("telescope.builtin").grep_string() end, "Find word", },
+        a = { function () require("telescope.builtin").live_grep() end, "Find all", },
+        b = { function () require("telescope.builtin").buffers({sort_mru = true}) end, "Find all", },
+        c = { function () require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="class"}) end, "Find class", },
+        f = { function () require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="function"}) end, "Find function", },
+        x = { function () require('telescope.builtin').lsp_dynamic_workspace_symbols({ignore_symbols="variable"}) end, "Find workspace symbol", },
+        d = { function () require('telescope.builtin').lsp_document_symbols() end, "Find document symbol", },
+        u = { function () require('telescope.builtin').lsp_references({include_declaration=false}) end, "Find references", },
+        r = { function () require('telescope.builtin').resume() end, "Resume finder", },
+    },
     n = {
         function () require("nvim-tree.api").tree.toggle() end,
         "Nvim tree"
-    }
+    },
 }
 
 whichkey.register(keymap, {
-	mode = "n",
-	prefix = "<leader>",
-	buffer = nil,
-	silent = true,
-	noremap = true,
-	nowait = false,
+    mode = "n",
+    prefix = "<leader>",
+    buffer = nil,
+    silent = true,
+    noremap = true,
+    nowait = false,
 })
 
 -- set-up go replace mappings
@@ -110,6 +111,10 @@ vim.keymap.set("n", "zM", function() require('ufo').closeAllFolds() end)
 -- center the search term while iterating
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
+
+vim.keymap.set({"t", "n"}, "<leader>=", "<cmd>resize +2<CR>")
+vim.keymap.set({"t", "n"}, "<leader>-", "<cmd>resize -2<CR>")
+vim.keymap.set({"t", "n"}, "<leader>;", "<cmd>resize<CR>")
 
 -- stylua: ignore end
 
@@ -134,9 +139,6 @@ vim.cmd([[
   nnoremap <silent> gb :BufferLinePick<CR>
   nnoremap <silent> <leader>st :windo bd!<CR>
   
-  "escape nvim terminal
-  tnoremap <Esc> <C-\><C-n>
-
   "search selected text with //
   vnoremap // y/<C-R>"<CR>
   

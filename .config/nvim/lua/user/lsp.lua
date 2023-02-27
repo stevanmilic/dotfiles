@@ -68,7 +68,7 @@ require("neodev").setup({
 	library = { plugins = { "neotest" } },
 })
 local lspconfig = require("lspconfig")
-local servers = { "pyright", "tsserver", "rust_analyzer", "sumneko_lua", "gopls", "golangci_lint_ls" }
+local servers = { "pyright", "tsserver", "rust_analyzer", "lua_ls", "gopls", "golangci_lint_ls" }
 local enhance_server_settings = {
 	pyright = {
 		python = {

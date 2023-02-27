@@ -62,5 +62,12 @@ require("noice").setup({
 			view = "notify",
 			opts = { skip = true },
 		},
+		{
+			filter = {
+				event = "msg_show",
+				find = "No fold found",
+			},
+			opts = { skip = true },
+		},
 	},
 })

@@ -20,7 +20,7 @@ return {
 	"folke/which-key.nvim",
 	"johmsalas/text-case.nvim",
 	"ja-ford/delaytrain.nvim",
-	"karb94/neoscroll.nvim",
+	"stevanmilic/neoscroll.nvim",
 	"ggandor/leap.nvim",
 	"echasnovski/mini.ai",
 	"windwp/nvim-autopairs",
@@ -29,6 +29,7 @@ return {
 		"rcarriga/neotest",
 		dependencies = {
 			"rcarriga/neotest-python",
+			"nvim-neotest/neotest-plenary",
 			"haydenmeade/neotest-jest",
 			"stevanmilic/neotest-scala",
 		},
