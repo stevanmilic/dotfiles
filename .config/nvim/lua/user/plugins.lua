@@ -21,8 +21,10 @@ return {
 	"johmsalas/text-case.nvim",
 	"ja-ford/delaytrain.nvim",
 	"stevanmilic/neoscroll.nvim",
+	"willothy/flatten.nvim",
 	"ggandor/leap.nvim",
-	"echasnovski/mini.ai",
+	"chrishrb/gx.nvim",
+	{ "echasnovski/mini.ai" },
 	"windwp/nvim-autopairs",
 	{ "folke/noice.nvim", dependencies = { "MunifTanjim/nui.nvim" } },
 	{

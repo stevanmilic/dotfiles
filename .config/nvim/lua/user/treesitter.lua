@@ -63,7 +63,7 @@ local python_folds_query = [[
       (string)
     ] @fold
 ]]
-query_config.set_query("python", "folds", python_folds_query)
+query_config.set("python", "folds", python_folds_query)
 
 local python_graphql_injection_query = [[
     (call
@@ -72,7 +72,7 @@ local python_graphql_injection_query = [[
      arguments: (argument_list (string) @graphql
        (#offset! @graphql 0 3 0 -3)))
 ]]
-query_config.set_query("python", "injections", python_graphql_injection_query)
+query_config.set("python", "injections", python_graphql_injection_query)
 
 local scala_injections_query = [[
     (call_expression
@@ -81,4 +81,4 @@ local scala_injections_query = [[
      arguments: (arguments (string) @fuse
        (#offset! @fuse 0 1 0 -1)))
 ]]
-query_config.set_query("scala", "injections", scala_injections_query)
+query_config.set("scala", "injections", scala_injections_query)

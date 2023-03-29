@@ -5,8 +5,16 @@ local border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }
 --------------------
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
--- Workaround for hover not working when there is diagnostic float
--- https://www.reddit.com/r/neovim/comments/pg1o6k/neovim_lsp_hover_window_is_hidden_behind_line
+local is_diagnostic_hidden = false
+local toggle_diagnostics = function()
+	if is_diagnostic_hidden then
+		vim.diagnostic.show()
+		is_diagnostic_hidden = false
+	else
+		vim.diagnostic.hide()
+		is_diagnostic_hidden = true
+	end
+end
 
 -- Use an on_attach function to only map the following keys after the language
 -- server attaches to the current buffer
@@ -22,6 +30,7 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
 	vim.keymap.set("n", "<leader>e", vim.lsp.buf.code_action, bufopts)
 	vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, bufopts)
+	vim.keymap.set("n", "<leader>q", toggle_diagnostics, bufopts)
 
 	if client.supports_method("textDocument/formatting") then
 		local filetype = tostring(vim.fn.getbufvar(bufnr, "&filetype"))

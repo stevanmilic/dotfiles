@@ -171,8 +171,8 @@ require("neoscroll").setup({
 	end,
 })
 require("neoscroll.config").set_mappings({
-	["<C-b>"] = { "scroll", { "-0.25", "false", "200" } },
-	["<C-f>"] = { "scroll", { "0.25", "false", "200" } },
+	["<C-b>"] = { "scroll", { "-0.25", "false", "150" } },
+	["<C-f>"] = { "scroll", { "0.25", "false", "150" } },
 })
 
 local leap = require("leap")
@@ -180,6 +180,15 @@ leap.add_default_mappings()
 -- leap.max_phase_one_targets = 0
 
 require("mini.ai").setup()
+
+require("flatten").setup({
+	window = {
+		open = "split",
+		focus = "first",
+	},
+})
+
+require("gx").setup({})
 require("dressing").setup({
 	select = {
 		backend = { "telescope", "builtin", "nui" },

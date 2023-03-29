@@ -11,6 +11,7 @@ local copy_import_statement = function()
 	local module_name = file_name:gsub(".py", ""):gsub("/", ".")
 	local symbol_name = vim.fn.expand("<cword>")
 	local import_statement = "from " .. module_name .. " import " .. symbol_name
+	vim.notify(import_statement)
 	vim.api.nvim_command("let @+ = '" .. import_statement .. "'")
 end
 local copy_symbol_path = function()
@@ -18,6 +19,7 @@ local copy_symbol_path = function()
 	local module_name = file_name:gsub(".py", ""):gsub("/", ".")
 	local symbol_name = vim.fn.expand("<cword>")
 	local symbol_path = module_name .. "." .. symbol_name
+	vim.notify(symbol_path)
 	vim.api.nvim_command("let @+ = '" .. symbol_path .. "'")
 end
 vim.api.nvim_create_autocmd("FileType", {
@@ -55,14 +57,9 @@ function _G.set_terminal_keymaps()
 	vim.keymap.set("t", "<C-l>", [[<Cmd>wincmd l<CR>]], opts)
 end
 
--- if you only want these mappings for toggle term use term://*toggleterm#* instead
-vim.cmd("autocmd! TermOpen term://* lua set_terminal_keymaps()")
-
 vim.cmd([[
-  " enable nested neovim in terminal with nvr
-  if has('nvim')
-    let $GIT_EDITOR = 'nvr -cc split --remote-wait'
-  endif
+   " if you only want these mappings for toggle term use term://*toggleterm#* instead
+  au! TermOpen term://* lua set_terminal_keymaps()
 
   " yank duration highlight in ms
   au TextYankPost * silent! lua vim.highlight.on_yank {timeout=500}
