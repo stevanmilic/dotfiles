@@ -5,14 +5,11 @@ local border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }
 --------------------
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
-local is_diagnostic_hidden = false
 local toggle_diagnostics = function()
-	if is_diagnostic_hidden then
-		vim.diagnostic.show()
-		is_diagnostic_hidden = false
+	if vim.diagnostic.is_disabled() then
+		vim.diagnostic.enable()
 	else
-		vim.diagnostic.hide()
-		is_diagnostic_hidden = true
+		vim.diagnostic.disable()
 	end
 end
 
@@ -224,11 +221,6 @@ function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
 	return orig_util_open_floating_preview(contents, syntax, opts, ...)
 end
 
-----------------
--- trouble setup
-----------------
-require("trouble").setup({})
-
 ------------
 -- dap setup
 ------------
@@ -252,35 +244,6 @@ dapui.setup({
 		},
 	},
 })
-dap.configurations.scala = {
-	{
-		type = "scala",
-		request = "launch",
-		name = "RunList",
-		metals = {
-			runType = "run",
-			args = { "check", "examples/list.fuse" },
-		},
-	},
-	{
-		type = "scala",
-		request = "launch",
-		name = "RunOption",
-		metals = {
-			runType = "run",
-			args = { "check", "examples/option.fuse" },
-		},
-	},
-	{
-		type = "scala",
-		request = "launch",
-		name = "RunLambdaCalc",
-		metals = {
-			runType = "run",
-			args = { "check", "examples/lambda_calc.fuse" },
-		},
-	},
-}
 require("dap-python").setup("~/.virtualenvs/debugpy/bin/python")
 
 vim.fn.sign_define("DapBreakpoint", { text = "🛑", texthl = "", linehl = "", numhl = "" })

@@ -25,7 +25,7 @@ local keymap = {
     j = {
         name = "Debug",
         R = { function() require'dap'.run_to_cursor() end, "Run to Cursor" },
-        E = { function() require'dapui'.eval(vim.fn.input .. '[Expression] > ') end, "Evaluate Input" },
+        E = { function() require'dapui'.eval(vim.fn.input("[Expression]: ")) end, "Evaluate Input" },
         t = { function() require'dapui'.toggle() end, "Toggle UI" },
         c = { function() require'dap'.continue() end, "Continue" },
         d = { function() require'dap'.disconnect() end, "Disconnect" },
@@ -115,6 +115,9 @@ vim.keymap.set("n", "N", "Nzzzv")
 vim.keymap.set({"t", "n"}, "<leader>=", "<cmd>resize +2<CR>")
 vim.keymap.set({"t", "n"}, "<leader>-", "<cmd>resize -2<CR>")
 vim.keymap.set({"t", "n"}, "<leader>;", "<cmd>resize<CR>")
+
+vim.keymap.set('n', '<leader>S', function () require("spectre").open() end , { desc = "Open Spectre" })
+vim.keymap.set('n', '<leader>sw', function () require("spectre").open_visual({select_word=true}) end, { desc = "Search current word" })
 
 -- stylua: ignore end
 

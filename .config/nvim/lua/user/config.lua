@@ -32,17 +32,7 @@ require("toggleterm").setup({
 	persist_size = true,
 	direction = "horizontal",
 	close_on_exit = true,
-	float_opts = {
-		border = "curved",
-		winblend = 0,
-		highlights = {
-			border = "Normal",
-			background = "Normal",
-		},
-	},
-	winbar = {
-		enabled = true,
-	},
+	winbar = { enabled = true },
 })
 
 require("nvim_comment").setup({
@@ -80,10 +70,10 @@ require("neotest").setup({
 		}),
 		require("neotest-jest")({}),
 		require("neotest-plenary")({}),
-		require("neotest-scala")({ framework = "utest" }),
+		require("neotest-scala")({ framework = "munit", runner = "bloop" }),
 	},
 	discovery = {
-		enabled = false,
+		enabled = true,
 	},
 	quickfix = {
 		open = false,
