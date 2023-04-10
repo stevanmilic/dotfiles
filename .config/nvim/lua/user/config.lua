@@ -167,14 +167,25 @@ require("neoscroll.config").set_mappings({
 
 local leap = require("leap")
 leap.add_default_mappings()
--- leap.max_phase_one_targets = 0
 
 require("mini.ai").setup()
 
 require("flatten").setup({
 	window = {
 		open = "split",
-		focus = "first",
+	},
+	callbacks = {
+		post_open = function(bufnr, winnr, ft, is_blocking)
+			if is_blocking then
+				-- Hide the terminal while it's blocking
+				require("toggleterm").toggle()
+			end
+			vim.api.nvim_set_current_win(winnr)
+		end,
+		block_end = function()
+			-- After blocking ends (for a git commit, etc), reopen the terminal
+			require("toggleterm").toggle()
+		end,
 	},
 })
 
