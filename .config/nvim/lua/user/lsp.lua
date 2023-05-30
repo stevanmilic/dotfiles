@@ -64,6 +64,9 @@ end
 
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
+-- capabilities.workspace = {
+-- 	didChangeWatchedFiles = { dynamicRegistration = false },
+-- }
 
 require("mason").setup()
 require("mason-lspconfig").setup({
@@ -71,10 +74,10 @@ require("mason-lspconfig").setup({
 })
 
 require("neodev").setup({
-	library = { plugins = { "neotest" } },
+	library = { plugins = { "neotest" }, types = true },
 })
 local lspconfig = require("lspconfig")
-local servers = { "pyright", "tsserver", "rust_analyzer", "lua_ls", "gopls", "golangci_lint_ls" }
+local servers = { "pyright", "tsserver", "rust_analyzer", "lua_ls", "gopls", "golangci_lint_ls", "helm_ls" }
 local enhance_server_settings = {
 	pyright = {
 		python = {
@@ -96,6 +99,14 @@ for _, server in pairs(servers) do
 	})
 end
 
+-- Notify in case definition is not found.
+local current_definition_handler = vim.lsp.handlers["textDocument/definition"]
+vim.lsp.handlers["textDocument/definition"] = function(err, result, ctx, config)
+	if not result then
+		vim.notify("could not find definition", vim.log.levels.WARN)
+	end
+	current_definition_handler(err, result, ctx, config)
+end
 -----------------
 -- nvim-cmp setup
 -- --------------
@@ -156,6 +167,7 @@ cmp.setup({
 		format = lspkind.cmp_format({
 			mode = "symbol", -- show only symbol annotations
 			maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
+			preset = "codicons",
 		}),
 	},
 	experimental = {
@@ -182,17 +194,26 @@ cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 -- null-ls setup
 ----------------
 local null_ls = require("null-ls")
+local utils = require("null-ls.utils")
+
+local mypy = null_ls.builtins.diagnostics.mypy.with({
+	runtime_condition = function(params)
+		-- Only check for file that exists and that contain config file in its root.
+		return utils.path.exists(params.bufname) and utils.root_pattern("mypy.ini", "pyproject.toml")(params.bufname)
+	end,
+})
 null_ls.setup({
 	on_attach = on_attach,
 	debug = true,
 	sources = {
 		null_ls.builtins.formatting.black,
 		null_ls.builtins.formatting.isort,
-		-- null_ls.builtins.diagnostics.mypy,
 		null_ls.builtins.diagnostics.buf,
+		null_ls.builtins.formatting.buf,
 		null_ls.builtins.formatting.prettier,
 		null_ls.builtins.formatting.stylua,
 		null_ls.builtins.formatting.gofmt,
+		mypy,
 	},
 })
 

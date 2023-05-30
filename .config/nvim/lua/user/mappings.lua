@@ -53,6 +53,7 @@ local keymap = {
         l = { function() require('neotest').run.run_last() end, "Run Last" },
         o = { function() require('neotest').output.open({ enter = true }) end, "Output" },
         a = { function() require('neotest').run.attach() end, "Attach" },
+        x = { function() require('neotest').run.stop() end, "Stop" },
         s = { function() require('neotest').summary.open() end, "Summary" },
         q = { "<cmd>TroubleToggle quickfix<cr>", "Quickfix" },
     },
@@ -119,7 +120,51 @@ vim.keymap.set({"t", "n"}, "<leader>;", "<cmd>resize<CR>")
 vim.keymap.set('n', '<leader>S', function () require("spectre").open() end , { desc = "Open Spectre" })
 vim.keymap.set('n', '<leader>sw', function () require("spectre").open_visual({select_word=true}) end, { desc = "Search current word" })
 
+vim.keymap.set("t", "<esc>", [[<C-\><C-n>]])
+
 -- stylua: ignore end
+
+-- smart mappings region
+
+-- smart dd
+local function smart_dd()
+	if vim.api.nvim_get_current_line():match("^%s*$") then
+		return '"_dd'
+	else
+		return "dd"
+	end
+end
+vim.keymap.set("n", "dd", smart_dd, { noremap = true, expr = true })
+
+local function smart_J()
+	vim.cmd("normal! mzJ")
+
+	local col = vim.fn.col(".")
+	local context = string.sub(vim.fn.getline("."), col - 1, col + 1)
+	if
+		context == ") ."
+		or context == ") :"
+		or context:match("%( .")
+		or context:match(". ,")
+		or context:match("%w %.")
+	then
+		vim.cmd("undojoin | normal! x")
+	elseif context == ",)" then
+		vim.cmd("undojoin | normal! hx")
+	end
+
+	vim.cmd("normal! `z")
+end
+vim.keymap.set("n", "J", smart_J, { noremap = true })
+
+local function smart_i()
+	if #vim.fn.getline(".") == 0 then
+		return [["_cc]]
+	else
+		return "i"
+	end
+end
+vim.keymap.set("n", "i", smart_i, { noremap = true, expr = true })
 
 -- additional mappings
 vim.cmd([[

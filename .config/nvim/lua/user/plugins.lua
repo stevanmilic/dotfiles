@@ -55,14 +55,18 @@ return {
 		"neovim/nvim-lspconfig",
 		name = "lsp",
 		event = "BufReadPre",
-		dependencies = { "hrsh7th/cmp-nvim-lsp", "jose-elias-alvarez/null-ls.nvim" },
+		dependencies = { "jose-elias-alvarez/null-ls.nvim" },
 	},
 	"scalameta/nvim-metals",
 	"williamboman/mason.nvim",
 	"williamboman/mason-lspconfig.nvim",
 	{
 		"mfussenegger/nvim-dap",
-		dependencies = { "rcarriga/nvim-dap-ui", "mfussenegger/nvim-dap-python" },
+		dependencies = {
+			"rcarriga/nvim-dap-ui",
+			"mfussenegger/nvim-dap-python",
+			{ "LiadOz/nvim-dap-repl-highlights", config = true },
+		},
 	},
 	{
 		"hrsh7th/nvim-cmp",
@@ -86,6 +90,7 @@ return {
 
 	-- git
 	{ "tpope/vim-fugitive", event = "VeryLazy" },
+	{ "akinsho/git-conflict.nvim", version = "*", config = true },
 	-- TODO: revert to original repo once the PR is merged.
 	"stevanmilic/gitlinker.nvim",
 }

@@ -49,4 +49,7 @@ vim.cmd([[
   set fillchars+=stl:─,stlnc:─
 ]])
 
+-- vim.wo.foldmethod = "expr"
+-- vim.wo.foldtext = ""
+-- vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.g.mapleader = ","

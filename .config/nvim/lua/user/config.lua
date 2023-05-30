@@ -7,12 +7,6 @@ require("nvim-tree").setup({
 	view = {
 		adaptive_size = true,
 		signcolumn = "no",
-		mappings = {
-			list = {
-				{ key = "s", action = "" },
-				{ key = "S", action = "" },
-			},
-		},
 	},
 })
 
@@ -54,7 +48,7 @@ require("auto-session").setup({
 	auto_session_suppress_dirs = { "~/" },
 	pre_save_cmds = { close_all_floating_wins },
 })
-vim.o.sessionoptions = "blank,buffers,curdir,help,tabpages,winsize,winpos"
+vim.o.sessionoptions = "curdir,help,tabpages,winsize,winpos"
 
 -- neotest
 require("neotest").setup({
@@ -110,16 +104,6 @@ require("nvim-surround").setup({
 	},
 })
 
--- smart dd
-local function smart_dd()
-	if vim.api.nvim_get_current_line():match("^%s*$") then
-		return '"_dd'
-	else
-		return "dd"
-	end
-end
-vim.keymap.set("n", "dd", smart_dd, { noremap = true, expr = true })
-
 require("tmux").setup({
 	navigation = {
 		-- enables default keybindings (C-hjkl) for normal mode
@@ -161,11 +145,16 @@ require("neoscroll").setup({
 	end,
 })
 require("neoscroll.config").set_mappings({
-	["<C-b>"] = { "scroll", { "-0.25", "false", "150" } },
-	["<C-f>"] = { "scroll", { "0.25", "false", "150" } },
+	["<C-b>"] = { "scroll", { "-0.25", "false", "200" } },
+	["<C-f>"] = { "scroll", { "0.25", "false", "200" } },
 })
 
 local leap = require("leap")
+-- Bidirectional leap search for current window
+vim.keymap.set("n", "s", function()
+	local current_window = vim.fn.win_getid()
+	require("leap").leap({ target_windows = { current_window } })
+end)
 leap.add_default_mappings()
 
 require("mini.ai").setup()
@@ -174,22 +163,26 @@ require("flatten").setup({
 	window = {
 		open = "split",
 	},
-	callbacks = {
-		post_open = function(bufnr, winnr, ft, is_blocking)
-			if is_blocking then
-				-- Hide the terminal while it's blocking
-				require("toggleterm").toggle()
-			end
-			vim.api.nvim_set_current_win(winnr)
-		end,
-		block_end = function()
-			-- After blocking ends (for a git commit, etc), reopen the terminal
-			require("toggleterm").toggle()
-		end,
-	},
+	-- callbacks = {
+	-- 	post_open = function(bufnr, winnr, ft, is_blocking)
+	-- 		if is_blocking then
+	-- 			-- Hide the terminal while it's blocking
+	-- 			require("toggleterm").toggle(0)
+	-- 		else
+	-- 			vim.api.nvim_set_current_win(winnr)
+	-- 		end
+	-- 	end,
+	-- 	block_end = function()
+	-- 		-- After blocking ends (for a git commit, etc), reopen the terminal
+	-- 		require("toggleterm").toggle(0)
+	-- 	end,
+	-- },
 })
 
 require("gx").setup({})
+require("git-conflict").setup({
+	disable_diagnostics = true,
+})
 require("dressing").setup({
 	select = {
 		backend = { "telescope", "builtin", "nui" },
