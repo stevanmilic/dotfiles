@@ -64,13 +64,19 @@ end
 
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
--- capabilities.workspace = {
--- 	didChangeWatchedFiles = { dynamicRegistration = false },
--- }
 
 require("mason").setup()
 require("mason-lspconfig").setup({
 	automatic_installation = true,
+})
+require("mason-nvim-dap").setup({
+	ensure_installed = { "python", "delve" },
+	automatic_installation = true,
+	handlers = {
+		function(config)
+			require("mason-nvim-dap").default_setup(config)
+		end,
+	},
 })
 
 require("neodev").setup({
@@ -116,12 +122,17 @@ local has_words_before = function()
 end
 
 local luasnip = require("luasnip")
+require("luasnip.loaders.from_vscode").lazy_load()
+
 local cmp = require("cmp")
 local lspkind = require("lspkind")
 local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 require("nvim-autopairs").setup({})
 
 cmp.setup({
+	enabled = function()
+		return vim.api.nvim_get_option_value("buftype", {}) ~= "prompt" or require("cmp_dap").is_dap_buffer()
+	end,
 	snippet = {
 		expand = function(args)
 			require("luasnip").lsp_expand(args.body)
@@ -188,20 +199,26 @@ cmp.setup.cmdline("/", {
 		{ name = "buffer", keyword_length = 3 },
 	}),
 })
+cmp.setup.filetype({ "dap-repl", "dapui_watches", "dapui_hover" }, {
+	sources = {
+		{ name = "dap" },
+	},
+})
 cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
 ----------------
 -- null-ls setup
 ----------------
 local null_ls = require("null-ls")
-local utils = require("null-ls.utils")
 
-local mypy = null_ls.builtins.diagnostics.mypy.with({
-	runtime_condition = function(params)
-		-- Only check for file that exists and that contain config file in its root.
-		return utils.path.exists(params.bufname) and utils.root_pattern("mypy.ini", "pyproject.toml")(params.bufname)
-	end,
-})
+-- local utils = require("null-ls.utils")
+-- local mypy = null_ls.builtins.diagnostics.mypy.with({
+-- 	runtime_condition = function(params)
+-- 		-- Only check for file that exists and that contain config file in its root.
+-- 		return utils.path.exists(params.bufname) and utils.root_pattern("mypy.ini", "pyproject.toml")(params.bufname)
+-- 	end,
+-- })
+
 null_ls.setup({
 	on_attach = on_attach,
 	debug = true,
@@ -213,7 +230,7 @@ null_ls.setup({
 		null_ls.builtins.formatting.prettier,
 		null_ls.builtins.formatting.stylua,
 		null_ls.builtins.formatting.gofmt,
-		mypy,
+		-- mypy,
 	},
 })
 
@@ -265,7 +282,6 @@ dapui.setup({
 		},
 	},
 })
-require("dap-python").setup("~/.virtualenvs/debugpy/bin/python")
 
 vim.fn.sign_define("DapBreakpoint", { text = "🛑", texthl = "", linehl = "", numhl = "" })
 

@@ -92,7 +92,6 @@ require("ufo").setup({
 
 require("gitlinker").setup({
 	opts = { print_url = false, highlight_duration = 300 },
-	mappings = "<leader>y",
 })
 
 -- substitute setup
@@ -162,6 +161,10 @@ require("mini.ai").setup()
 require("flatten").setup({
 	window = {
 		open = "split",
+	},
+	block_for = {
+		gitcommit = true,
+		gitrebase = true,
 	},
 	-- callbacks = {
 	-- 	post_open = function(bufnr, winnr, ft, is_blocking)

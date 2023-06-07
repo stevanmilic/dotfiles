@@ -26,6 +26,7 @@ vim.cmd([[
   set splitkeep=screen
   set nolazyredraw
   set jumpoptions=stack
+  set switchbuf=useopen
 
   syntax enable "syntax highlight enebled
   set termguicolors
