@@ -65,6 +65,7 @@ require("neotest").setup({
 		require("neotest-jest")({}),
 		require("neotest-plenary")({}),
 		require("neotest-scala")({ framework = "munit", runner = "bloop" }),
+		require("neotest-go")({}),
 	},
 	discovery = {
 		enabled = true,

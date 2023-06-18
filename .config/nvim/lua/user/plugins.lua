@@ -34,6 +34,7 @@ return {
 			"rcarriga/neotest-python",
 			"nvim-neotest/neotest-plenary",
 			"haydenmeade/neotest-jest",
+			"nvim-neotest/neotest-go",
 			"stevanmilic/neotest-scala",
 		},
 	},
@@ -65,7 +66,6 @@ return {
 		dependencies = {
 			"rcarriga/nvim-dap-ui",
 			"jay-babu/mason-nvim-dap.nvim",
-			"rcarriga/cmp-dap",
 			{ "theHamsta/nvim-dap-virtual-text", config = true },
 			{ "LiadOz/nvim-dap-repl-highlights", config = true },
 		},
@@ -78,6 +78,7 @@ return {
 			"hrsh7th/cmp-buffer",
 			"hrsh7th/cmp-path",
 			"hrsh7th/cmp-cmdline",
+			"rcarriga/cmp-dap",
 			{ "L3MON4D3/LuaSnip", dependencies = "rafamadriz/friendly-snippets" },
 			"saadparwaiz1/cmp_luasnip",
 			"onsails/lspkind-nvim",
