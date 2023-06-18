@@ -121,7 +121,6 @@ vim.keymap.set('n', '<leader>S', function () require("spectre").open() end , { d
 vim.keymap.set('n', '<leader>sw', function () require("spectre").open_visual({select_word=true}) end, { desc = "Search current word" })
 
 vim.keymap.set("t", "<esc>", [[<C-\><C-n>]])
-vim.keymap.set("n", "<cr>", "ciw")
 
 -- stylua: ignore end
 

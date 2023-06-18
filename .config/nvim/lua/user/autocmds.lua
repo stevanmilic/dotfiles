@@ -48,6 +48,16 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
+-- Adds smart-enter in normal mode that changes word under cursor.
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "*" },
+	callback = function()
+		if not vim.tbl_contains({ "qf", "Trouble" }, vim.bo.filetype) then
+			vim.keymap.set("n", "<cr>", "ciw", { buffer = true, noremap = true })
+		end
+	end,
+})
+
 local neotest_group = vim.api.nvim_create_augroup("NeotestConfig", {})
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "neotest-output", "neotest-attach" },

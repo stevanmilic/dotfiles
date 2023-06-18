@@ -157,6 +157,11 @@ vim.keymap.set("n", "s", function()
 end)
 leap.add_default_mappings()
 
+require("flit").setup({
+	multiline = false,
+	labeled_modes = "nv",
+})
+
 require("mini.ai").setup()
 
 require("flatten").setup({
@@ -167,23 +172,12 @@ require("flatten").setup({
 		gitcommit = true,
 		gitrebase = true,
 	},
-	-- callbacks = {
-	-- 	post_open = function(bufnr, winnr, ft, is_blocking)
-	-- 		if is_blocking then
-	-- 			-- Hide the terminal while it's blocking
-	-- 			require("toggleterm").toggle(0)
-	-- 		else
-	-- 			vim.api.nvim_set_current_win(winnr)
-	-- 		end
-	-- 	end,
-	-- 	block_end = function()
-	-- 		-- After blocking ends (for a git commit, etc), reopen the terminal
-	-- 		require("toggleterm").toggle(0)
-	-- 	end,
-	-- },
 })
 
-require("gx").setup({})
+local luv = require("luv")
+local is_wsl = luv.os_uname()["release"]:lower():match("microsoft") and true or false
+require("gx").setup(is_wsl and { open_browser_app = "wslview" } or {})
+
 require("git-conflict").setup({
 	disable_diagnostics = true,
 })
