@@ -149,17 +149,9 @@ require("neoscroll.config").set_mappings({
 	["<C-f>"] = { "scroll", { "0.25", "false", "200" } },
 })
 
-local leap = require("leap")
--- Bidirectional leap search for current window
-vim.keymap.set("n", "s", function()
-	local current_window = vim.fn.win_getid()
-	require("leap").leap({ target_windows = { current_window } })
-end)
-leap.add_default_mappings()
-
 require("flit").setup({
 	multiline = false,
-	labeled_modes = "nv",
+	labeled_modes = "nvo",
 })
 
 require("mini.ai").setup()

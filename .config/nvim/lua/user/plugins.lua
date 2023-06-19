@@ -22,7 +22,7 @@ return {
 	"ja-ford/delaytrain.nvim",
 	"stevanmilic/neoscroll.nvim",
 	"willothy/flatten.nvim",
-	{ "ggandor/leap.nvim", dependencies = { "ggandor/flit.nvim" } },
+	{ "ggandor/leap.nvim", dependencies = { "ggandor/flit.nvim", "tpope/vim-repeat" } },
 	"nvim-pack/nvim-spectre",
 	"chrishrb/gx.nvim",
 	"echasnovski/mini.ai",

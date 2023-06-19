@@ -100,6 +100,21 @@ whichkey.register(keymap, {
     nowait = false,
 })
 
+-- Bidirectional leap search for current window
+vim.keymap.set("n", "s", function()
+	local current_window = vim.fn.win_getid()
+	require("leap").leap({ target_windows = { current_window } })
+end)
+
+-- Bidirectional leap search for focused windows
+vim.keymap.set("n", "gs", function()
+	local windows = vim.api.nvim_tabpage_list_wins(0)
+	local focused_windows = vim.tbl_filter(function(win)
+		return vim.api.nvim_win_get_config(win).focusable
+	end, windows)
+	require("leap").leap({ target_windows = focused_windows })
+end)
+
 -- set-up go replace mappings
 vim.keymap.set("n", "gr", function() require('substitute').operator() end, { noremap = true })
 vim.keymap.set("n", "grl", function() require('substitute').line() end, { noremap = true })
