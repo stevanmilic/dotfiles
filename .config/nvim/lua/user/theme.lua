@@ -16,6 +16,7 @@ require("onenord").setup({
 		eob_lines = true,
 	},
 	custom_highlights = {
+		LspInlayHint = { fg = colors.light_gray, bg = colors.active },
 		Folded = { fg = colors.dark_blue, bg = colors.none, style = "none" },
 		StatusLineNC = { bg = "NONE" },
 		StatusLine = { bg = "NONE" },

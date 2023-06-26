@@ -22,12 +22,18 @@ local on_attach = function(client, bufnr)
 	-- Mappings.
 	local bufopts = { noremap = true, silent = true, buffer = bufnr }
 	vim.keymap.set("n", "<leader>D", vim.lsp.buf.declaration, bufopts)
-	vim.keymap.set("n", "<leader>d", vim.lsp.buf.definition, bufopts)
-	-- vim.keymap.set("n", "<leader>d", "<cmd>Trouble lsp_definitions<cr>", bufopts)
+	-- vim.keymap.set("n", "<leader>d", vim.lsp.buf.definition, bufopts)
+	vim.keymap.set("n", "<leader>d", "<cmd>Trouble lsp_definitions<cr>", bufopts)
 	vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
 	vim.keymap.set("n", "<leader>e", vim.lsp.buf.code_action, bufopts)
 	vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, bufopts)
 	vim.keymap.set("n", "<leader>q", toggle_diagnostics, bufopts)
+
+	if client.server_capabilities.inlayHintProvider then
+		vim.keymap.set("n", "<leader>p", function()
+			vim.lsp.buf.inlay_hint(0, nil)
+		end)
+	end
 
 	if client.supports_method("textDocument/formatting") then
 		local filetype = tostring(vim.fn.getbufvar(bufnr, "&filetype"))
@@ -65,9 +71,20 @@ end
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+local servers = {
+	"pyright",
+	"tsserver",
+	"rust_analyzer",
+	"lua_ls",
+	"gopls",
+	"golangci_lint_ls",
+	"helm_ls",
+	"bufls",
+}
+
 require("mason").setup()
 require("mason-lspconfig").setup({
-	automatic_installation = true,
+	ensure_installed = servers,
 })
 require("mason-nvim-dap").setup({
 	ensure_installed = { "python", "delve" },
@@ -83,22 +100,58 @@ require("neodev").setup({
 	library = { plugins = { "neotest" }, types = true },
 })
 local lspconfig = require("lspconfig")
-local servers = {
-	"pyright",
-	"tsserver",
-	"rust_analyzer",
-	"lua_ls",
-	"gopls",
-	"golangci_lint_ls",
-	"helm_ls",
-	"bufls",
-}
 local enhance_server_settings = {
 	pyright = {
 		python = {
 			analysis = {
 				useLibraryCodeForTypes = true,
 				diagnosticMode = "openFilesOnly",
+			},
+		},
+	},
+	lua_ls = {
+		Lua = {
+			hint = {
+				enable = true,
+			},
+		},
+	},
+	gopls = {
+		gopls = {
+			hints = {
+				assignVariableTypes = true,
+				compositeLiteralFields = true,
+				compositeLiteralTypes = true,
+				constantValues = true,
+				functionTypeParameters = true,
+				parameterNames = true,
+				rangeVariableTypes = true,
+			},
+		},
+	},
+	tsserver = {
+		typescript = {
+			inlayHints = {
+				includeInlayParameterNameHints = "all",
+				includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+				includeInlayFunctionParameterTypeHints = true,
+				includeInlayVariableTypeHints = true,
+				includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+				includeInlayPropertyDeclarationTypeHints = true,
+				includeInlayFunctionLikeReturnTypeHints = true,
+				includeInlayEnumMemberValueHints = true,
+			},
+		},
+		javascript = {
+			inlayHints = {
+				includeInlayParameterNameHints = "all",
+				includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+				includeInlayFunctionParameterTypeHints = true,
+				includeInlayVariableTypeHints = true,
+				includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+				includeInlayPropertyDeclarationTypeHints = true,
+				includeInlayFunctionLikeReturnTypeHints = true,
+				includeInlayEnumMemberValueHints = true,
 			},
 		},
 	},

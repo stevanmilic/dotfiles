@@ -12,6 +12,7 @@ telescope.setup({
 	defaults = {
 		selection_caret = "❯ ",
 		prompt_prefix = "🔍 ",
+		path_display = { "truncate" },
 		winblend = 0,
 		layout_config = {
 			horizontal = {
