@@ -18,7 +18,7 @@ return {
 	"kylechui/nvim-surround",
 	"rcarriga/nvim-notify",
 	"folke/which-key.nvim",
-	"johmsalas/text-case.nvim",
+	{ "tpope/vim-abolish", event = "VeryLazy" },
 	"ja-ford/delaytrain.nvim",
 	"stevanmilic/neoscroll.nvim",
 	"willothy/flatten.nvim",
@@ -71,6 +71,11 @@ return {
 		},
 	},
 	{
+		"pmizio/typescript-tools.nvim",
+		dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+		opts = {},
+	},
+	{
 		"hrsh7th/nvim-cmp",
 		event = "InsertEnter",
 		dependencies = {
@@ -82,6 +87,7 @@ return {
 			{ "L3MON4D3/LuaSnip", dependencies = "rafamadriz/friendly-snippets" },
 			"saadparwaiz1/cmp_luasnip",
 			"onsails/lspkind-nvim",
+			"lukas-reineke/cmp-under-comparator",
 		},
 	},
 	"folke/neodev.nvim",

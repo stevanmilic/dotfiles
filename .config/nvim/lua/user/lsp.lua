@@ -22,8 +22,8 @@ local on_attach = function(client, bufnr)
 	-- Mappings.
 	local bufopts = { noremap = true, silent = true, buffer = bufnr }
 	vim.keymap.set("n", "<leader>D", vim.lsp.buf.declaration, bufopts)
-	-- vim.keymap.set("n", "<leader>d", vim.lsp.buf.definition, bufopts)
-	vim.keymap.set("n", "<leader>d", "<cmd>Trouble lsp_definitions<cr>", bufopts)
+	vim.keymap.set("n", "<leader>d", vim.lsp.buf.definition, bufopts)
+	-- vim.keymap.set("n", "<leader>d", "<cmd>Trouble lsp_definitions<cr>", bufopts)
 	vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
 	vim.keymap.set("n", "<leader>e", vim.lsp.buf.code_action, bufopts)
 	vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, bufopts)
@@ -31,7 +31,7 @@ local on_attach = function(client, bufnr)
 
 	if client.server_capabilities.inlayHintProvider then
 		vim.keymap.set("n", "<leader>p", function()
-			vim.lsp.buf.inlay_hint(0, nil)
+			vim.lsp.inlay_hint(0, nil)
 		end)
 	end
 
@@ -73,7 +73,6 @@ local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 local servers = {
 	"pyright",
-	"tsserver",
 	"rust_analyzer",
 	"lua_ls",
 	"gopls",
@@ -126,32 +125,6 @@ local enhance_server_settings = {
 				functionTypeParameters = true,
 				parameterNames = true,
 				rangeVariableTypes = true,
-			},
-		},
-	},
-	tsserver = {
-		typescript = {
-			inlayHints = {
-				includeInlayParameterNameHints = "all",
-				includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-				includeInlayFunctionParameterTypeHints = true,
-				includeInlayVariableTypeHints = true,
-				includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-				includeInlayPropertyDeclarationTypeHints = true,
-				includeInlayFunctionLikeReturnTypeHints = true,
-				includeInlayEnumMemberValueHints = true,
-			},
-		},
-		javascript = {
-			inlayHints = {
-				includeInlayParameterNameHints = "all",
-				includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-				includeInlayFunctionParameterTypeHints = true,
-				includeInlayVariableTypeHints = true,
-				includeInlayVariableTypeHintsWhenTypeMatchesName = false,
-				includeInlayPropertyDeclarationTypeHints = true,
-				includeInlayFunctionLikeReturnTypeHints = true,
-				includeInlayEnumMemberValueHints = true,
 			},
 		},
 	},
@@ -243,6 +216,16 @@ cmp.setup({
 			preset = "codicons",
 		}),
 	},
+	sorting = {
+		comparators = {
+			cmp.config.compare.offset,
+			cmp.config.compare.exact,
+			cmp.config.compare.score,
+			cmp.config.compare.recently_used,
+			require("cmp-under-comparator").under,
+			cmp.config.compare.kind,
+		},
+	},
 	experimental = {
 		ghost_text = true,
 	},
@@ -273,14 +256,6 @@ cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 ----------------
 local null_ls = require("null-ls")
 
--- local utils = require("null-ls.utils")
--- local mypy = null_ls.builtins.diagnostics.mypy.with({
--- 	runtime_condition = function(params)
--- 		-- Only check for file that exists and that contain config file in its root.
--- 		return utils.path.exists(params.bufname) and utils.root_pattern("mypy.ini", "pyproject.toml")(params.bufname)
--- 	end,
--- })
-
 null_ls.setup({
 	on_attach = on_attach,
 	debug = true,
@@ -291,8 +266,7 @@ null_ls.setup({
 		null_ls.builtins.formatting.buf,
 		null_ls.builtins.formatting.prettier,
 		null_ls.builtins.formatting.stylua,
-		null_ls.builtins.formatting.gofmt,
-		-- mypy,
+		null_ls.builtins.formatting.golines,
 	},
 })
 
@@ -357,6 +331,12 @@ dap.listeners.before.event_exited["dapui_config"] = function()
 	dapui.close()
 end
 
+---------------------
+-- Typescript Metals Setup
+---------------------
+require("typescript-tools").setup({
+	on_attach = on_attach,
+})
 ---------------------
 -- Scala Metals Setup
 ---------------------

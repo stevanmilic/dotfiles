@@ -122,8 +122,6 @@ require("delaytrain").setup({
 	},
 })
 
-require("textcase").setup({})
-
 -- neoscroll config
 vim.keymap.set({ "n", "v" }, "<ScrollWheelUp>", "<C-y>")
 vim.keymap.set({ "n", "v" }, "<ScrollWheelDown>", "<C-e>")
