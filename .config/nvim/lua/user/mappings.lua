@@ -22,6 +22,7 @@ whichkey.setup({
 
 -- stylua: ignore start
 local keymap = {
+
     j = {
         name = "Debug",
         R = { function() require'dap'.run_to_cursor() end, "Run to Cursor" },
@@ -77,12 +78,13 @@ local keymap = {
         name = "Finder",
         w = { function () require("telescope.builtin").grep_string() end, "Find word", },
         a = { function () require("telescope.builtin").live_grep() end, "Find all", },
-        b = { function () require("telescope.builtin").buffers({sort_mru = true}) end, "Find all", },
+        b = { function () require("telescope.builtin").buffers({sort_mru = true}) end, "Buffers", },
         c = { function () require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="class"}) end, "Find class", },
         f = { function () require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="function"}) end, "Find function", },
         x = { function () require('telescope.builtin').lsp_dynamic_workspace_symbols({ignore_symbols="variable"}) end, "Find workspace symbol", },
         d = { function () require('telescope.builtin').lsp_document_symbols() end, "Find document symbol", },
         u = { function () require('telescope.builtin').lsp_references({include_declaration=false}) end, "Find references", },
+        i = { function () require('telescope.builtin').lsp_implementations() end, "Find implementations", },
         r = { function () require('telescope.builtin').resume() end, "Resume finder", },
     },
     n = {

@@ -20,6 +20,8 @@ require("onenord").setup({
 		StatusLineNC = { bg = "NONE" },
 		StatusLine = { bg = "NONE" },
 		["@parameter"] = { fg = colors.fg },
+		LeapMatch = { link = "Special" },
+		LeapLabelPrimary = { link = "IncSearch" },
 		TelescopeBorder = {
 			fg = colors.float,
 			bg = colors.float,
