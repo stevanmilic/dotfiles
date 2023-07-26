@@ -44,31 +44,6 @@ telescope.setup({
 		lsp_dynamic_workspace_symbols = {
 			sorter = telescope.extensions.fzf.native_fzf_sorter(fzf_opts),
 		},
-		buffers = {
-			previewer = false,
-			layout_config = {
-				width = 0.7,
-				height = 0.7,
-			},
-		},
-		lsp_implementations = {
-			layout_strategy = "vertical",
-			layout_config = {
-				width = 0.7,
-				height = 0.7,
-				preview_cutoff = 1,
-				mirror = false,
-			},
-		},
-		lsp_references = {
-			layout_strategy = "vertical",
-			layout_config = {
-				width = 0.7,
-				height = 0.7,
-				preview_cutoff = 1,
-				mirror = false,
-			},
-		},
 	},
 	extensions = {
 		fzf = fzf_opts,

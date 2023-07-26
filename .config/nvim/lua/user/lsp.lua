@@ -25,7 +25,7 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set("n", "<leader>d", vim.lsp.buf.definition, bufopts)
 	-- vim.keymap.set("n", "<leader>d", "<cmd>Trouble lsp_definitions<cr>", bufopts)
 	vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
-	vim.keymap.set("n", "<leader>e", vim.lsp.buf.code_action, bufopts)
+	vim.keymap.set({ "v", "n", "i" }, "<c-e>", vim.lsp.buf.code_action, bufopts)
 	vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, bufopts)
 	vim.keymap.set("n", "<leader>q", toggle_diagnostics, bufopts)
 
@@ -34,7 +34,6 @@ local on_attach = function(client, bufnr)
 			vim.lsp.inlay_hint(0, nil)
 		end)
 	end
-
 	if client.supports_method("textDocument/formatting") then
 		local filetype = tostring(vim.fn.getbufvar(bufnr, "&filetype"))
 		vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
@@ -51,7 +50,6 @@ local on_attach = function(client, bufnr)
 			end,
 		})
 	end
-
 	vim.api.nvim_create_autocmd("CursorHold", {
 		buffer = bufnr,
 		callback = function()
@@ -277,7 +275,7 @@ vim.diagnostic.config({
 	virtual_text = false,
 	signs = true,
 	underline = true,
-	update_in_insert = false,
+	update_in_insert = true,
 	severity_sort = false,
 })
 -- set lsp diagnostics icons
@@ -286,6 +284,11 @@ for type, icon in pairs(signs) do
 	local hl = "DiagnosticSign" .. type
 	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
+require("nvim-lightbulb").setup({
+	autocmd = { enabled = true },
+	virtual_text = { enabled = true },
+	sign = { enabled = false },
+})
 
 -- Override lsp float border globally
 local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview

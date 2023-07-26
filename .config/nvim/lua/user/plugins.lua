@@ -21,7 +21,7 @@ return {
 	{ "tpope/vim-abolish", event = "VeryLazy" },
 	"ja-ford/delaytrain.nvim",
 	"stevanmilic/neoscroll.nvim",
-	"willothy/flatten.nvim",
+	{ "willothy/flatten.nvim", commit = "d92c93959e9ac52a00002d6fd64c2d2ca5dd7192" },
 	{ "ggandor/leap.nvim", dependencies = { "ggandor/flit.nvim", "tpope/vim-repeat" } },
 	"nvim-pack/nvim-spectre",
 	"chrishrb/gx.nvim",
@@ -55,8 +55,12 @@ return {
 	{
 		"neovim/nvim-lspconfig",
 		name = "lsp",
+		commit = "e7be6d4ead7b9703aecacb0dc8882ff42533ecb2",
 		event = "BufReadPre",
-		dependencies = { "jose-elias-alvarez/null-ls.nvim" },
+		dependencies = {
+			"jose-elias-alvarez/null-ls.nvim",
+			"kosayoda/nvim-lightbulb",
+		},
 	},
 	"scalameta/nvim-metals",
 	"williamboman/mason.nvim",
