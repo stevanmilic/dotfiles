@@ -3,7 +3,7 @@ return {
 	"nvim-lua/plenary.nvim",
 	"nvim-telescope/telescope.nvim",
 	{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
-	{ "folke/trouble.nvim", config = true },
+	"folke/trouble.nvim",
 	"aserowy/tmux.nvim",
 	"rmehri01/onenord.nvim",
 	"terrortylor/nvim-comment",
@@ -20,13 +20,24 @@ return {
 	"folke/which-key.nvim",
 	{ "tpope/vim-abolish", event = "VeryLazy" },
 	"ja-ford/delaytrain.nvim",
-	"stevanmilic/neoscroll.nvim",
-	{ "willothy/flatten.nvim", commit = "d92c93959e9ac52a00002d6fd64c2d2ca5dd7192" },
+	"karb94/neoscroll.nvim",
+	"willothy/flatten.nvim",
 	{ "ggandor/leap.nvim", dependencies = { "ggandor/flit.nvim", "tpope/vim-repeat" } },
 	"nvim-pack/nvim-spectre",
 	"chrishrb/gx.nvim",
 	"echasnovski/mini.ai",
-	"windwp/nvim-autopairs",
+	{
+		"altermo/ultimate-autopair.nvim",
+		event = { "InsertEnter", "CmdlineEnter" },
+		branch = "development",
+	},
+	{
+		"yanskun/gotests.nvim",
+		ft = "go",
+		config = function()
+			require("gotests").setup()
+		end,
+	},
 	{ "folke/noice.nvim", dependencies = { "MunifTanjim/nui.nvim" } },
 	{
 		"rcarriga/neotest",
@@ -55,7 +66,6 @@ return {
 	{
 		"neovim/nvim-lspconfig",
 		name = "lsp",
-		commit = "e7be6d4ead7b9703aecacb0dc8882ff42533ecb2",
 		event = "BufReadPre",
 		dependencies = {
 			"jose-elias-alvarez/null-ls.nvim",
@@ -81,6 +91,7 @@ return {
 	},
 	{
 		"hrsh7th/nvim-cmp",
+		commit = "969c5affa55111f8af95a0696316a0775c2af2c7",
 		event = "InsertEnter",
 		dependencies = {
 			"hrsh7th/cmp-nvim-lsp",

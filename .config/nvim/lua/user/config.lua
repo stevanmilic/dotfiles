@@ -21,13 +21,15 @@ require("toggleterm").setup({
 	shade_terminals = true,
 	shading_factor = 1,
 	start_in_insert = true,
-	persist_mode = true,
+	persist_mode = false,
 	insert_mappings = false,
 	persist_size = true,
 	direction = "horizontal",
 	close_on_exit = true,
 	winbar = { enabled = true },
 })
+
+require("trouble").setup({})
 
 require("nvim_comment").setup({
 	hook = function()

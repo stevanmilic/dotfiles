@@ -22,7 +22,6 @@ whichkey.setup({
 
 -- stylua: ignore start
 local keymap = {
-
     j = {
         name = "Debug",
         R = { function() require'dap'.run_to_cursor() end, "Run to Cursor" },
@@ -80,7 +79,7 @@ local keymap = {
         a = { function () require("telescope.builtin").live_grep() end, "Find all", },
         b = { function () require("telescope.builtin").buffers({sort_mru = true}) end, "Buffers", },
         c = { function () require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="class"}) end, "Find class", },
-        f = { function () require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="function"}) end, "Find function", },
+        f = { function () require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols={"function", "method"}}) end, "Find function", },
         x = { function () require('telescope.builtin').lsp_dynamic_workspace_symbols({ignore_symbols="variable"}) end, "Find workspace symbol", },
         d = { function () require('telescope.builtin').lsp_document_symbols() end, "Find document symbol", },
         u = { function () require('telescope.builtin').lsp_references({include_declaration=false}) end, "Find references", },
@@ -174,15 +173,6 @@ local function smart_J()
 end
 vim.keymap.set("n", "J", smart_J, { noremap = true })
 
-local function smart_i()
-	if #vim.fn.getline(".") == 0 then
-		return [["_cc]]
-	else
-		return "i"
-	end
-end
-vim.keymap.set("n", "i", smart_i, { noremap = true, expr = true })
-
 -- additional mappings
 vim.cmd([[
   " use space to fold/unfold
@@ -204,9 +194,6 @@ vim.cmd([[
   nnoremap <silent> gb :BufferLinePick<CR>
   nnoremap <silent> <leader>st :windo bd!<CR>
   
-  "search selected text with //
-  vnoremap // y/<C-R>"<CR>
-  
   " Align blocks of text and keep them selected
   vmap < <gv
   vmap > >gv
@@ -217,4 +204,7 @@ vim.cmd([[
   " move tabs left and right
   nnoremap <leader>h :tabm -1<CR>
   nnoremap <leader>l :tabm +1<CR>
+
+  " disable command line window default mapping
+  nnoremap q: <nop>
 ]])

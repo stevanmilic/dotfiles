@@ -22,8 +22,10 @@ local on_attach = function(client, bufnr)
 	-- Mappings.
 	local bufopts = { noremap = true, silent = true, buffer = bufnr }
 	vim.keymap.set("n", "<leader>D", vim.lsp.buf.declaration, bufopts)
-	vim.keymap.set("n", "<leader>d", vim.lsp.buf.definition, bufopts)
-	-- vim.keymap.set("n", "<leader>d", "<cmd>Trouble lsp_definitions<cr>", bufopts)
+	-- vim.keymap.set("n", "<leader>d", vim.lsp.buf.definition, bufopts)
+	vim.keymap.set("n", "<leader>d", function()
+		require("trouble").open("lsp_definitions")
+	end, bufopts)
 	vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
 	vim.keymap.set({ "v", "n", "i" }, "<c-e>", vim.lsp.buf.code_action, bufopts)
 	vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, bufopts)
@@ -159,8 +161,7 @@ require("luasnip.loaders.from_vscode").lazy_load()
 
 local cmp = require("cmp")
 local lspkind = require("lspkind")
-local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-require("nvim-autopairs").setup({})
+require("ultimate-autopair").setup({})
 
 cmp.setup({
 	enabled = function()
@@ -247,7 +248,6 @@ cmp.setup.filetype({ "dap-repl", "dapui_watches", "dapui_hover" }, {
 		{ name = "dap" },
 	},
 })
-cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 
 ----------------
 -- null-ls setup
@@ -256,7 +256,7 @@ local null_ls = require("null-ls")
 
 null_ls.setup({
 	on_attach = on_attach,
-	debug = true,
+	debug = false,
 	sources = {
 		null_ls.builtins.formatting.black,
 		null_ls.builtins.formatting.isort,
@@ -275,7 +275,7 @@ vim.diagnostic.config({
 	virtual_text = false,
 	signs = true,
 	underline = true,
-	update_in_insert = true,
+	update_in_insert = false,
 	severity_sort = false,
 })
 -- set lsp diagnostics icons

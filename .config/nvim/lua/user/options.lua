@@ -23,10 +23,10 @@ vim.cmd([[
   set diffopt+=vertical,linematch:60
   set formatexpr=
   set updatetime=100
-  set splitkeep=screen
+  set splitkeep=cursor
   set nolazyredraw
   set jumpoptions=stack
-  set switchbuf=useopen
+  set switchbuf=usetab,newtab
 
   syntax enable "syntax highlight enebled
   set termguicolors
