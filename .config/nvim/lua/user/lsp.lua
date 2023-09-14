@@ -50,8 +50,18 @@ local on_attach = function(client, bufnr)
 	})
 end
 
+local luv = require("luv")
+local is_wsl = luv.os_uname()["release"]:lower():match("microsoft") and true or false
+
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
+if is_wsl then
+	capabilities.workspace = {
+		didChangeWatchedFiles = { dynamicRegistration = false },
+	}
+end
+
+require("gx").setup(is_wsl and { open_browser_app = "wslview" } or {})
 
 local servers = {
 	"pyright",
