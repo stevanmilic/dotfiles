@@ -1,5 +1,5 @@
 return {
-	"kyazdani42/nvim-web-devicons",
+	"nvim-tree/nvim-web-devicons",
 	"nvim-lua/plenary.nvim",
 	"nvim-telescope/telescope.nvim",
 	{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
@@ -7,7 +7,7 @@ return {
 	"aserowy/tmux.nvim",
 	"rmehri01/onenord.nvim",
 	"terrortylor/nvim-comment",
-	"kyazdani42/nvim-tree.lua",
+	"nvim-tree/nvim-tree.lua",
 	"akinsho/bufferline.nvim",
 	"kazhala/close-buffers.nvim",
 	"akinsho/toggleterm.nvim",
@@ -49,6 +49,7 @@ return {
 			"stevanmilic/neotest-scala",
 		},
 	},
+	{ "stevearc/conform.nvim", opts = {} },
 
 	-- tree-sitter
 	{
@@ -58,7 +59,6 @@ return {
 			"nvim-treesitter/nvim-treesitter-textobjects",
 			"nvim-treesitter/playground",
 			"JoosepAlviste/nvim-ts-context-commentstring",
-			"yioneko/nvim-yati",
 		},
 	},
 
@@ -67,10 +67,7 @@ return {
 		"neovim/nvim-lspconfig",
 		name = "lsp",
 		event = "BufReadPre",
-		dependencies = {
-			"jose-elias-alvarez/null-ls.nvim",
-			"kosayoda/nvim-lightbulb",
-		},
+		dependencies = { "kosayoda/nvim-lightbulb" },
 	},
 	"scalameta/nvim-metals",
 	"williamboman/mason.nvim",

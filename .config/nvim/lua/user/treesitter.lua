@@ -6,15 +6,12 @@ require("nvim-treesitter.configs").setup({
 	ignore_install = { "phpdoc" },
 	incremental_selection = { enable = false },
 	indent = {
-		enable = false,
+		enable = true,
 	},
 	query_linter = {
 		enable = true,
 		use_virtual_text = true,
 		lint_events = { "BufWrite", "CursorHold" },
-	},
-	yati = {
-		enable = true,
 	},
 	textobjects = {
 		select = {

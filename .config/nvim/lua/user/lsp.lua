@@ -3,8 +3,6 @@ local border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }
 --------------------
 -- lsp-config setup
 --------------------
-local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
-
 local toggle_diagnostics = function()
 	if vim.diagnostic.is_disabled() then
 		vim.diagnostic.enable()
@@ -35,22 +33,6 @@ local on_attach = function(client, bufnr)
 		vim.keymap.set("n", "<leader>p", function()
 			vim.lsp.inlay_hint(0, nil)
 		end)
-	end
-	if client.supports_method("textDocument/formatting") then
-		local filetype = tostring(vim.fn.getbufvar(bufnr, "&filetype"))
-		vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-		vim.api.nvim_create_autocmd("BufWritePre", {
-			group = augroup,
-			buffer = bufnr,
-			callback = function()
-				vim.lsp.buf.format({
-					bufnr = bufnr,
-					filter = function(c)
-						return (c.name == "null-ls" or c.name == "metals") and filetype ~= "yaml"
-					end,
-				})
-			end,
-		})
 	end
 	vim.api.nvim_create_autocmd("CursorHold", {
 		buffer = bufnr,
@@ -249,22 +231,22 @@ cmp.setup.filetype({ "dap-repl", "dapui_watches", "dapui_hover" }, {
 	},
 })
 
-----------------
--- null-ls setup
-----------------
-local null_ls = require("null-ls")
-
-null_ls.setup({
-	on_attach = on_attach,
-	debug = false,
-	sources = {
-		null_ls.builtins.formatting.black,
-		null_ls.builtins.formatting.isort,
-		null_ls.builtins.diagnostics.buf,
-		null_ls.builtins.formatting.buf,
-		null_ls.builtins.formatting.prettier,
-		null_ls.builtins.formatting.stylua,
-		null_ls.builtins.formatting.golines,
+-------------------
+-- formatting setup
+-------------------
+require("conform").setup({
+	formatters_by_ft = {
+		lua = { "stylua" },
+		python = { "isort", "black" },
+		javascript = { "prettier" },
+		typescriptreact = { "prettier" },
+		typescript = { "prettier" },
+		go = { "golines" },
+	},
+	format_on_save = {
+		-- These options will be passed to conform.format()
+		timeout_ms = 500,
+		lsp_fallback = true,
 	},
 })
 
