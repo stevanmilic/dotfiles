@@ -77,6 +77,7 @@ return {
 		dependencies = {
 			"rcarriga/nvim-dap-ui",
 			"jay-babu/mason-nvim-dap.nvim",
+			{ "leoluz/nvim-dap-go" },
 			{ "theHamsta/nvim-dap-virtual-text", config = true },
 			{ "LiadOz/nvim-dap-repl-highlights", config = true },
 		},

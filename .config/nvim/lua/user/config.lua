@@ -94,7 +94,10 @@ vim.o.foldlevelstart = 99
 vim.o.foldenable = true
 require("ufo").setup({
 	open_fold_hl_timeout = 0,
-	provider_selector = function(_, _)
+	provider_selector = function(_, filetype, _)
+		if filetype == "scala" then
+			return "lsp"
+		end
 		return "treesitter"
 	end,
 })
@@ -171,10 +174,6 @@ require("flatten").setup({
 		gitrebase = true,
 	},
 })
-
-local luv = require("luv")
-local is_wsl = luv.os_uname()["release"]:lower():match("microsoft") and true or false
-require("gx").setup(is_wsl and { open_browser_app = "wslview" } or {})
 
 require("git-conflict").setup({
 	disable_diagnostics = true,

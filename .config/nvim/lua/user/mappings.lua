@@ -49,7 +49,13 @@ local keymap = {
         name = "Testing",
         n = { function() require('neotest').run.run() end, "Run Nearest" },
         f = { function() require('neotest').run.run(vim.fn.expand('%')) end, "Run File" },
-        d = { function() require('neotest').run.run({strategy = 'dap'}) end, "Run Debug" },
+        d = { function()
+            if vim.bo.filetype == 'go' then
+                 require('dap-go').debug_test()
+            else
+                require('neotest').run.run({ strategy = 'dap' })
+            end
+        end, "Run Debug" },
         l = { function() require('neotest').run.run_last() end, "Run Last" },
         o = { function() require('neotest').output.open({ enter = true }) end, "Output" },
         a = { function() require('neotest').run.attach() end, "Attach" },

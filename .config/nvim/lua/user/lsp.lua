@@ -55,6 +55,10 @@ local is_wsl = luv.os_uname()["release"]:lower():match("microsoft") and true or 
 
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
+capabilities.textDocument.foldingRange = {
+	dynamicRegistration = false,
+	lineFoldingOnly = true,
+}
 if is_wsl then
 	capabilities.workspace = {
 		didChangeWatchedFiles = { dynamicRegistration = false },
@@ -86,6 +90,7 @@ require("mason-nvim-dap").setup({
 		end,
 	},
 })
+require("dap-go").setup()
 
 require("neodev").setup({
 	library = { plugins = { "neotest" }, types = true },
@@ -252,6 +257,7 @@ require("conform").setup({
 		typescriptreact = { "prettier" },
 		typescript = { "prettier" },
 		go = { "golines" },
+		proto = { "buf" },
 	},
 	format_on_save = {
 		-- These options will be passed to conform.format()
@@ -326,12 +332,11 @@ dap.listeners.before.event_exited["dapui_config"] = function()
 	dapui.close()
 end
 
----------------------
--- Typescript Metals Setup
----------------------
-require("typescript-tools").setup({
-	on_attach = on_attach,
-})
+-------------------------
+-- Typescript Tools Setup
+-------------------------
+require("typescript-tools").setup({ on_attach = on_attach })
+
 ---------------------
 -- Scala Metals Setup
 ---------------------
