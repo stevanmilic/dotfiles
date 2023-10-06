@@ -49,7 +49,7 @@ return {
 			"stevanmilic/neotest-scala",
 		},
 	},
-	{ "stevearc/conform.nvim", opts = {} },
+	"stevearc/conform.nvim",
 
 	-- tree-sitter
 	{
@@ -77,7 +77,7 @@ return {
 		dependencies = {
 			"rcarriga/nvim-dap-ui",
 			"jay-babu/mason-nvim-dap.nvim",
-			{ "leoluz/nvim-dap-go" },
+			"leoluz/nvim-dap-go",
 			{ "theHamsta/nvim-dap-virtual-text", config = true },
 			{ "LiadOz/nvim-dap-repl-highlights", config = true },
 		},

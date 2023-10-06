@@ -4,7 +4,13 @@ require("nvim-treesitter.configs").setup({
 		enable = true, -- false will disable the whole extension
 	},
 	ignore_install = { "phpdoc" },
-	incremental_selection = { enable = false },
+	incremental_selection = {
+		enable = true,
+		keymaps = {
+			node_incremental = "v",
+			node_decremental = "V",
+		},
+	},
 	indent = {
 		enable = true,
 	},

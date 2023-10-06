@@ -35,7 +35,9 @@ require("toggleterm").setup({
 	winbar = { enabled = true },
 })
 
-require("trouble").setup({})
+require("trouble").setup({
+	auto_preview = false,
+})
 
 require("nvim_comment").setup({
 	hook = function()
@@ -101,6 +103,23 @@ require("ufo").setup({
 		return "treesitter"
 	end,
 })
+vim.keymap.set("n", "zR", function()
+	require("ufo").openAllFolds()
+end)
+vim.keymap.set("n", "zM", function()
+	require("ufo").closeAllFolds()
+end)
+
+-- function HighlightedFoldtext()
+-- 	local f = vim.treesitter.foldtext()
+-- 	if type(f) == "table" then
+-- 		table.insert(f, { " ⋯" })
+-- 	end
+-- 	return f
+-- end
+-- vim.wo.foldtext = [[luaeval('HighlightedFoldtext')()]]
+-- vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+-- vim.wo.foldmethod = "expr"
 
 require("gitlinker").setup({
 	opts = { print_url = false, highlight_duration = 300 },
@@ -154,8 +173,8 @@ require("neoscroll").setup({
 	end,
 })
 require("neoscroll.config").set_mappings({
-	["<C-b>"] = { "scroll", { "-0.25", "false", "200" } },
-	["<C-f>"] = { "scroll", { "0.25", "false", "200" } },
+	["<C-b>"] = { "scroll", { "-0.20", "false", "200" } },
+	["<C-f>"] = { "scroll", { "0.20", "false", "200" } },
 })
 
 require("flit").setup({

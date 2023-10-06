@@ -93,7 +93,7 @@ require("mason-nvim-dap").setup({
 require("dap-go").setup()
 
 require("neodev").setup({
-	library = { plugins = { "neotest" }, types = true },
+	library = { plugins = { "neotest", "nvim-dap-ui" }, types = true },
 })
 local lspconfig = require("lspconfig")
 local enhance_server_settings = {
@@ -158,7 +158,12 @@ require("luasnip.loaders.from_vscode").lazy_load()
 
 local cmp = require("cmp")
 local lspkind = require("lspkind")
-require("ultimate-autopair").setup({})
+require("ultimate-autopair").setup({
+	fastwarp = {
+		map = "<C-w>",
+		rmap = "<C-a>",
+	},
+})
 
 cmp.setup({
 	enabled = function()
@@ -259,9 +264,10 @@ require("conform").setup({
 		go = { "golines" },
 		proto = { "buf" },
 	},
+	-- format_after_save = {
 	format_on_save = {
 		-- These options will be passed to conform.format()
-		timeout_ms = 500,
+		timeout_ms = 1000,
 		lsp_fallback = true,
 	},
 })
@@ -319,6 +325,8 @@ dapui.setup({
 		},
 	},
 })
+
+require("nvim-dap-virtual-text").setup()
 
 vim.fn.sign_define("DapBreakpoint", { text = "🛑", texthl = "", linehl = "", numhl = "" })
 

@@ -47,10 +47,7 @@ vim.cmd([[
   set laststatus=0
   set noruler
   set statusline=─
-  set fillchars+=stl:─,stlnc:─
+  set fillchars+=stl:─,stlnc:─,fold:\ 
 ]])
 
--- vim.wo.foldmethod = "expr"
--- vim.wo.foldtext = ""
--- vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.g.mapleader = ","

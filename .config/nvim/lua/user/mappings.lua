@@ -39,6 +39,7 @@ local keymap = {
         x = { function() require'dap'.terminate() end, "Terminate" },
         u = { function() require'dap'.step_out() end, "Step Out" },
         j = { function() require'dap'.goto_() end, "Jump To Cursor" },
+        v = { function() require'nvim-dap-virtual-text'.toggle() end, "Toggle Virtual Text" },
     },
     i = {
         name = "Diagnostics",
@@ -126,10 +127,6 @@ end)
 vim.keymap.set("n", "gr", function() require('substitute').operator() end, { noremap = true })
 vim.keymap.set("n", "grl", function() require('substitute').line() end, { noremap = true })
 vim.keymap.set("x", "gr", function() require('substitute').visual() end, { noremap = true })
-
--- use ufo to close/open all folds
-vim.keymap.set("n", "zR", function() require('ufo').openAllFolds() end)
-vim.keymap.set("n", "zM", function() require('ufo').closeAllFolds() end)
 
 -- center the search term while iterating
 vim.keymap.set("n", "n", "nzzzv")
