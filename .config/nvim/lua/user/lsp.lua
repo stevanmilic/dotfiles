@@ -160,7 +160,7 @@ local cmp = require("cmp")
 local lspkind = require("lspkind")
 require("ultimate-autopair").setup({
 	fastwarp = {
-		map = "<C-w>",
+		map = "<C-s>",
 		rmap = "<C-a>",
 	},
 })
@@ -264,8 +264,7 @@ require("conform").setup({
 		go = { "golines" },
 		proto = { "buf" },
 	},
-	-- format_after_save = {
-	format_on_save = {
+	format_after_save = {
 		-- These options will be passed to conform.format()
 		timeout_ms = 1000,
 		lsp_fallback = true,

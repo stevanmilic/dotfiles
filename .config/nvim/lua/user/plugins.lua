@@ -57,6 +57,10 @@ return {
 		build = ":TSUpdate",
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter-textobjects",
+			{
+				"nvim-treesitter/nvim-treesitter-context",
+				opts = { max_lines = 1, trim_scope = "inner" },
+			},
 			"nvim-treesitter/playground",
 			"JoosepAlviste/nvim-ts-context-commentstring",
 		},
