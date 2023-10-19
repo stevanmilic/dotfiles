@@ -50,6 +50,7 @@ return {
 		},
 	},
 	"stevearc/conform.nvim",
+	"mfussenegger/nvim-lint",
 
 	-- tree-sitter
 	{
@@ -59,7 +60,7 @@ return {
 			"nvim-treesitter/nvim-treesitter-textobjects",
 			{
 				"nvim-treesitter/nvim-treesitter-context",
-				opts = { max_lines = 1, trim_scope = "inner" },
+				opts = { max_lines = 2, multiline_threshold = 1, trim_scope = "inner" },
 			},
 			"nvim-treesitter/playground",
 			"JoosepAlviste/nvim-ts-context-commentstring",
@@ -72,6 +73,13 @@ return {
 		name = "lsp",
 		event = "BufReadPre",
 		dependencies = { "kosayoda/nvim-lightbulb" },
+	},
+	{
+		"hinell/lsp-timeout.nvim",
+		dependencies = { "neovim/nvim-lspconfig" },
+		init = function()
+			vim.g["lsp-timeout-config"] = {}
+		end,
 	},
 	"scalameta/nvim-metals",
 	"williamboman/mason.nvim",

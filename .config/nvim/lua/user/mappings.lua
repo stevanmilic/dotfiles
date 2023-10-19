@@ -126,7 +126,7 @@ end)
 -- set-up go replace mappings
 vim.keymap.set("n", "gr", function() require('substitute').operator() end, { noremap = true })
 vim.keymap.set("n", "grl", function() require('substitute').line() end, { noremap = true })
-vim.keymap.set("x", "gr", function() require('substitute').visual() end, { noremap = true })
+vim.keymap.set("x", "s", function() require('substitute').visual() end, { noremap = true })
 
 -- center the search term while iterating
 vim.keymap.set("n", "n", "nzzzv")

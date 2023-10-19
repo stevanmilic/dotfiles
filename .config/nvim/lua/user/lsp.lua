@@ -102,6 +102,7 @@ local enhance_server_settings = {
 			analysis = {
 				useLibraryCodeForTypes = true,
 				diagnosticMode = "openFilesOnly",
+				autoSearchPaths = true,
 			},
 		},
 	},
@@ -269,6 +270,19 @@ require("conform").setup({
 		timeout_ms = 1000,
 		lsp_fallback = true,
 	},
+})
+
+----------------
+-- linting setup
+----------------
+require("lint").linters_by_ft = {
+	proto = { "buf_lint" },
+}
+
+vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+	callback = function()
+		require("lint").try_lint()
+	end,
 })
 
 --------------------
