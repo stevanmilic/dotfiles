@@ -16,7 +16,6 @@ end
 local on_attach = function(client, bufnr)
 	-- Reset formatexpr set by lsp module.
 	vim.opt_local.formatexpr = ""
-
 	-- Mappings.
 	local bufopts = { noremap = true, silent = true, buffer = bufnr }
 	vim.keymap.set("n", "<leader>D", vim.lsp.buf.declaration, bufopts)
@@ -34,20 +33,6 @@ local on_attach = function(client, bufnr)
 			vim.lsp.inlay_hint(0, nil)
 		end)
 	end
-	vim.api.nvim_create_autocmd("CursorHold", {
-		buffer = bufnr,
-		callback = function()
-			local opts = {
-				focusable = false,
-				close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
-				border = "rounded",
-				source = "always",
-				prefix = " ",
-				scope = "line",
-			}
-			vim.diagnostic.open_float(nil, opts)
-		end,
-	})
 end
 
 local luv = require("luv")
@@ -208,9 +193,9 @@ cmp.setup({
 		{ name = "nvim_lsp" },
 		{ name = "luasnip" },
 	},
-	window = {
-		documentation = { border = border },
-	},
+	-- window = {
+	-- 	documentation = { border = border },
+	-- },
 	formatting = {
 		format = lspkind.cmp_format({
 			mode = "symbol", -- show only symbol annotations
@@ -278,7 +263,6 @@ require("conform").setup({
 require("lint").linters_by_ft = {
 	proto = { "buf_lint" },
 }
-
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 	callback = function()
 		require("lint").try_lint()
@@ -296,7 +280,7 @@ vim.diagnostic.config({
 	severity_sort = false,
 })
 -- set lsp diagnostics icons
-local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+local signs = { Error = "●", Warn = "●", Hint = " ", Info = " " }
 for type, icon in pairs(signs) do
 	local hl = "DiagnosticSign" .. type
 	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
@@ -306,14 +290,18 @@ require("nvim-lightbulb").setup({
 	virtual_text = { enabled = true },
 	sign = { enabled = false },
 })
+require("diagflow").setup({
+	scope = "line",
+	update_event = { "DiagnosticChanged", "BufReadPost", "CursorMoved" },
+})
 
 -- Override lsp float border globally
-local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
-function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
-	opts = opts or {}
-	opts.border = opts.border or border
-	return orig_util_open_floating_preview(contents, syntax, opts, ...)
-end
+-- local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+-- function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+-- 	opts = opts or {}
+-- 	opts.border = opts.border or border
+-- 	return orig_util_open_floating_preview(contents, syntax, opts, ...)
+-- end
 
 ------------
 -- dap setup

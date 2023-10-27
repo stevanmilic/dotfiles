@@ -5,7 +5,11 @@ return {
 	{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 	"folke/trouble.nvim",
 	"aserowy/tmux.nvim",
-	"rmehri01/onenord.nvim",
+	{
+		"gbprod/nord.nvim",
+		lazy = false,
+		priority = 1000,
+	},
 	"terrortylor/nvim-comment",
 	"nvim-tree/nvim-tree.lua",
 	"akinsho/bufferline.nvim",
@@ -19,7 +23,6 @@ return {
 	"rcarriga/nvim-notify",
 	"folke/which-key.nvim",
 	{ "tpope/vim-abolish", event = "VeryLazy" },
-	"ja-ford/delaytrain.nvim",
 	"karb94/neoscroll.nvim",
 	"willothy/flatten.nvim",
 	{ "ggandor/leap.nvim", dependencies = { "ggandor/flit.nvim", "tpope/vim-repeat" } },
@@ -75,11 +78,8 @@ return {
 		dependencies = { "kosayoda/nvim-lightbulb" },
 	},
 	{
-		"hinell/lsp-timeout.nvim",
-		dependencies = { "neovim/nvim-lspconfig" },
-		init = function()
-			vim.g["lsp-timeout-config"] = {}
-		end,
+		"dgagn/diagflow.nvim",
+		event = "LspAttach",
 	},
 	"scalameta/nvim-metals",
 	"williamboman/mason.nvim",
@@ -96,12 +96,11 @@ return {
 	},
 	{
 		"pmizio/typescript-tools.nvim",
-		dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {},
 	},
 	{
 		"hrsh7th/nvim-cmp",
-		commit = "969c5affa55111f8af95a0696316a0775c2af2c7",
 		event = "InsertEnter",
 		dependencies = {
 			"hrsh7th/cmp-nvim-lsp",
@@ -125,6 +124,7 @@ return {
 	-- git
 	{ "tpope/vim-fugitive", event = "VeryLazy" },
 	{ "akinsho/git-conflict.nvim", version = "*", config = true },
+	{ "lewis6991/gitsigns.nvim" },
 	-- TODO: revert to original repo once the PR is merged.
 	"stevanmilic/gitlinker.nvim",
 }

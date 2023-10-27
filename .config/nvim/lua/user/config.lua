@@ -16,6 +16,8 @@ require("nvim-tree").setup({
 	},
 })
 
+require("gitsigns").setup()
+
 require("toggleterm").setup({
 	size = function(_)
 		return vim.o.lines * 0.48
@@ -141,14 +143,6 @@ require("tmux").setup({
 	},
 	copy_sync = {
 		enable = false,
-	},
-})
-
-require("delaytrain").setup({
-	delay_ms = 1000,
-	grace_period = 2,
-	keys = {
-		["nv"] = { "h", "j", "k", "l" },
 	},
 })
 
