@@ -1,3 +1,5 @@
+local c = require("nord.colors").palette
+c.frost.ice = "#7BADC3" -- a slightly darker variation of original color
 require("nord").setup({
 	borders = true,
 	on_highlights = function(highlights, colors)

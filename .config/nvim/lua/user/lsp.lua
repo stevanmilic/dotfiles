@@ -19,10 +19,10 @@ local on_attach = function(client, bufnr)
 	-- Mappings.
 	local bufopts = { noremap = true, silent = true, buffer = bufnr }
 	vim.keymap.set("n", "<leader>D", vim.lsp.buf.declaration, bufopts)
-	-- vim.keymap.set("n", "<leader>d", vim.lsp.buf.definition, bufopts)
-	vim.keymap.set("n", "<leader>d", function()
-		require("trouble").open("lsp_definitions")
-	end, bufopts)
+	vim.keymap.set("n", "<leader>d", vim.lsp.buf.definition, bufopts)
+	-- vim.keymap.set("n", "<leader>d", function()
+	-- 	require("trouble").open("lsp_definitions")
+	-- end, bufopts)
 	vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
 	vim.keymap.set({ "v", "n", "i" }, "<c-e>", vim.lsp.buf.code_action, bufopts)
 	vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, bufopts)
@@ -33,6 +33,20 @@ local on_attach = function(client, bufnr)
 			vim.lsp.inlay_hint(0, nil)
 		end)
 	end
+	vim.api.nvim_create_autocmd("CursorHold", {
+		buffer = bufnr,
+		callback = function()
+			local opts = {
+				focusable = false,
+				close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+				border = "rounded",
+				source = "always",
+				prefix = " ",
+				scope = "line",
+			}
+			vim.diagnostic.open_float(nil, opts)
+		end,
+	})
 end
 
 local luv = require("luv")
@@ -85,7 +99,7 @@ local enhance_server_settings = {
 	pyright = {
 		python = {
 			analysis = {
-				useLibraryCodeForTypes = true,
+				useLibraryCodeForTypes = false,
 				diagnosticMode = "openFilesOnly",
 				autoSearchPaths = true,
 			},
@@ -131,6 +145,7 @@ vim.lsp.handlers["textDocument/definition"] = function(err, result, ctx, config)
 	end
 	current_definition_handler(err, result, ctx, config)
 end
+
 -----------------
 -- nvim-cmp setup
 -- --------------
@@ -163,7 +178,6 @@ cmp.setup({
 	mapping = {
 		["<C-b>"] = cmp.mapping.scroll_docs(-4),
 		["<C-f>"] = cmp.mapping.scroll_docs(4),
-		["<C-Space>"] = cmp.mapping.complete(),
 		["<Tab>"] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_next_item()
@@ -175,6 +189,7 @@ cmp.setup({
 				fallback()
 			end
 		end, { "i", "s" }),
+		["<C-h>"] = cmp.mapping.complete(),
 		["<S-Tab>"] = cmp.mapping(function(fallback)
 			if cmp.visible() then
 				cmp.select_prev_item()
@@ -185,7 +200,7 @@ cmp.setup({
 			end
 		end, { "i", "s" }),
 		["<CR>"] = cmp.mapping.confirm({
-			behavior = cmp.ConfirmBehavior.Replace,
+			-- behavior = cmp.ConfirmBehavior.Replace,
 			select = true,
 		}),
 	},
@@ -290,10 +305,6 @@ require("nvim-lightbulb").setup({
 	virtual_text = { enabled = true },
 	sign = { enabled = false },
 })
-require("diagflow").setup({
-	scope = "line",
-	update_event = { "DiagnosticChanged", "BufReadPost", "CursorMoved" },
-})
 
 -- Override lsp float border globally
 -- local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
@@ -331,9 +342,9 @@ require("nvim-dap-virtual-text").setup()
 
 vim.fn.sign_define("DapBreakpoint", { text = "🛑", texthl = "", linehl = "", numhl = "" })
 
-dap.listeners.after.event_initialized["dapui_config"] = function()
-	dapui.open()
-end
+-- dap.listeners.after.event_initialized["dapui_config"] = function()
+-- 	dapui.open()
+-- end
 dap.listeners.before.event_terminated["dapui_config"] = function()
 	dapui.close()
 end

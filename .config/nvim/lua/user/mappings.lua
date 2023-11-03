@@ -58,7 +58,7 @@ local keymap = {
             end
         end, "Run Debug" },
         l = { function() require('neotest').run.run_last() end, "Run Last" },
-        o = { function() require('neotest').output.open({ enter = true }) end, "Output" },
+        o = { function() require('neotest').output.open({ enter = true, last_run = true }) end, "Output" },
         a = { function() require('neotest').run.attach() end, "Attach" },
         x = { function() require('neotest').run.stop() end, "Stop" },
         s = { function() require('neotest').summary.open() end, "Summary" },
@@ -77,8 +77,7 @@ local keymap = {
     },
     g = {
         name = "Git",
-        d = { "<cmd>Gdiff<CR>", "Git diff" },
-        b = { "<cmd>Git blame<CR>", "Git blame" },
+        b = { "<cmd>ToggleBlame<CR>", "Git blame" },
     },
     f = {
         name = "Finder",
@@ -139,6 +138,12 @@ vim.keymap.set({"t", "n"}, "<leader>;", "<cmd>resize<CR>")
 vim.keymap.set('n', '<leader>S', function () require("spectre").open() end , { desc = "Open Spectre" })
 vim.keymap.set('n', '<leader>sw', function () require("spectre").open_visual({select_word=true}) end, { desc = "Search current word" })
 
+-- scrolling
+vim.keymap.set('n', '<c-u>', '5<c-y>')
+vim.keymap.set('n', '<c-d>', '5<c-e>')
+vim.keymap.set('n', '<c-b>', '10<c-y>')
+vim.keymap.set('n', '<c-f>', '10<c-e>')
+
 vim.keymap.set("t", "<esc>", [[<C-\><C-n>]])
 
 -- stylua: ignore end
@@ -175,6 +180,66 @@ local function smart_J()
 	vim.cmd("normal! `z")
 end
 vim.keymap.set("n", "J", smart_J, { noremap = true })
+
+-- auto import
+local cmp = require("cmp")
+
+local has_unresolved_import_error = function()
+	local line, _ = unpack(vim.api.nvim_win_get_cursor(0))
+	local diagnostics = vim.diagnostic.get(0, { lnum = line - 1, severity = vim.diagnostic.severity.ERROR })
+	if next(diagnostics) == nil then
+		return false
+	end
+	for _, diagnostic in ipairs(diagnostics) do
+		if diagnostic.code == "reportUndefinedVariable" then
+			return true
+		end
+	end
+	return false
+end
+
+local is_only_exact_match = function()
+	local entries = cmp.get_entries()
+	if #entries == 0 then
+		return false
+	end
+
+	local exact_entries = 0
+	for _, entry in ipairs(entries) do
+		if entry.exact then
+			exact_entries = exact_entries + 1
+		end
+	end
+
+	return exact_entries == 1
+end
+
+local auto_import = function()
+	vim.schedule(function()
+		if not has_unresolved_import_error() then
+			vim.notify("no unresolved import error")
+			return
+		end
+		cmp.event:on("menu_opened", function()
+			if is_only_exact_match() then
+				cmp.event:on("confirm_done", function()
+					vim.cmd("stopinsert")
+					cmp.event:clear()
+				end)
+				cmp.confirm({ select = true })
+			elseif not cmp.visible() then
+				cmp.event:clear()
+				vim.cmd("stopinsert")
+				vim.notify("no imports found")
+			else
+				cmp.event:clear()
+			end
+		end)
+		vim.fn.feedkeys(vim.api.nvim_replace_termcodes('wbea<Cmd>lua require("cmp").complete()<CR>', true, true, true))
+	end)
+end
+
+vim.keymap.set("n", "<leader>a", auto_import, { noremap = true })
 
 -- additional mappings
 vim.cmd([[

@@ -23,7 +23,6 @@ return {
 	"rcarriga/nvim-notify",
 	"folke/which-key.nvim",
 	{ "tpope/vim-abolish", event = "VeryLazy" },
-	"karb94/neoscroll.nvim",
 	"willothy/flatten.nvim",
 	{ "ggandor/leap.nvim", dependencies = { "ggandor/flit.nvim", "tpope/vim-repeat" } },
 	"nvim-pack/nvim-spectre",
@@ -75,11 +74,9 @@ return {
 		"neovim/nvim-lspconfig",
 		name = "lsp",
 		event = "BufReadPre",
-		dependencies = { "kosayoda/nvim-lightbulb" },
-	},
-	{
-		"dgagn/diagflow.nvim",
-		event = "LspAttach",
+		dependencies = {
+			"kosayoda/nvim-lightbulb",
+		},
 	},
 	"scalameta/nvim-metals",
 	"williamboman/mason.nvim",
@@ -122,9 +119,9 @@ return {
 	"vim-scripts/ebnf.vim",
 
 	-- git
-	{ "tpope/vim-fugitive", event = "VeryLazy" },
 	{ "akinsho/git-conflict.nvim", version = "*", config = true },
-	{ "lewis6991/gitsigns.nvim" },
+	"lewis6991/gitsigns.nvim",
+	"FabijanZulj/blame.nvim",
 	-- TODO: revert to original repo once the PR is merged.
 	"stevanmilic/gitlinker.nvim",
 }

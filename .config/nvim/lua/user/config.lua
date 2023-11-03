@@ -16,7 +16,58 @@ require("nvim-tree").setup({
 	},
 })
 
-require("gitsigns").setup()
+require("gitsigns").setup({
+	on_attach = function(bufnr)
+		local gs = package.loaded.gitsigns
+
+		local function map(mode, l, r, opts)
+			opts = opts or {}
+			opts.buffer = bufnr
+			vim.keymap.set(mode, l, r, opts)
+		end
+
+		-- Navigation
+		map("n", "]c", function()
+			if vim.wo.diff then
+				return "]c"
+			end
+			vim.schedule(function()
+				gs.next_hunk()
+			end)
+			return "<Ignore>"
+		end, { expr = true })
+
+		map("n", "[c", function()
+			if vim.wo.diff then
+				return "[c"
+			end
+			vim.schedule(function()
+				gs.prev_hunk()
+			end)
+			return "<Ignore>"
+		end, { expr = true })
+
+		-- Actions
+		map("n", "<leader>gs", gs.stage_hunk)
+		map("n", "<leader>gr", gs.reset_hunk)
+		map("v", "<leader>gs", function()
+			gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+		end)
+		map("v", "<leader>gr", function()
+			gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+		end)
+		map("n", "<leader>gS", gs.stage_buffer)
+		map("n", "<leader>gu", gs.undo_stage_hunk)
+		map("n", "<leader>gR", gs.reset_buffer)
+		map("n", "<leader>gp", gs.preview_hunk)
+		map("n", "<leader>gd", gs.diffthis)
+		map("n", "<leader>gD", function()
+			gs.diffthis("~")
+		end)
+	end,
+})
+
+require("blame").setup({})
 
 require("toggleterm").setup({
 	size = function(_)
@@ -144,31 +195,6 @@ require("tmux").setup({
 	copy_sync = {
 		enable = false,
 	},
-})
-
--- neoscroll config
-vim.keymap.set({ "n", "v" }, "<ScrollWheelUp>", "<C-y>")
-vim.keymap.set({ "n", "v" }, "<ScrollWheelDown>", "<C-e>")
-require("neoscroll").setup({
-	mappings = { "<C-y>", "<C-e>" },
-	respect_scrolloff = true,
-	cursor_scrolls_alone = false,
-	pre_hook = function()
-		vim.opt.eventignore:append({
-			"WinScrolled",
-			"CursorMoved",
-		})
-	end,
-	post_hook = function()
-		vim.opt.eventignore:remove({
-			"WinScrolled",
-			"CursorMoved",
-		})
-	end,
-})
-require("neoscroll.config").set_mappings({
-	["<C-b>"] = { "scroll", { "-0.20", "false", "200" } },
-	["<C-f>"] = { "scroll", { "0.20", "false", "200" } },
 })
 
 require("flit").setup({
