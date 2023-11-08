@@ -112,6 +112,7 @@ return {
 		},
 	},
 	"folke/neodev.nvim",
+	{ "stevanmilic/lsp-import" },
 
 	-- extendend syntax
 	{ "towolf/vim-helm", lazy = false },

@@ -219,7 +219,7 @@ require("git-conflict").setup({
 })
 require("dressing").setup({
 	select = {
-		backend = { "telescope", "builtin", "nui" },
+		backend = { "telescope", "nui", "builtin" },
 	},
 })
 vim.cmd([[silent! luafile .local.lua]])
