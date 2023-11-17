@@ -65,7 +65,6 @@ return {
 				opts = { max_lines = 2, multiline_threshold = 1, trim_scope = "inner" },
 			},
 			"nvim-treesitter/playground",
-			"JoosepAlviste/nvim-ts-context-commentstring",
 		},
 	},
 
@@ -78,6 +77,7 @@ return {
 			"kosayoda/nvim-lightbulb",
 		},
 	},
+	"j-hui/fidget.nvim",
 	"scalameta/nvim-metals",
 	"williamboman/mason.nvim",
 	"williamboman/mason-lspconfig.nvim",
@@ -112,7 +112,7 @@ return {
 		},
 	},
 	"folke/neodev.nvim",
-	{ "stevanmilic/lsp-import" },
+	"stevanmilic/nvim-lspimport",
 
 	-- extendend syntax
 	{ "towolf/vim-helm", lazy = false },
@@ -123,6 +123,5 @@ return {
 	{ "akinsho/git-conflict.nvim", version = "*", config = true },
 	"lewis6991/gitsigns.nvim",
 	"FabijanZulj/blame.nvim",
-	-- TODO: revert to original repo once the PR is merged.
-	"stevanmilic/gitlinker.nvim",
+	"linrongbin16/gitlinker.nvim",
 }

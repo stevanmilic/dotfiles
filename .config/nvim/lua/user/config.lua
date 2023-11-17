@@ -27,25 +27,25 @@ require("gitsigns").setup({
 		end
 
 		-- Navigation
-		map("n", "]c", function()
-			if vim.wo.diff then
-				return "]c"
-			end
-			vim.schedule(function()
-				gs.next_hunk()
-			end)
-			return "<Ignore>"
-		end, { expr = true })
+		-- map("n", "]c", function()
+		-- 	if vim.wo.diff then
+		-- 		return "]c"
+		-- 	end
+		-- 	vim.schedule(function()
+		-- 		gs.next_hunk()
+		-- 	end)
+		-- 	return "<Ignore>"
+		-- end, { expr = true })
 
-		map("n", "[c", function()
-			if vim.wo.diff then
-				return "[c"
-			end
-			vim.schedule(function()
-				gs.prev_hunk()
-			end)
-			return "<Ignore>"
-		end, { expr = true })
+		-- map("n", "[c", function()
+		-- 	if vim.wo.diff then
+		-- 		return "[c"
+		-- 	end
+		-- 	vim.schedule(function()
+		-- 		gs.prev_hunk()
+		-- 	end)
+		-- 	return "<Ignore>"
+		-- end, { expr = true })
 
 		-- Actions
 		map("n", "<leader>gs", gs.stage_hunk)
@@ -92,11 +92,7 @@ require("trouble").setup({
 	auto_preview = false,
 })
 
-require("nvim_comment").setup({
-	hook = function()
-		require("ts_context_commentstring.internal").update_commentstring()
-	end,
-})
+require("nvim_comment").setup()
 
 -- auto-session
 local close_all_floating_wins = function()
@@ -174,8 +170,11 @@ end)
 -- vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 -- vim.wo.foldmethod = "expr"
 
+-- require("gitlinker").setup({
+-- 	opts = { print_url = false, highlight_duration = 300 },
+-- })
 require("gitlinker").setup({
-	opts = { print_url = false, highlight_duration = 300 },
+	message = false,
 })
 
 -- substitute setup

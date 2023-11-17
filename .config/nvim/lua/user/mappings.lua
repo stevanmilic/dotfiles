@@ -107,6 +107,9 @@ whichkey.register(keymap, {
     nowait = false,
 })
 
+-- treesitter jump to context
+vim.keymap.set("n", "[c", require("treesitter-context").go_to_context, { silent = true })
+
 -- Bidirectional leap search for current window
 vim.keymap.set("n", "s", function()
 	local current_window = vim.fn.win_getid()
@@ -137,6 +140,20 @@ vim.keymap.set({"t", "n"}, "<leader>;", "<cmd>resize<CR>")
 
 vim.keymap.set('n', '<leader>S', function () require("spectre").open() end , { desc = "Open Spectre" })
 vim.keymap.set('n', '<leader>sw', function () require("spectre").open_visual({select_word=true}) end, { desc = "Search current word" })
+
+-- git browse
+vim.keymap.set(
+  {"n", 'v'},
+  "<leader>gl",
+  "<cmd>GitLink<cr>",
+  { silent = true, noremap = true, desc = "Copy git permlink to clipboard" }
+)
+vim.keymap.set(
+  {"n", 'v'},
+  "<leader>gL",
+  "<cmd>GitLink!<cr>",
+  { silent = true, noremap = true, desc = "Open git permlink in browser" }
+)
 
 -- scrolling
 vim.keymap.set('n', '<c-u>', '5<c-y>')
@@ -182,7 +199,7 @@ end
 vim.keymap.set("n", "J", smart_J, { noremap = true })
 
 -- auto import
-vim.keymap.set("n", "<leader>a", require("lsp-import").import, { noremap = true })
+vim.keymap.set("n", "<leader>a", require("lspimport").import, { noremap = true })
 
 -- additional mappings
 vim.cmd([[

@@ -52,7 +52,7 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "*" },
 	callback = function()
-		if not vim.tbl_contains({ "qf", "Trouble" }, vim.bo.filetype) then
+		if not vim.bo.filetype or not vim.tbl_contains({ "qf", "Trouble" }, vim.bo.filetype) then
 			vim.keymap.set("n", "<cr>", "ciw", { buffer = true, noremap = true })
 		end
 	end,

@@ -11,6 +11,14 @@ local toggle_diagnostics = function()
 	end
 end
 
+local toggle_inlay_hint = function()
+	if vim.lsp.inlay_hint.is_enabled() then
+		vim.lsp.inlay_hint.enable(0, false)
+	else
+		vim.lsp.inlay_hint.enable(0, true)
+	end
+end
+
 -- Use an on_attach function to only map the following keys after the language
 -- server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -29,9 +37,7 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set("n", "<leader>q", toggle_diagnostics, bufopts)
 
 	if client.server_capabilities.inlayHintProvider then
-		vim.keymap.set("n", "<leader>p", function()
-			vim.lsp.inlay_hint(0, nil)
-		end)
+		vim.keymap.set("n", "<leader>p", toggle_inlay_hint)
 	end
 	vim.api.nvim_create_autocmd("CursorHold", {
 		buffer = bufnr,
@@ -72,7 +78,7 @@ local servers = {
 	"lua_ls",
 	"gopls",
 	"golangci_lint_ls",
-	"helm_ls",
+	-- "helm_ls",
 	"bufls",
 }
 
@@ -90,7 +96,7 @@ require("mason-nvim-dap").setup({
 	},
 })
 require("dap-go").setup()
-
+require("fidget").setup()
 require("neodev").setup({
 	library = { plugins = { "neotest", "nvim-dap-ui" }, types = true },
 })
