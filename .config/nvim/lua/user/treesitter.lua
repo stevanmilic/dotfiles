@@ -72,8 +72,9 @@ local python_graphql_injection_query = [[
     (call
      function: ((identifier) @_name
        (#eq? @_name "gql"))
-     arguments: (argument_list (string) @graphql
-       (#offset! @graphql 0 3 0 -3)))
+     arguments: (argument_list (string) @injection.content
+       (#offset! @injection.content 0 3 0 -3)
+       (#set! injection.language "graphql")))
 ]]
 query_config.set("python", "injections", python_graphql_injection_query)
 
@@ -81,7 +82,8 @@ local scala_injections_query = [[
     (call_expression
      function: ((identifier) @_name
        (#eq? @_name "fuse"))
-     arguments: (arguments (string) @fuse
-       (#offset! @fuse 0 1 0 -1)))
+     arguments: (arguments (string) @injection.content
+       (#offset! @injection.content 0 1 0 -1)
+       (#set! injection.language "fuse")))
 ]]
 query_config.set("scala", "injections", scala_injections_query)
