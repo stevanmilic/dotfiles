@@ -75,10 +75,10 @@ local keymap = {
         },
         b = { function() require('close_buffers').delete({type = 'this', force = true}) end, "Close buffer" },
     },
-    g = {
-        name = "Git",
-        b = { "<cmd>ToggleBlame<CR>", "Git blame" },
-    },
+    -- g = {
+    --     name = "Git",
+    --     b = { "<cmd>ToggleBlame<CR>", "Git blame" },
+    -- },
     f = {
         name = "Finder",
         w = { function () require("telescope.builtin").grep_string() end, "Find word", },

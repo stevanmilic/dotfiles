@@ -56,6 +56,10 @@ require("gitsigns").setup({
 		map("v", "<leader>gr", function()
 			gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
 		end)
+		map("n", "<leader>gb", gs.toggle_current_line_blame)
+		map("n", "<leader>gB", function()
+			gs.blame_line({ full = true })
+		end)
 		map("n", "<leader>gS", gs.stage_buffer)
 		map("n", "<leader>gu", gs.undo_stage_hunk)
 		map("n", "<leader>gR", gs.reset_buffer)
@@ -65,9 +69,8 @@ require("gitsigns").setup({
 			gs.diffthis("~")
 		end)
 	end,
+	current_line_blame_opts = { delay = 0 },
 })
-
-require("blame").setup({})
 
 require("toggleterm").setup({
 	size = function(_)
@@ -166,17 +169,14 @@ end)
 -- 	end
 -- 	return f
 -- end
+--
 -- vim.wo.foldtext = [[luaeval('HighlightedFoldtext')()]]
 -- vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 -- vim.wo.foldmethod = "expr"
 
--- require("gitlinker").setup({
--- 	opts = { print_url = false, highlight_duration = 300 },
--- })
 require("gitlinker").setup({
 	message = false,
 })
-
 -- substitute setup
 require("substitute").setup({})
 

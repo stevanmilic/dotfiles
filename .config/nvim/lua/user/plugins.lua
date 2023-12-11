@@ -121,6 +121,5 @@ return {
 	-- git
 	{ "akinsho/git-conflict.nvim", version = "*", config = true },
 	"lewis6991/gitsigns.nvim",
-	"FabijanZulj/blame.nvim",
 	"linrongbin16/gitlinker.nvim",
 }
