@@ -142,41 +142,22 @@ require("neotest").setup({
 	},
 })
 
--- ultra fast folds
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 99
-vim.o.foldenable = true
-require("ufo").setup({
-	open_fold_hl_timeout = 0,
-	provider_selector = function(_, filetype, _)
-		if filetype == "scala" then
-			return "lsp"
-		end
-		return "treesitter"
-	end,
-})
-vim.keymap.set("n", "zR", function()
-	require("ufo").openAllFolds()
-end)
-vim.keymap.set("n", "zM", function()
-	require("ufo").closeAllFolds()
-end)
+function HighlightedFoldtext()
+	local f = vim.treesitter.foldtext()
+	if type(f) == "table" then
+		table.insert(f, { " ⋯" })
+	end
+	return f
+end
 
--- function HighlightedFoldtext()
--- 	local f = vim.treesitter.foldtext()
--- 	if type(f) == "table" then
--- 		table.insert(f, { " ⋯" })
--- 	end
--- 	return f
--- end
---
--- vim.wo.foldtext = [[luaeval('HighlightedFoldtext')()]]
--- vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
--- vim.wo.foldmethod = "expr"
+vim.wo.foldtext = [[luaeval('HighlightedFoldtext')()]]
+vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.wo.foldmethod = "expr"
 
-require("gitlinker").setup({
-	message = false,
-})
+require("gitlinker").setup({ message = false })
+
 -- substitute setup
 require("substitute").setup({})
 

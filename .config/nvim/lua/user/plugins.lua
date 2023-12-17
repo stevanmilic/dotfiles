@@ -16,7 +16,6 @@ return {
 	"kazhala/close-buffers.nvim",
 	"akinsho/toggleterm.nvim",
 	{ "stevearc/dressing.nvim", event = "VeryLazy" },
-	{ "kevinhwang91/nvim-ufo", dependencies = "kevinhwang91/promise-async" },
 	{ "rmagatti/auto-session", lazy = false },
 	"gbprod/substitute.nvim",
 	"kylechui/nvim-surround",
