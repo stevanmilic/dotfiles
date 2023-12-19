@@ -97,6 +97,7 @@ require("trouble").setup({
 
 require("nvim_comment").setup()
 
+require("textcase").setup({ default_keymappings_enabled = false })
 -- auto-session
 local close_all_floating_wins = function()
 	for _, win in ipairs(vim.api.nvim_list_wins()) do
@@ -193,6 +194,16 @@ require("flatten").setup({
 		gitrebase = true,
 	},
 })
+
+-- leap disable special keys mappings
+require("leap").opts.special_keys = {
+	next_target = "",
+	prev_target = "",
+	next_group = "",
+	prev_group = "",
+	multi_accept = "",
+	multi_revert = "",
+}
 
 require("git-conflict").setup({
 	disable_diagnostics = true,

@@ -28,9 +28,6 @@ local on_attach = function(client, bufnr)
 	local bufopts = { noremap = true, silent = true, buffer = bufnr }
 	vim.keymap.set("n", "<leader>D", vim.lsp.buf.declaration, bufopts)
 	vim.keymap.set("n", "<leader>d", vim.lsp.buf.definition, bufopts)
-	-- vim.keymap.set("n", "<leader>d", function()
-	-- 	require("trouble").open("lsp_definitions")
-	-- end, bufopts)
 	vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
 	vim.keymap.set({ "v", "n", "i" }, "<c-e>", vim.lsp.buf.code_action, bufopts)
 	vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, bufopts)
@@ -39,20 +36,6 @@ local on_attach = function(client, bufnr)
 	if client.server_capabilities.inlayHintProvider then
 		vim.keymap.set("n", "<leader>p", toggle_inlay_hint)
 	end
-	vim.api.nvim_create_autocmd("CursorHold", {
-		buffer = bufnr,
-		callback = function()
-			local opts = {
-				focusable = false,
-				close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
-				border = "rounded",
-				source = "always",
-				prefix = " ",
-				scope = "line",
-			}
-			vim.diagnostic.open_float(nil, opts)
-		end,
-	})
 end
 
 local luv = require("luv")
@@ -264,7 +247,7 @@ cmp.setup.filetype({ "dap-repl", "dapui_watches", "dapui_hover" }, {
 require("conform").setup({
 	formatters_by_ft = {
 		lua = { "stylua" },
-		python = { "isort", "black" },
+		python = { "ruff_format" },
 		javascript = { "prettier" },
 		typescriptreact = { "prettier" },
 		typescript = { "prettier" },
@@ -295,30 +278,27 @@ vim.api.nvim_create_autocmd({ "BufWritePost" }, {
 -------------------
 vim.diagnostic.config({
 	virtual_text = false,
-	signs = true,
+	signs = {
+		text = {
+			[vim.diagnostic.severity.ERROR] = "●",
+			[vim.diagnostic.severity.WARN] = "●",
+			[vim.diagnostic.severity.HINT] = " ",
+			[vim.diagnostic.severity.INFO] = " ",
+		},
+	},
 	underline = true,
 	update_in_insert = false,
 	severity_sort = false,
 })
--- set lsp diagnostics icons
-local signs = { Error = "●", Warn = "●", Hint = " ", Info = " " }
-for type, icon in pairs(signs) do
-	local hl = "DiagnosticSign" .. type
-	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
+require("diagflow").setup({
+	update_event = { "DiagnosticChanged", "BufReadPost", "CursorMoved" },
+	scope = "line",
+})
 require("nvim-lightbulb").setup({
 	autocmd = { enabled = true },
 	virtual_text = { enabled = true },
 	sign = { enabled = false },
 })
-
--- Override lsp float border globally
--- local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
--- function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
--- 	opts = opts or {}
--- 	opts.border = opts.border or border
--- 	return orig_util_open_floating_preview(contents, syntax, opts, ...)
--- end
 
 ------------
 -- dap setup
