@@ -72,9 +72,8 @@ local python_graphql_injection_query = [[
     (call
      function: ((identifier) @_name
        (#eq? @_name "gql"))
-     arguments: (argument_list (string) @injection.content
-       (#offset! @injection.content 0 3 0 -3)
-       (#set! injection.language "graphql")))
+     arguments: (argument_list (string (string_content) @injection.content
+       (#set! injection.language "graphql"))))
 ]]
 query_config.set("python", "injections", python_graphql_injection_query)
 

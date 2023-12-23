@@ -14,7 +14,7 @@ return {
 	"nvim-tree/nvim-tree.lua",
 	"akinsho/bufferline.nvim",
 	"kazhala/close-buffers.nvim",
-	"akinsho/toggleterm.nvim",
+	{ "akinsho/toggleterm.nvim", version = "*" },
 	{ "stevearc/dressing.nvim", event = "VeryLazy" },
 	{ "rmagatti/auto-session", lazy = false },
 	"gbprod/substitute.nvim",
@@ -23,8 +23,8 @@ return {
 		"rcarriga/nvim-notify",
 		opts = {
 			timeout = 3000,
-			render = "compact",
-			stages = "fade",
+			render = "wrapped-compact",
+			stages = "static",
 			top_down = false,
 		},
 	},
@@ -51,7 +51,7 @@ return {
 	{
 		"rcarriga/neotest",
 		dependencies = {
-			"rcarriga/neotest-python",
+			{ "rcarriga/neotest-python", commit = "48bf141103b94c9384e5542cd185b291909ac305" },
 			"nvim-neotest/neotest-plenary",
 			"haydenmeade/neotest-jest",
 			"nvim-neotest/neotest-go",
