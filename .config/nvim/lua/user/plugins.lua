@@ -24,14 +24,20 @@ return {
 		opts = {
 			timeout = 3000,
 			render = "wrapped-compact",
-			stages = "static",
+			stages = "no_animation",
 			top_down = false,
 		},
 	},
 	"folke/which-key.nvim",
 	"johmsalas/text-case.nvim",
 	"willothy/flatten.nvim",
-	{ "ggandor/leap.nvim", dependencies = { "ggandor/flit.nvim", "tpope/vim-repeat" } },
+	{
+		"ggandor/leap.nvim",
+		dependencies = {
+			{ "ggandor/flit.nvim", commit = "f4e9af572a62c808c8de214da672f2a115a98c35" },
+			"tpope/vim-repeat",
+		},
+	},
 	"nvim-pack/nvim-spectre",
 	"chrishrb/gx.nvim",
 	"echasnovski/mini.ai",
@@ -51,7 +57,7 @@ return {
 	{
 		"rcarriga/neotest",
 		dependencies = {
-			{ "rcarriga/neotest-python", commit = "48bf141103b94c9384e5542cd185b291909ac305" },
+			"rcarriga/neotest-python",
 			"nvim-neotest/neotest-plenary",
 			"haydenmeade/neotest-jest",
 			"nvim-neotest/neotest-go",
@@ -83,7 +89,7 @@ return {
 			"kosayoda/nvim-lightbulb",
 		},
 	},
-	{ "dgagn/diagflow.nvim", event = "LspAttach", opts = {} },
+	{ "stevanmilic/diagflow.nvim", event = "LspAttach", branch = "feature/wrap-text-lines" },
 	"j-hui/fidget.nvim",
 	"scalameta/nvim-metals",
 	"williamboman/mason.nvim",
@@ -124,7 +130,6 @@ return {
 	-- extendend syntax
 	{ "towolf/vim-helm", lazy = false },
 	"gf3/peg.vim",
-	"vim-scripts/ebnf.vim",
 
 	-- git
 	{ "akinsho/git-conflict.nvim", version = "*", config = true },

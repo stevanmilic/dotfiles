@@ -290,6 +290,8 @@ vim.diagnostic.config({
 })
 require("diagflow").setup({
 	update_event = { "DiagnosticChanged", "BufReadPost", "CursorMoved" },
+	render_event = { "CursorMoved", "DiagnosticChanged", "WinScrolled" },
+	max_width = 100,
 	scope = "line",
 })
 require("nvim-lightbulb").setup({
