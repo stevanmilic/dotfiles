@@ -75,7 +75,7 @@ return {
 			"nvim-treesitter/nvim-treesitter-textobjects",
 			{
 				"nvim-treesitter/nvim-treesitter-context",
-				opts = { max_lines = 2, multiline_threshold = 1, trim_scope = "inner" },
+				opts = { max_lines = 2, multiline_threshold = 1, trim_scope = "inner", zindex = 1 },
 			},
 		},
 	},
@@ -129,7 +129,6 @@ return {
 
 	-- extendend syntax
 	{ "towolf/vim-helm", lazy = false },
-	"gf3/peg.vim",
 
 	-- git
 	{ "akinsho/git-conflict.nvim", version = "*", config = true },

@@ -165,6 +165,45 @@ vim.keymap.set("t", "<esc>", [[<C-\><C-n>]])
 
 -- stylua: ignore end
 
+local gs_cache = require("gitsigns.cache")
+local cache = gs_cache.cache
+
+local open_git_commit_diff_with_gitsigns = function()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local bcache = cache[bufnr]
+	if not bcache then
+		return
+	end
+
+	local lnum = vim.api.nvim_win_get_cursor(0)[1]
+	local blame_info = bcache:get_blame(lnum, {})
+	if not blame_info then
+		vim.notify("blame info not found")
+		return
+	end
+
+	local commit_sha = blame_info.commit.sha
+	local git_show_cmd = "git show " .. commit_sha
+
+	local show_output = vim.fn.systemlist(git_show_cmd)
+	if vim.v.shell_error ~= 0 or not show_output then
+		vim.notify("error running git command for SHA:", commit_sha)
+		return
+	end
+
+	-- Open a new buffer for the diff
+	vim.api.nvim_command("enew")
+
+	local new_bufnr = vim.api.nvim_get_current_buf()
+	vim.api.nvim_buf_set_option(new_bufnr, "buftype", "nofile")
+	vim.api.nvim_buf_set_option(new_bufnr, "bufhidden", "hide")
+	vim.api.nvim_buf_set_option(new_bufnr, "modifiable", true)
+
+	vim.api.nvim_buf_set_lines(new_bufnr, 0, -1, false, show_output)
+	vim.cmd("setfiletype diff")
+end
+vim.keymap.set("n", "<leader>go", open_git_commit_diff_with_gitsigns)
+
 -- smart mappings region
 
 -- smart dd

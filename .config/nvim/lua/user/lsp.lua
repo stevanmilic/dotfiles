@@ -25,7 +25,8 @@ local on_attach = function(client, bufnr)
 	-- Mappings.
 	local bufopts = { noremap = true, silent = true, buffer = bufnr }
 	vim.keymap.set("n", "<leader>D", vim.lsp.buf.declaration, bufopts)
-	vim.keymap.set("n", "<leader>d", vim.lsp.buf.definition, bufopts)
+	-- vim.keymap.set("n", "<leader>d", vim.lsp.buf.definition, bufopts)
+	vim.keymap.set("n", "<leader>d", require("telescope.builtin").lsp_definitions, bufopts)
 	vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
 	vim.keymap.set({ "v", "n", "i" }, "<c-e>", vim.lsp.buf.code_action, bufopts)
 	vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, bufopts)
@@ -146,6 +147,7 @@ require("luasnip.loaders.from_vscode").lazy_load()
 
 local cmp = require("cmp")
 local lspkind = require("lspkind")
+local cmp_context = require("cmp.config.context")
 require("ultimate-autopair").setup({
 	fastwarp = {
 		map = "<C-s>",
@@ -155,6 +157,9 @@ require("ultimate-autopair").setup({
 
 cmp.setup({
 	enabled = function()
+		if cmp_context.in_treesitter_capture("comment") == true or cmp_context.in_syntax_group("Comment") then
+			return false
+		end
 		return vim.api.nvim_get_option_value("buftype", {}) ~= "prompt" or require("cmp_dap").is_dap_buffer()
 	end,
 	snippet = {
@@ -289,9 +294,15 @@ vim.diagnostic.config({
 	severity_sort = false,
 })
 require("diagflow").setup({
-	update_event = { "DiagnosticChanged", "BufReadPost", "CursorMoved" },
-	render_event = { "CursorMoved", "DiagnosticChanged", "WinScrolled" },
+	render_event = { "DiagnosticChanged", "CursorMoved", "WinScrolled" },
+	format = function(diag)
+		if diag.code and diag.code ~= "" then
+			return diag.message .. "\n" .. "(" .. diag.code .. ")"
+		end
+		return diag.message
+	end,
 	max_width = 100,
+	padding_top = 1,
 	scope = "line",
 })
 require("nvim-lightbulb").setup({
