@@ -46,13 +46,6 @@ return {
 		event = { "InsertEnter", "CmdlineEnter" },
 		branch = "development",
 	},
-	{
-		"yanskun/gotests.nvim",
-		ft = "go",
-		config = function()
-			require("gotests").setup()
-		end,
-	},
 	{ "folke/noice.nvim", dependencies = { "MunifTanjim/nui.nvim" } },
 	{
 		"rcarriga/neotest",

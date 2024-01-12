@@ -48,6 +48,17 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
+-- disable treesitter features in terminal buffers
+vim.api.nvim_create_autocmd("TermOpen", {
+	pattern = "*",
+	callback = function()
+		vim.wo.foldenable = false
+		vim.wo.foldmethod = "manual"
+		vim.bo.indentexpr = ""
+		vim.bo.smartindent = false
+	end,
+})
+
 -- Adds smart-enter in normal mode that changes word under cursor.
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = { "*" },

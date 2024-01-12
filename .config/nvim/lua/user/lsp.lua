@@ -294,6 +294,7 @@ vim.diagnostic.config({
 	severity_sort = false,
 })
 require("diagflow").setup({
+	update_event = { "DiagnosticChanged", "BufReadPost", "CursorMoved" },
 	render_event = { "DiagnosticChanged", "CursorMoved", "WinScrolled" },
 	format = function(diag)
 		if diag.code and diag.code ~= "" then
