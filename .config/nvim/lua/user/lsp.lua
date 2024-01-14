@@ -303,7 +303,6 @@ require("diagflow").setup({
 		return diag.message
 	end,
 	max_width = 100,
-	padding_top = 1,
 	scope = "line",
 })
 require("nvim-lightbulb").setup({

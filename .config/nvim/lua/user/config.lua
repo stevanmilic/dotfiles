@@ -16,6 +16,11 @@ require("nvim-tree").setup({
 	},
 })
 
+require("barbecue").setup({
+	show_modified = true,
+	navic_depth_limit = 2,
+})
+
 require("gitsigns").setup({
 	on_attach = function(bufnr)
 		local gs = package.loaded.gitsigns
@@ -49,13 +54,13 @@ require("gitsigns").setup({
 
 		-- Actions
 		map("n", "<leader>gs", gs.stage_hunk)
-		map("n", "<leader>gr", gs.reset_hunk)
+		-- map("n", "<leader>gr", gs.reset_hunk)
 		map("v", "<leader>gs", function()
 			gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
 		end)
-		map("v", "<leader>gr", function()
-			gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
-		end)
+		-- map("v", "<leader>gr", function()
+		-- 	gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+		-- end)
 		map("n", "<leader>gb", gs.toggle_current_line_blame)
 		map("n", "<leader>gB", function()
 			gs.blame_line({ full = true })
@@ -111,7 +116,7 @@ require("auto-session").setup({
 	auto_session_suppress_dirs = { "~/" },
 	pre_save_cmds = { close_all_floating_wins },
 })
-vim.o.sessionoptions = "curdir,help,tabpages,winsize,winpos"
+vim.o.sessionoptions = "curdir,help,winsize,winpos"
 
 -- neotest
 require("neotest").setup({

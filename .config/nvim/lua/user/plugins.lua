@@ -2,7 +2,6 @@ return {
 	"nvim-tree/nvim-web-devicons",
 	"nvim-lua/plenary.nvim",
 	"nvim-telescope/telescope.nvim",
-	{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 	"folke/trouble.nvim",
 	"aserowy/tmux.nvim",
 	{
@@ -12,8 +11,12 @@ return {
 	},
 	"terrortylor/nvim-comment",
 	"nvim-tree/nvim-tree.lua",
-	"akinsho/bufferline.nvim",
-	"kazhala/close-buffers.nvim",
+	{
+		"stevanmilic/barbecue.nvim",
+		name = "barbecue",
+		branch = "feature/navic-depth-limit",
+		dependencies = { "SmiteshP/nvim-navic" },
+	},
 	{ "akinsho/toggleterm.nvim", version = "*" },
 	{ "stevearc/dressing.nvim", event = "VeryLazy" },
 	{ "rmagatti/auto-session", lazy = false },
@@ -34,7 +37,7 @@ return {
 	{
 		"ggandor/leap.nvim",
 		dependencies = {
-			{ "ggandor/flit.nvim", commit = "f4e9af572a62c808c8de214da672f2a115a98c35" },
+			"ggandor/flit.nvim",
 			"tpope/vim-repeat",
 		},
 	},
@@ -64,13 +67,7 @@ return {
 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter-textobjects",
-			{
-				"nvim-treesitter/nvim-treesitter-context",
-				opts = { max_lines = 2, multiline_threshold = 1, trim_scope = "inner", zindex = 1 },
-			},
-		},
+		dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" },
 	},
 
 	-- lsp

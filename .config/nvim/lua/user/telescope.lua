@@ -1,13 +1,6 @@
 local actions = require("telescope.actions")
 local trouble = require("trouble.providers.telescope")
 local telescope = require("telescope")
-local fzf_opts = {
-	fuzzy = true, -- false will only do exact matching
-	override_generic_sorter = true, -- override the generic sorter
-	override_file_sorter = true, -- override the file sorter
-	case_mode = "smart_case", -- or "ignore_case" or "respect_case"
-	-- the default case_mode is "smart_case"
-}
 telescope.setup({
 	defaults = {
 		selection_caret = "❯ ",
@@ -37,16 +30,4 @@ telescope.setup({
 			},
 		},
 	},
-	pickers = {
-		find_files = {
-			find_command = { "fd", "--type", "f", "--strip-cwd-prefix", "--hidden" },
-		},
-		lsp_dynamic_workspace_symbols = {
-			sorter = telescope.extensions.fzf.native_fzf_sorter(fzf_opts),
-		},
-	},
-	extensions = {
-		fzf = fzf_opts,
-	},
 })
-telescope.load_extension("fzf")

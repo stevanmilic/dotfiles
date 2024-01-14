@@ -24,7 +24,6 @@ vim.cmd([[
   set formatexpr=
   set updatetime=100
   set splitkeep=cursor
-  set nolazyredraw
   set jumpoptions=stack
   set switchbuf=usetab,newtab
 
@@ -43,6 +42,7 @@ vim.cmd([[
   set nowritebackup
 
   " hide cmdline and statusline
+  set showtabline=0
   set cmdheight=0
   set laststatus=0
   set noruler

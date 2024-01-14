@@ -21,7 +21,7 @@ whichkey.setup({
 })
 
 -- stylua: ignore start
-local keymap = {
+local leader_keymap = {
     j = {
         name = "Debug",
         R = { function() require'dap'.run_to_cursor() end, "Run to Cursor" },
@@ -64,41 +64,13 @@ local keymap = {
         s = { function() require('neotest').summary.open() end, "Summary" },
         q = { "<cmd>TroubleToggle quickfix<cr>", "Quickfix" },
     },
-    s = {
-        name = "Buffer",
-        u = {
-            function ()
-                require('close_buffers').delete({type = 'hidden', force = true})
-                require('bufferline.ui').refresh()
-            end,
-            "Close hidden buffers",
-        },
-        b = { function() require('close_buffers').delete({type = 'this', force = true}) end, "Close buffer" },
-    },
-    -- g = {
-    --     name = "Git",
-    --     b = { "<cmd>ToggleBlame<CR>", "Git blame" },
-    -- },
-    f = {
-        name = "Finder",
-        w = { function () require("telescope.builtin").grep_string() end, "Find word", },
-        a = { function () require("telescope.builtin").live_grep() end, "Find all", },
-        b = { function () require("telescope.builtin").buffers({sort_mru = true}) end, "Buffers", },
-        c = { function () require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="class"}) end, "Find class", },
-        f = { function () require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols={"function", "method"}}) end, "Find function", },
-        x = { function () require('telescope.builtin').lsp_dynamic_workspace_symbols({ignore_symbols="variable"}) end, "Find workspace symbol", },
-        d = { function () require('telescope.builtin').lsp_document_symbols() end, "Find document symbol", },
-        u = { function () require('telescope.builtin').lsp_references({include_declaration=false}) end, "Find references", },
-        i = { function () require('telescope.builtin').lsp_implementations() end, "Find implementations", },
-        r = { function () require('telescope.builtin').resume() end, "Resume finder", },
-    },
     n = {
         function () require("nvim-tree.api").tree.toggle() end,
         "Nvim tree"
     },
 }
 
-whichkey.register(keymap, {
+whichkey.register(leader_keymap, {
     mode = "n",
     prefix = "<leader>",
     buffer = nil,
@@ -107,8 +79,34 @@ whichkey.register(keymap, {
     nowait = false,
 })
 
+local keymap = {
+    ["<space>"] = {
+        name = "Finder",
+        w = { function () require("telescope.builtin").grep_string() end, "Find word", },
+        ["/"] = { function () require("telescope.builtin").live_grep() end, "Find all", },
+        f = { function () require('telescope.builtin').find_files() end, "Find files", },
+        b = { function () require("telescope.builtin").buffers({sort_mru = true}) end, "Buffers", },
+        c = { function () require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="class"}) end, "Find class", },
+        F = { function () require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols={"function", "method"}}) end, "Find function", },
+        s = { function () require('telescope.builtin').lsp_document_symbols() end, "Find document symbol", },
+        S = { function () require('telescope.builtin').lsp_dynamic_workspace_symbols({ignore_symbols="variable"}) end, "Find workspace symbol", },
+        u = { function () require('telescope.builtin').lsp_references({include_declaration=false}) end, "Find references", },
+        i = { function () require('telescope.builtin').lsp_implementations() end, "Find implementations", },
+        z = { "za", "Resume finder", },
+        r = { function () require('telescope.builtin').resume() end, "Resume finder", },
+    },
+}
+
+whichkey.register(keymap, {
+    mode = "n",
+    buffer = nil,
+    silent = true,
+    noremap = true,
+    nowait = true,
+})
+
 -- treesitter jump to context
-vim.keymap.set("n", "[c", require("treesitter-context").go_to_context, { silent = true })
+vim.keymap.set("n", "[c", function () require("barbecue.ui").navigate(-1) end, { silent = true })
 
 -- Bidirectional leap search for current window
 vim.keymap.set("n", "s", function()
@@ -242,14 +240,8 @@ vim.keymap.set("n", "<leader>a", require("lspimport").import, { noremap = true }
 
 -- additional mappings
 vim.cmd([[
-  " use space to fold/unfold
-  nnoremap <silent> <Space> za
-
   " open nested folds
   nnoremap <leader>z zczA
-
-  " Telescope mappings
-  nnoremap <c-p> <cmd>Telescope find_files<cr>
 
   " Tab navigation like Firefox.
   nnoremap <silent> <S-tab> :tabprevious<CR>
