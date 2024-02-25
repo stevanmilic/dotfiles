@@ -153,6 +153,7 @@ vim.keymap.set(
   { silent = true, noremap = true, desc = "Open git permlink in browser" }
 )
 
+
 -- scrolling
 vim.keymap.set('n', '<c-u>', '5<c-y>')
 vim.keymap.set('n', '<c-d>', '5<c-e>')
@@ -243,16 +244,6 @@ vim.cmd([[
   " open nested folds
   nnoremap <leader>z zczA
 
-  " Tab navigation like Firefox.
-  nnoremap <silent> <S-tab> :tabprevious<CR>
-  " NOTE: Remapping tab also remaps <c-i> this can be fixed by remaping CTRL-n
-  " to <tab> to keep the functionality _somewhere_.
-  nnoremap <c-n> <tab>
-  nnoremap <silent> <tab>   :tabnext<CR>
-  nnoremap <silent> <C-t>     :tabnew<CR>
-  nnoremap <silent> gb :BufferLinePick<CR>
-  nnoremap <silent> <leader>st :windo bd!<CR>
-  
   " Align blocks of text and keep them selected
   vmap < <gv
   vmap > >gv
@@ -260,10 +251,6 @@ vim.cmd([[
   " vertical split with new file
   nnoremap <leader>v :vnew<CR>
   
-  " move tabs left and right
-  nnoremap <leader>h :tabm -1<CR>
-  nnoremap <leader>l :tabm +1<CR>
-
   " disable command line window default mapping
   nnoremap q: <nop>
 ]])

@@ -42,7 +42,7 @@ return {
 		},
 	},
 	"nvim-pack/nvim-spectre",
-	"chrishrb/gx.nvim",
+	{ "chrishrb/gx.nvim", keys = { { "gx", "<cmd>Browse<cr>", mode = { "n", "x" } } } },
 	"echasnovski/mini.ai",
 	{
 		"altermo/ultimate-autopair.nvim",
@@ -57,11 +57,14 @@ return {
 			"nvim-neotest/neotest-plenary",
 			"haydenmeade/neotest-jest",
 			"nvim-neotest/neotest-go",
-			"stevanmilic/neotest-scala",
+			-- "stevanmilic/neotest-scala",
+			{ dir = "/Users/Stevan.Milic/Applications/neotest-scala" },
 		},
 	},
 	"stevearc/conform.nvim",
 	"mfussenegger/nvim-lint",
+	{ "zbirenbaum/copilot.lua", event = "InsertEnter" },
+	"luukvbaal/statuscol.nvim",
 
 	-- tree-sitter
 	{
@@ -79,7 +82,7 @@ return {
 			"kosayoda/nvim-lightbulb",
 		},
 	},
-	{ "stevanmilic/diagflow.nvim", event = "LspAttach", branch = "feature/wrap-text-lines" },
+	{ "dgagn/diagflow.nvim", event = "LspAttach" },
 	"j-hui/fidget.nvim",
 	"scalameta/nvim-metals",
 	"williamboman/mason.nvim",
@@ -112,6 +115,7 @@ return {
 			"saadparwaiz1/cmp_luasnip",
 			"onsails/lspkind-nvim",
 			"lukas-reineke/cmp-under-comparator",
+			"zbirenbaum/copilot-cmp",
 		},
 	},
 	"folke/neodev.nvim",

@@ -17,6 +17,21 @@ local toggle_inlay_hint = function()
 	end
 end
 
+local is_copilot_enabled = false
+
+local toggle_copilot = function()
+	local copilot = require("copilot.command")
+	if is_copilot_enabled then
+		copilot.disable()
+		is_copilot_enabled = false
+		vim.print("Copilot off 😭")
+	else
+		copilot.enable()
+		is_copilot_enabled = true
+		vim.print("Copilot on 🚀")
+	end
+end
+
 -- Use an on_attach function to only map the following keys after the language
 -- server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -31,6 +46,7 @@ local on_attach = function(client, bufnr)
 	vim.keymap.set({ "v", "n", "i" }, "<c-e>", vim.lsp.buf.code_action, bufopts)
 	vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, bufopts)
 	vim.keymap.set("n", "<leader>q", toggle_diagnostics, bufopts)
+	vim.keymap.set("n", "<leader>w", toggle_copilot, bufopts)
 
 	if client.server_capabilities.inlayHintProvider then
 		vim.keymap.set("n", "<leader>p", toggle_inlay_hint)
@@ -60,7 +76,7 @@ local servers = {
 	"lua_ls",
 	"gopls",
 	"golangci_lint_ls",
-	-- "helm_ls",
+	"helm_ls",
 	"bufls",
 }
 
@@ -138,8 +154,11 @@ end
 -- nvim-cmp setup
 -- --------------
 local has_words_before = function()
+	if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
+		return false
+	end
 	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+	return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
 end
 
 local luasnip = require("luasnip")
@@ -147,7 +166,7 @@ require("luasnip.loaders.from_vscode").lazy_load()
 
 local cmp = require("cmp")
 local lspkind = require("lspkind")
-local cmp_context = require("cmp.config.context")
+
 require("ultimate-autopair").setup({
 	fastwarp = {
 		map = "<C-s>",
@@ -155,11 +174,16 @@ require("ultimate-autopair").setup({
 	},
 })
 
+require("copilot").setup({
+	suggestion = { enabled = false },
+	panel = { enabled = false },
+})
+require("copilot_cmp").setup({ fix_pairs = true })
+-- Disable copilot by default.
+require("copilot.command").disable()
+
 cmp.setup({
 	enabled = function()
-		if cmp_context.in_treesitter_capture("comment") == true or cmp_context.in_syntax_group("Comment") then
-			return false
-		end
 		return vim.api.nvim_get_option_value("buftype", {}) ~= "prompt" or require("cmp_dap").is_dap_buffer()
 	end,
 	snippet = {
@@ -171,20 +195,18 @@ cmp.setup({
 		["<C-b>"] = cmp.mapping.scroll_docs(-4),
 		["<C-f>"] = cmp.mapping.scroll_docs(4),
 		["<Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.select_next_item()
+			if cmp.visible() and has_words_before() then
+				cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
 			elseif luasnip.expand_or_jumpable() then
 				luasnip.expand_or_jump()
-			elseif has_words_before() then
-				cmp.complete()
 			else
 				fallback()
 			end
 		end, { "i", "s" }),
 		["<C-h>"] = cmp.mapping.complete(),
 		["<S-Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.select_prev_item()
+			if cmp.visible() and has_words_before() then
+				cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
 			elseif luasnip.jumpable(-1) then
 				luasnip.jump(-1)
 			else
@@ -197,21 +219,21 @@ cmp.setup({
 		}),
 	},
 	sources = {
+		{ name = "copilot" },
 		{ name = "nvim_lsp" },
 		{ name = "luasnip" },
 	},
-	-- window = {
-	-- 	documentation = { border = border },
-	-- },
 	formatting = {
 		format = lspkind.cmp_format({
 			mode = "symbol", -- show only symbol annotations
 			maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
 			preset = "codicons",
+			symbol_map = { Copilot = "" },
 		}),
 	},
 	sorting = {
 		comparators = {
+			require("copilot_cmp.comparators").prioritize,
 			cmp.config.compare.offset,
 			cmp.config.compare.exact,
 			cmp.config.compare.score,
@@ -304,6 +326,7 @@ require("diagflow").setup({
 	end,
 	max_width = 100,
 	scope = "line",
+	padding_top = -1,
 })
 require("nvim-lightbulb").setup({
 	autocmd = { enabled = true },
@@ -335,7 +358,19 @@ dapui.setup({
 	},
 })
 
-require("nvim-dap-virtual-text").setup()
+require("nvim-dap-virtual-text").setup({
+	display_callback = function(variable, buf, stackframe, node, options)
+		local value = variable.value
+		if value:len() > 50 then
+			value = string.sub(variable.value, 1, 50) .. "..."
+		end
+		if options.virt_text_pos == "inline" then
+			return " = " .. value
+		else
+			return variable.name .. " = " .. value
+		end
+	end,
+})
 
 vim.fn.sign_define("DapBreakpoint", { text = "🛑", texthl = "", linehl = "", numhl = "" })
 
@@ -355,8 +390,12 @@ require("typescript-tools").setup({ on_attach = on_attach })
 -- Scala Metals Setup
 ---------------------
 local metals_config = require("metals").bare_config()
-metals_config.settings = { showImplicitArguments = true }
+metals_config.settings = {
+	showImplicitArguments = true,
+}
+metals_config.init_options.statusBarProvider = "off"
 metals_config.capabilities = capabilities
+
 metals_config.on_attach = function(client, bufnr)
 	on_attach(client, bufnr)
 	require("metals").setup_dap()

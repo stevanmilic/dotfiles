@@ -18,7 +18,8 @@ require("nvim-tree").setup({
 
 require("barbecue").setup({
 	show_modified = true,
-	navic_depth_limit = 2,
+	navic_depth_limit = 1,
+	exclude_filetypes = { "netrw", "toggleterm", "" },
 })
 
 require("gitsigns").setup({
@@ -31,36 +32,15 @@ require("gitsigns").setup({
 			vim.keymap.set(mode, l, r, opts)
 		end
 
-		-- Navigation
-		-- map("n", "]c", function()
-		-- 	if vim.wo.diff then
-		-- 		return "]c"
-		-- 	end
-		-- 	vim.schedule(function()
-		-- 		gs.next_hunk()
-		-- 	end)
-		-- 	return "<Ignore>"
-		-- end, { expr = true })
-
-		-- map("n", "[c", function()
-		-- 	if vim.wo.diff then
-		-- 		return "[c"
-		-- 	end
-		-- 	vim.schedule(function()
-		-- 		gs.prev_hunk()
-		-- 	end)
-		-- 	return "<Ignore>"
-		-- end, { expr = true })
-
 		-- Actions
 		map("n", "<leader>gs", gs.stage_hunk)
-		-- map("n", "<leader>gr", gs.reset_hunk)
+		map("n", "<leader>gr", gs.reset_hunk)
 		map("v", "<leader>gs", function()
 			gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
 		end)
-		-- map("v", "<leader>gr", function()
-		-- 	gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
-		-- end)
+		map("v", "<leader>gr", function()
+			gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+		end)
 		map("n", "<leader>gb", gs.toggle_current_line_blame)
 		map("n", "<leader>gB", function()
 			gs.blame_line({ full = true })
@@ -150,15 +130,7 @@ require("neotest").setup({
 
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 99
-function HighlightedFoldtext()
-	local f = vim.treesitter.foldtext()
-	if type(f) == "table" then
-		table.insert(f, { " ⋯" })
-	end
-	return f
-end
-
-vim.wo.foldtext = [[luaeval('HighlightedFoldtext')()]]
+vim.wo.foldtext = ""
 vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.wo.foldmethod = "expr"
 
@@ -218,4 +190,17 @@ require("dressing").setup({
 		backend = { "telescope", "nui", "builtin" },
 	},
 })
+
+local builtin = require("statuscol.builtin")
+require("statuscol").setup({
+	segments = {
+		{ text = { "%s" } },
+		{
+			text = { builtin.lnumfunc },
+			condition = { true, builtin.not_empty },
+		},
+		{ text = { " ", builtin.foldfunc, " " } },
+	},
+})
+
 vim.cmd([[silent! luafile .local.lua]])
