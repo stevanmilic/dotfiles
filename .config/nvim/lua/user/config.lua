@@ -80,8 +80,6 @@ require("trouble").setup({
 	auto_preview = false,
 })
 
-require("nvim_comment").setup()
-
 require("textcase").setup({ default_keymappings_enabled = false })
 -- auto-session
 local close_all_floating_wins = function()
@@ -201,6 +199,11 @@ require("statuscol").setup({
 		},
 		{ text = { " ", builtin.foldfunc, " " } },
 	},
+})
+
+require("arrow").setup({
+	show_icons = true,
+	leader_key = ";",
 })
 
 vim.cmd([[silent! luafile .local.lua]])

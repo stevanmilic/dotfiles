@@ -47,7 +47,7 @@ vim.cmd([[
   set laststatus=0
   set noruler
   set statusline=─
-  set fillchars+=stl:─,stlnc:─,fold:\ ,foldopen:\ ,foldsep:\ ,foldclose:
+  set fillchars+=stl:─,stlnc:─,fold:\ ,foldopen:\ ,foldsep:\ ,foldclose:
   set foldcolumn=1
 ]])
 

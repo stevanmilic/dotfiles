@@ -236,9 +236,6 @@ local function smart_J()
 end
 vim.keymap.set("n", "J", smart_J, { noremap = true })
 
--- auto import
-vim.keymap.set("n", "<leader>a", require("lspimport").import, { noremap = true })
-
 -- additional mappings
 vim.cmd([[
   " open nested folds

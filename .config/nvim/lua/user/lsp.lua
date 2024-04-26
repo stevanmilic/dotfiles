@@ -2,22 +2,14 @@
 -- lsp-config setup
 --------------------
 local toggle_diagnostics = function()
-	if vim.diagnostic.is_disabled() then
-		vim.diagnostic.enable()
-	else
-		vim.diagnostic.disable()
-	end
+	vim.diagnostic.enable(not vim.diagnostic.is_enabled())
 end
 
 local toggle_inlay_hint = function()
-	if vim.lsp.inlay_hint.is_enabled() then
-		vim.lsp.inlay_hint.enable(0, false)
-	else
-		vim.lsp.inlay_hint.enable(0, true)
-	end
+	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end
 
-local is_copilot_enabled = false
+local is_copilot_enabled = true
 
 local toggle_copilot = function()
 	local copilot = require("copilot.command")
@@ -68,15 +60,12 @@ if is_wsl then
 	}
 end
 
-require("gx").setup(is_wsl and { open_browser_app = "wslview" } or {})
-
 local servers = {
-	"pyright",
+	"basedpyright",
 	"rust_analyzer",
 	"lua_ls",
 	"gopls",
 	"golangci_lint_ls",
-	"helm_ls",
 	"bufls",
 }
 
@@ -100,7 +89,10 @@ require("neodev").setup({
 })
 local lspconfig = require("lspconfig")
 local enhance_server_settings = {
-	pyright = {
+	basedpyright = {
+		basedpyright = {
+			typeCheckingMode = "standard",
+		},
 		python = {
 			analysis = {
 				useLibraryCodeForTypes = false,
@@ -180,12 +172,13 @@ require("copilot").setup({
 })
 require("copilot_cmp").setup({ fix_pairs = true })
 -- Disable copilot by default.
-require("copilot.command").disable()
+-- require("copilot.command").disable()
 
 cmp.setup({
 	enabled = function()
 		return vim.api.nvim_get_option_value("buftype", {}) ~= "prompt" or require("cmp_dap").is_dap_buffer()
 	end,
+	preselect = cmp.PreselectMode.None,
 	snippet = {
 		expand = function(args)
 			require("luasnip").lsp_expand(args.body)
@@ -307,8 +300,8 @@ vim.diagnostic.config({
 		text = {
 			[vim.diagnostic.severity.ERROR] = "●",
 			[vim.diagnostic.severity.WARN] = "●",
-			[vim.diagnostic.severity.HINT] = " ",
-			[vim.diagnostic.severity.INFO] = " ",
+			[vim.diagnostic.severity.HINT] = "●",
+			[vim.diagnostic.severity.INFO] = "●",
 		},
 	},
 	underline = true,

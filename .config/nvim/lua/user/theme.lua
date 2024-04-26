@@ -8,6 +8,7 @@ require("nord").setup({
 		highlights["StatusLineNC"] = { bg = "NONE" }
 		highlights["StatusLine"] = { bg = "NONE" }
 		highlights["LspInlayHint"] = { fg = colors.polar_night.light, bg = colors.polar_night.bright, italic = true }
+		highlights["FoldColumn"] = { fg = c.none }
 	end,
 })
 vim.cmd.colorscheme("nord")

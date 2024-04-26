@@ -9,7 +9,6 @@ return {
 		lazy = false,
 		priority = 1000,
 	},
-	"terrortylor/nvim-comment",
 	"nvim-tree/nvim-tree.lua",
 	{
 		"stevanmilic/barbecue.nvim",
@@ -42,7 +41,6 @@ return {
 		},
 	},
 	"nvim-pack/nvim-spectre",
-	{ "chrishrb/gx.nvim", keys = { { "gx", "<cmd>Browse<cr>", mode = { "n", "x" } } } },
 	"echasnovski/mini.ai",
 	{
 		"altermo/ultimate-autopair.nvim",
@@ -64,7 +62,8 @@ return {
 	"stevearc/conform.nvim",
 	"mfussenegger/nvim-lint",
 	{ "zbirenbaum/copilot.lua", event = "InsertEnter" },
-	"luukvbaal/statuscol.nvim",
+	"stevanmilic/statuscol.nvim",
+	"otavioschwanck/arrow.nvim",
 
 	-- tree-sitter
 	{
@@ -90,7 +89,7 @@ return {
 	{
 		"mfussenegger/nvim-dap",
 		dependencies = {
-			"rcarriga/nvim-dap-ui",
+			{ "rcarriga/nvim-dap-ui", dependencies = { "nvim-neotest/nvim-nio" } },
 			"jay-babu/mason-nvim-dap.nvim",
 			"leoluz/nvim-dap-go",
 			{ "theHamsta/nvim-dap-virtual-text", config = true },
@@ -119,7 +118,6 @@ return {
 		},
 	},
 	"folke/neodev.nvim",
-	"stevanmilic/nvim-lspimport",
 
 	-- extendend syntax
 	{ "towolf/vim-helm", lazy = false },
