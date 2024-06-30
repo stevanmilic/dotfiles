@@ -1,27 +1,3 @@
-require("nvim-tree").setup({
-	on_attach = function(bufnr)
-		local api = require("nvim-tree.api")
-		api.config.mappings.default_on_attach(bufnr)
-		-- remove a default, leap uses "s" mapping
-		vim.keymap.del("n", "s", { buffer = bufnr })
-	end,
-	actions = {
-		open_file = {
-			window_picker = { enable = false },
-		},
-	},
-	view = {
-		adaptive_size = true,
-		signcolumn = "no",
-	},
-})
-
-require("barbecue").setup({
-	show_modified = true,
-	navic_depth_limit = 1,
-	exclude_filetypes = { "netrw", "toggleterm", "" },
-})
-
 require("gitsigns").setup({
 	on_attach = function(bufnr)
 		local gs = package.loaded.gitsigns
@@ -57,6 +33,9 @@ require("gitsigns").setup({
 	current_line_blame_opts = { delay = 0 },
 })
 
+vim.notify = require("notify")
+require("hop").setup({})
+
 require("toggleterm").setup({
 	size = function(_)
 		return vim.o.lines * 0.48
@@ -76,11 +55,7 @@ require("toggleterm").setup({
 	winbar = { enabled = true },
 })
 
-require("trouble").setup({
-	auto_preview = false,
-})
 
-require("textcase").setup({ default_keymappings_enabled = false })
 -- auto-session
 local close_all_floating_wins = function()
 	for _, win in ipairs(vim.api.nvim_list_wins()) do
@@ -126,11 +101,12 @@ require("neotest").setup({
 	},
 })
 
-vim.o.foldlevel = 99
-vim.o.foldlevelstart = 99
-vim.wo.foldtext = ""
-vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-vim.wo.foldmethod = "expr"
+-- vim.o.foldlevel = 99
+-- vim.o.foldlevelstart = 99
+-- vim.wo.foldtext = ""
+-- vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+-- vim.wo.foldmethod = "expr"
+vim.foldenable = false
 
 require("gitlinker").setup({ message = false })
 
@@ -143,20 +119,6 @@ require("nvim-surround").setup({
 	},
 })
 
-require("tmux").setup({
-	navigation = {
-		-- enables default keybindings (C-hjkl) for normal mode
-		enable_default_keybindings = true,
-	},
-	copy_sync = {
-		enable = false,
-	},
-})
-
-require("flit").setup({
-	multiline = false,
-	labeled_modes = "nvo",
-})
 
 require("mini.ai").setup()
 
@@ -170,16 +132,6 @@ require("flatten").setup({
 	},
 })
 
--- leap disable special keys mappings
-require("leap").opts.special_keys = {
-	next_target = "",
-	prev_target = "",
-	next_group = "",
-	prev_group = "",
-	multi_accept = "",
-	multi_revert = "",
-}
-
 require("git-conflict").setup({
 	disable_diagnostics = true,
 })
@@ -187,23 +139,6 @@ require("dressing").setup({
 	select = {
 		backend = { "telescope", "nui", "builtin" },
 	},
-})
-
-local builtin = require("statuscol.builtin")
-require("statuscol").setup({
-	segments = {
-		{ text = { "%s" } },
-		{
-			text = { builtin.lnumfunc },
-			condition = { true, builtin.not_empty },
-		},
-		{ text = { " ", builtin.foldfunc, " " } },
-	},
-})
-
-require("arrow").setup({
-	show_icons = true,
-	leader_key = ";",
 })
 
 vim.cmd([[silent! luafile .local.lua]])

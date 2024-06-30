@@ -9,39 +9,110 @@ local toggle_inlay_hint = function()
 	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end
 
-local is_copilot_enabled = true
+require("mini.completion").setup()
 
-local toggle_copilot = function()
-	local copilot = require("copilot.command")
-	if is_copilot_enabled then
-		copilot.disable()
-		is_copilot_enabled = false
-		vim.print("Copilot off 😭")
-	else
-		copilot.enable()
-		is_copilot_enabled = true
-		vim.print("Copilot on 🚀")
-	end
+---Utility for keymap creation.
+---@param lhs string
+---@param rhs string|function
+---@param opts string|table
+---@param mode? string|string[]
+local function keymap(lhs, rhs, opts, mode)
+	opts = type(opts) == "string" and { desc = opts }
+		or vim.tbl_extend("error", opts --[[@as table]], { buffer = bufnr })
+	mode = mode or "n"
+	vim.keymap.set(mode, lhs, rhs, opts)
 end
 
--- Use an on_attach function to only map the following keys after the language
+---For replacing certain <C-x>... keymaps.
+---@param keys string
+local function feedkeys(keys)
+	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), "n", true)
+end
+
+---Is the completion menu open?
+local function pumvisible()
+	return tonumber(vim.fn.pumvisible()) ~= 0
+end
+
 -- server attaches to the current buffer
 local on_attach = function(client, bufnr)
 	-- Reset formatexpr set by lsp module.
 	vim.opt_local.formatexpr = ""
 	-- Mappings.
 	local bufopts = { noremap = true, silent = true, buffer = bufnr }
-	vim.keymap.set("n", "<leader>D", vim.lsp.buf.declaration, bufopts)
+	vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
 	-- vim.keymap.set("n", "<leader>d", vim.lsp.buf.definition, bufopts)
-	vim.keymap.set("n", "<leader>d", require("telescope.builtin").lsp_definitions, bufopts)
-	vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
-	vim.keymap.set({ "v", "n", "i" }, "<c-e>", vim.lsp.buf.code_action, bufopts)
-	vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, bufopts)
-	vim.keymap.set("n", "<leader>q", toggle_diagnostics, bufopts)
-	vim.keymap.set("n", "<leader>w", toggle_copilot, bufopts)
+	vim.keymap.set("n", "gd", require("telescope.builtin").lsp_definitions, bufopts)
+	vim.keymap.set("n", "<space>k", vim.lsp.buf.hover, bufopts)
+	vim.keymap.set({ "v", "n", "i" }, "<space>a", vim.lsp.buf.code_action, bufopts)
+	vim.keymap.set("n", "<space>r", vim.lsp.buf.rename, bufopts)
+	vim.keymap.set("n", "<space>q", toggle_diagnostics, bufopts)
 
 	if client.server_capabilities.inlayHintProvider then
-		vim.keymap.set("n", "<leader>p", toggle_inlay_hint)
+		vim.keymap.set("n", "<space>H", toggle_inlay_hint)
+	end
+
+	-- Enable completion and configure keybindings.
+	local methods = vim.lsp.protocol.Methods
+	if client.supports_method(methods.textDocument_completion) then
+		-- vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = true })
+
+		-- Use enter to accept completions.
+		keymap("<cr>", function()
+			return pumvisible() and "<C-y>" or "<cr>"
+		end, { expr = true }, "i")
+
+		-- Use slash to dismiss the completion menu.
+		keymap("/", function()
+			return pumvisible() and "<C-e>" or "/"
+		end, { expr = true }, "i")
+
+		-- Use <C-n> to navigate to the next completion or:
+		-- - Trigger LSP completion.
+		-- - If there's no one, fallback to vanilla omnifunc.
+		keymap("<C-n>", function()
+			if pumvisible() then
+				feedkeys("<C-n>")
+			else
+				if next(vim.lsp.get_clients({ bufnr = 0 })) then
+					vim.lsp.completion.trigger()
+				else
+					if vim.bo.omnifunc == "" then
+						feedkeys("<C-x><C-n>")
+					else
+						feedkeys("<C-x><C-o>")
+					end
+				end
+			end
+		end, "Trigger/select next completion", "i")
+
+		-- Buffer completions.
+		keymap("<C-u>", "<C-x><C-n>", { desc = "Buffer completions" }, "i")
+
+		-- Use <Tab> to accept a Copilot suggestion, navigate between snippet tabstops,
+		-- or select the next completion.
+		-- Do something similar with <S-Tab>.
+		keymap("<Tab>", function()
+			if pumvisible() then
+				feedkeys("<C-n>")
+			elseif vim.snippet.active() then
+				vim.snippet.jump(1)
+			else
+				feedkeys("<Tab>")
+			end
+		end, {}, { "i", "s" })
+		keymap("<S-Tab>", function()
+			if pumvisible() then
+				feedkeys("<C-p>")
+			elseif vim.snippet.active() then
+				vim.snippet.jump(-1)
+			else
+				feedkeys("<S-Tab>")
+			end
+		end, {}, { "i", "s" })
+
+		-- Inside a snippet, use backspace to remove the placeholder.
+		keymap("<BS>", "<C-o>s", {}, "s")
 	end
 end
 
@@ -49,7 +120,7 @@ local luv = require("luv")
 local is_wsl = luv.os_uname()["release"]:lower():match("microsoft") and true or false
 
 -- Add additional capabilities supported by nvim-cmp
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
+local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.foldingRange = {
 	dynamicRegistration = false,
 	lineFoldingOnly = true,
@@ -142,120 +213,10 @@ vim.lsp.handlers["textDocument/definition"] = function(err, result, ctx, config)
 	current_definition_handler(err, result, ctx, config)
 end
 
------------------
--- nvim-cmp setup
--- --------------
-local has_words_before = function()
-	if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
-		return false
-	end
-	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-	return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
-end
-
-local luasnip = require("luasnip")
-require("luasnip.loaders.from_vscode").lazy_load()
-
-local cmp = require("cmp")
-local lspkind = require("lspkind")
-
 require("ultimate-autopair").setup({
 	fastwarp = {
 		map = "<C-s>",
 		rmap = "<C-a>",
-	},
-})
-
-require("copilot").setup({
-	suggestion = { enabled = false },
-	panel = { enabled = false },
-})
-require("copilot_cmp").setup({ fix_pairs = true })
--- Disable copilot by default.
--- require("copilot.command").disable()
-
-cmp.setup({
-	enabled = function()
-		return vim.api.nvim_get_option_value("buftype", {}) ~= "prompt" or require("cmp_dap").is_dap_buffer()
-	end,
-	preselect = cmp.PreselectMode.None,
-	snippet = {
-		expand = function(args)
-			require("luasnip").lsp_expand(args.body)
-		end,
-	},
-	mapping = {
-		["<C-b>"] = cmp.mapping.scroll_docs(-4),
-		["<C-f>"] = cmp.mapping.scroll_docs(4),
-		["<Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() and has_words_before() then
-				cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-			elseif luasnip.expand_or_jumpable() then
-				luasnip.expand_or_jump()
-			else
-				fallback()
-			end
-		end, { "i", "s" }),
-		["<C-h>"] = cmp.mapping.complete(),
-		["<S-Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() and has_words_before() then
-				cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
-			elseif luasnip.jumpable(-1) then
-				luasnip.jump(-1)
-			else
-				fallback()
-			end
-		end, { "i", "s" }),
-		["<CR>"] = cmp.mapping.confirm({
-			-- behavior = cmp.ConfirmBehavior.Replace,
-			select = true,
-		}),
-	},
-	sources = {
-		{ name = "copilot" },
-		{ name = "nvim_lsp" },
-		{ name = "luasnip" },
-	},
-	formatting = {
-		format = lspkind.cmp_format({
-			mode = "symbol", -- show only symbol annotations
-			maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
-			preset = "codicons",
-			symbol_map = { Copilot = "" },
-		}),
-	},
-	sorting = {
-		comparators = {
-			require("copilot_cmp.comparators").prioritize,
-			cmp.config.compare.offset,
-			cmp.config.compare.exact,
-			cmp.config.compare.score,
-			cmp.config.compare.recently_used,
-			require("cmp-under-comparator").under,
-			cmp.config.compare.kind,
-		},
-	},
-	experimental = {
-		ghost_text = true,
-	},
-})
-cmp.setup.cmdline(":", {
-	mapping = cmp.mapping.preset.cmdline(),
-	sources = cmp.config.sources({
-		{ name = "path" },
-	}, {
-		{ name = "cmdline", keyword_length = 3 },
-	}),
-})
-cmp.setup.cmdline("/", {
-	mapping = cmp.mapping.preset.cmdline(),
-	sources = cmp.config.sources({
-		{ name = "buffer", keyword_length = 3 },
-	}),
-})
-cmp.setup.filetype({ "dap-repl", "dapui_watches", "dapui_hover" }, {
-	sources = {
-		{ name = "dap" },
 	},
 })
 
@@ -277,18 +238,6 @@ require("conform").setup({
 		timeout_ms = 1000,
 		lsp_fallback = true,
 	},
-})
-
-----------------
--- linting setup
-----------------
-require("lint").linters_by_ft = {
-	proto = { "buf_lint" },
-}
-vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-	callback = function()
-		require("lint").try_lint()
-	end,
 })
 
 --------------------

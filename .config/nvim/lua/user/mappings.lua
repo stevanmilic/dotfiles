@@ -1,164 +1,226 @@
-local whichkey = require("which-key")
-whichkey.setup({
-	ignore_missing = true,
-	plugins = {
-		marks = false,
-		registers = false,
-		spelling = {
-			enabled = true,
-		},
-		presets = {
-			operators = false,
-			motions = false,
-			text_objects = false,
-			windows = false,
-			nav = false,
-			z = false,
-			g = false,
-		},
+-- Debug mappings
+vim.keymap.set("n", "<space>gR", function()
+	require("dap").run_to_cursor()
+end, { noremap = true, silent = true, desc = "Run to Cursor" })
+vim.keymap.set("n", "<space>gE", function()
+	require("dapui").eval(vim.fn.input("[Expression]: "))
+end, { noremap = true, silent = true, desc = "Evaluate Input" })
+vim.keymap.set("n", "<space>gt", function()
+	require("dapui").toggle()
+end, { noremap = true, silent = true, desc = "Toggle UI" })
+vim.keymap.set("n", "<space>gc", function()
+	require("dap").continue()
+end, { noremap = true, silent = true, desc = "Continue" })
+vim.keymap.set("n", "<space>gd", function()
+	require("dap").disconnect()
+end, { noremap = true, silent = true, desc = "Disconnect" })
+vim.keymap.set("n", "<space>ge", function()
+	require("dapui").eval()
+end, { noremap = true, silent = true, desc = "Evaluate" })
+vim.keymap.set("n", "<space>gh", function()
+	require("dap.ui.widgets").hover()
+end, { noremap = true, silent = true, desc = "Hover Variables" })
+vim.keymap.set("n", "<space>gn", function()
+	require("dap").step_over()
+end, { noremap = true, silent = true, desc = "Step Over" })
+vim.keymap.set("n", "<space>gs", function()
+	require("dap").step_into()
+end, { noremap = true, silent = true, desc = "Step Into" })
+vim.keymap.set("n", "<space>gr", function()
+	require("dap").repl.toggle()
+end, { noremap = true, silent = true, desc = "Toggle Repl" })
+vim.keymap.set("n", "<space>gb", function()
+	require("dap").toggle_breakpoint()
+end, { noremap = true, silent = true, desc = "Toggle Breakpoint" })
+vim.keymap.set("n", "<space>gf", function()
+	require("dap").clear_breakpoints()
+end, { noremap = true, silent = true, desc = "Clear Breakpoints" })
+vim.keymap.set("n", "<space>gx", function()
+	require("dap").terminate()
+end, { noremap = true, silent = true, desc = "Terminate" })
+vim.keymap.set("n", "<space>gu", function()
+	require("dap").step_out()
+end, { noremap = true, silent = true, desc = "Step Out" })
+vim.keymap.set("n", "<space>gj", function()
+	require("dap").goto_()
+end, { noremap = true, silent = true, desc = "Jump To Cursor" })
+vim.keymap.set("n", "<space>gv", function()
+	require("nvim-dap-virtual-text").toggle()
+end, { noremap = true, silent = true, desc = "Toggle Virtual Text" })
+
+-- Diagnostics mappings
+vim.keymap.set(
+	"n",
+	"<leader>iw",
+	"<cmd>TroubleToggle workspace_diagnostics<CR>",
+	{ noremap = true, silent = true, desc = "Workspace" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>id",
+	"<cmd>TroubleToggle document_diagnostics<CR>",
+	{ noremap = true, silent = true, desc = "Document" }
+)
+
+-- Testing mappings
+vim.keymap.set("n", "<leader>tn", function()
+	require("neotest").run.run()
+end, { noremap = true, silent = true, desc = "Run Nearest" })
+vim.keymap.set("n", "<leader>tf", function()
+	require("neotest").run.run(vim.fn.expand("%"))
+end, { noremap = true, silent = true, desc = "Run File" })
+vim.keymap.set("n", "<leader>td", function()
+	if vim.bo.filetype == "go" then
+		require("dap-go").debug_test()
+	else
+		require("neotest").run.run({ strategy = "dap" })
+	end
+end, { noremap = true, silent = true, desc = "Run Debug" })
+vim.keymap.set("n", "<leader>tl", function()
+	require("neotest").run.run_last()
+end, { noremap = true, silent = true, desc = "Run Last" })
+vim.keymap.set("n", "<leader>to", function()
+	require("neotest").output.open({ enter = true, last_run = true })
+end, { noremap = true, silent = true, desc = "Output" })
+vim.keymap.set("n", "<leader>ta", function()
+	require("neotest").run.attach()
+end, { noremap = true, silent = true, desc = "Attach" })
+vim.keymap.set("n", "<leader>tx", function()
+	require("neotest").run.stop()
+end, { noremap = true, silent = true, desc = "Stop" })
+vim.keymap.set("n", "<leader>ts", function()
+	require("neotest").summary.open()
+end, { noremap = true, silent = true, desc = "Summary" })
+vim.keymap.set(
+	"n",
+	"<leader>tq",
+	"<cmd>TroubleToggle quickfix<CR>",
+	{ noremap = true, silent = true, desc = "Quickfix" }
+)
+
+-- Nvim tree mapping
+vim.keymap.set("n", "<leader>n", function()
+	require("nvim-tree.api").tree.toggle()
+end, { noremap = true, silent = true, desc = "Nvim tree" })
+
+-- Finder mappings
+vim.keymap.set("n", "<space>w", function()
+	require("telescope.builtin").grep_string()
+end, { noremap = true, silent = true, desc = "Find word" })
+vim.keymap.set("n", "<space>/", function()
+	require("telescope.builtin").live_grep()
+end, { noremap = true, silent = true, desc = "Find all" })
+vim.keymap.set("n", "<space>f", function()
+	require("telescope.builtin").find_files()
+end, { noremap = true, silent = true, desc = "Find files" })
+vim.keymap.set("n", "<space>b", function()
+	require("telescope.builtin").buffers({ sort_mru = true })
+end, { noremap = true, silent = true, desc = "Buffers" })
+vim.keymap.set("n", "<space>c", function()
+	require("telescope.builtin").lsp_workspace_symbols({ query = vim.fn.expand("<cword>"), symbols = "class" })
+end, { noremap = true, silent = true, desc = "Find class" })
+vim.keymap.set("n", "<space>F", function()
+	require("telescope.builtin").lsp_workspace_symbols({
+		query = vim.fn.expand("<cword>"),
+		symbols = { "function", "method" },
+	})
+end, { noremap = true, silent = true, desc = "Find function" })
+vim.keymap.set("n", "<space>s", function()
+	require("telescope.builtin").lsp_document_symbols()
+end, { noremap = true, silent = true, desc = "Find document symbol" })
+vim.keymap.set("n", "<space>S", function()
+	require("telescope.builtin").lsp_dynamic_workspace_symbols({ ignore_symbols = "variable" })
+end, { noremap = true, silent = true, desc = "Find workspace symbol" })
+vim.keymap.set("n", "<space>u", function()
+	require("telescope.builtin").lsp_references({ include_declaration = false })
+end, { noremap = true, silent = true, desc = "Find references" })
+vim.keymap.set("n", "<space>i", function()
+	require("telescope.builtin").lsp_implementations()
+end, { noremap = true, silent = true, desc = "Find implementations" })
+vim.keymap.set("n", "<space>z", "za", { noremap = true, silent = true, desc = "Resume finder" })
+
+local mini_clue = require("mini.clue")
+
+mini_clue.setup({
+	window = {
+		delay = 0,
 	},
-	show_help = false,
+	triggers = {
+		{ mode = "n", keys = "<space>" },
+	},
+	clues = {
+		-- Debug
+		{ mode = "n", keys = "<space>g", desc = "Debug" },
+		{ mode = "n", keys = "<space>gR", desc = "Run to Cursor" },
+		{ mode = "n", keys = "<space>gE", desc = "Evaluate Input" },
+		{ mode = "n", keys = "<space>gt", desc = "Toggle UI" },
+		{ mode = "n", keys = "<space>gc", desc = "Continue" },
+		{ mode = "n", keys = "<space>gd", desc = "Disconnect" },
+		{ mode = "n", keys = "<space>ge", desc = "Evaluate" },
+		{ mode = "n", keys = "<space>gh", desc = "Hover Variables" },
+		{ mode = "n", keys = "<space>gn", desc = "Step Over" },
+		{ mode = "n", keys = "<space>gs", desc = "Step Into" },
+		{ mode = "n", keys = "<space>gr", desc = "Toggle Repl" },
+		{ mode = "n", keys = "<space>gb", desc = "Toggle Breakpoint" },
+		{ mode = "n", keys = "<space>gf", desc = "Clear Breakpoints" },
+		{ mode = "n", keys = "<space>gx", desc = "Terminate" },
+		{ mode = "n", keys = "<space>gu", desc = "Step Out" },
+		{ mode = "n", keys = "<space>gj", desc = "Jump To Cursor" },
+		{ mode = "n", keys = "<space>gv", desc = "Toggle Virtual Text" },
+		{ mode = "n", keys = "<space>w", desc = "Find word" },
+		{ mode = "n", keys = "<space>/", desc = "Find all" },
+		{ mode = "n", keys = "<space>f", desc = "Find files" },
+		{ mode = "n", keys = "<space>b", desc = "Buffers" },
+		{ mode = "n", keys = "<space>c", desc = "Find class" },
+		{ mode = "n", keys = "<space>F", desc = "Find function" },
+		{ mode = "n", keys = "<space>s", desc = "Find document symbol" },
+		{ mode = "n", keys = "<space>S", desc = "Find workspace symbol" },
+		{ mode = "n", keys = "<space>u", desc = "Find references" },
+		{ mode = "n", keys = "<space>i", desc = "Find implementations" },
+	},
 })
-
--- stylua: ignore start
-local leader_keymap = {
-    j = {
-        name = "Debug",
-        R = { function() require'dap'.run_to_cursor() end, "Run to Cursor" },
-        E = { function() require'dapui'.eval(vim.fn.input("[Expression]: ")) end, "Evaluate Input" },
-        t = { function() require'dapui'.toggle() end, "Toggle UI" },
-        c = { function() require'dap'.continue() end, "Continue" },
-        d = { function() require'dap'.disconnect() end, "Disconnect" },
-        e = { function() require'dapui'.eval() end, "Evaluate" },
-        h = { function() require'dap.ui.widgets'.hover() end, "Hover Variables" },
-        n = { function() require'dap'.step_over() end, "Step Over" },
-        s = { function() require'dap'.step_into() end, "Step Into" },
-        r = { function() require'dap'.repl.toggle() end, "Toggle Repl" },
-        b = { function() require'dap'.toggle_breakpoint() end, "Toggle Breakpoint" },
-        f = { function() require'dap'.clear_breakpoints() end, "Clear Breakpoints" },
-        x = { function() require'dap'.terminate() end, "Terminate" },
-        u = { function() require'dap'.step_out() end, "Step Out" },
-        j = { function() require'dap'.goto_() end, "Jump To Cursor" },
-        v = { function() require'nvim-dap-virtual-text'.toggle() end, "Toggle Virtual Text" },
-    },
-    i = {
-        name = "Diagnostics",
-        w = { "<cmd>TroubleToggle workspace_diagnostics<cr>", "Workspace" },
-        d = { "<cmd>TroubleToggle document_diagnostics<cr>", "Document" },
-    },
-    t = {
-        name = "Testing",
-        n = { function() require('neotest').run.run() end, "Run Nearest" },
-        f = { function() require('neotest').run.run(vim.fn.expand('%')) end, "Run File" },
-        d = { function()
-            if vim.bo.filetype == 'go' then
-                 require('dap-go').debug_test()
-            else
-                require('neotest').run.run({ strategy = 'dap' })
-            end
-        end, "Run Debug" },
-        l = { function() require('neotest').run.run_last() end, "Run Last" },
-        o = { function() require('neotest').output.open({ enter = true, last_run = true }) end, "Output" },
-        a = { function() require('neotest').run.attach() end, "Attach" },
-        x = { function() require('neotest').run.stop() end, "Stop" },
-        s = { function() require('neotest').summary.open() end, "Summary" },
-        q = { "<cmd>TroubleToggle quickfix<cr>", "Quickfix" },
-    },
-    n = {
-        function () require("nvim-tree.api").tree.toggle() end,
-        "Nvim tree"
-    },
-}
-
-whichkey.register(leader_keymap, {
-    mode = "n",
-    prefix = "<leader>",
-    buffer = nil,
-    silent = true,
-    noremap = true,
-    nowait = false,
-})
-
-local keymap = {
-    ["<space>"] = {
-        name = "Finder",
-        w = { function () require("telescope.builtin").grep_string() end, "Find word", },
-        ["/"] = { function () require("telescope.builtin").live_grep() end, "Find all", },
-        f = { function () require('telescope.builtin').find_files() end, "Find files", },
-        b = { function () require("telescope.builtin").buffers({sort_mru = true}) end, "Buffers", },
-        c = { function () require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols="class"}) end, "Find class", },
-        F = { function () require('telescope.builtin').lsp_workspace_symbols({query=vim.fn.expand("<cword>"), symbols={"function", "method"}}) end, "Find function", },
-        s = { function () require('telescope.builtin').lsp_document_symbols() end, "Find document symbol", },
-        S = { function () require('telescope.builtin').lsp_dynamic_workspace_symbols({ignore_symbols="variable"}) end, "Find workspace symbol", },
-        u = { function () require('telescope.builtin').lsp_references({include_declaration=false}) end, "Find references", },
-        i = { function () require('telescope.builtin').lsp_implementations() end, "Find implementations", },
-        z = { "za", "Resume finder", },
-        r = { function () require('telescope.builtin').resume() end, "Resume finder", },
-    },
-}
-
-whichkey.register(keymap, {
-    mode = "n",
-    buffer = nil,
-    silent = true,
-    noremap = true,
-    nowait = true,
-})
-
--- treesitter jump to context
-vim.keymap.set("n", "[c", function () require("barbecue.ui").navigate(-1) end, { silent = true })
-
--- Bidirectional leap search for current window
-vim.keymap.set("n", "s", function()
-	local current_window = vim.fn.win_getid()
-	require("leap").leap({ target_windows = { current_window } })
-end)
-
+local hop = require("hop")
 -- Bidirectional leap search for focused windows
-vim.keymap.set("n", "gs", function()
-	local windows = vim.api.nvim_tabpage_list_wins(0)
-	local focused_windows = vim.tbl_filter(function(win)
-		return vim.api.nvim_win_get_config(win).focusable
-	end, windows)
-	require("leap").leap({ target_windows = focused_windows })
-end)
+vim.keymap.set("n", "gw", hop.hint_words)
 
 -- set-up go replace mappings
-vim.keymap.set("n", "gr", function() require('substitute').operator() end, { noremap = true })
-vim.keymap.set("n", "grl", function() require('substitute').line() end, { noremap = true })
-vim.keymap.set("x", "s", function() require('substitute').visual() end, { noremap = true })
+vim.keymap.set("n", "gr", function()
+	require("substitute").operator()
+end, { noremap = true })
+vim.keymap.set("n", "grl", function()
+	require("substitute").line()
+end, { noremap = true })
+vim.keymap.set("x", "s", function()
+	require("substitute").visual()
+end, { noremap = true })
 
 -- center the search term while iterating
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
-vim.keymap.set({"t", "n"}, "<leader>=", "<cmd>resize +2<CR>")
-vim.keymap.set({"t", "n"}, "<leader>-", "<cmd>resize -2<CR>")
-vim.keymap.set({"t", "n"}, "<leader>;", "<cmd>resize<CR>")
-
-vim.keymap.set('n', '<leader>S', function () require("spectre").open() end , { desc = "Open Spectre" })
-vim.keymap.set('n', '<leader>sw', function () require("spectre").open_visual({select_word=true}) end, { desc = "Search current word" })
+vim.keymap.set({ "t", "n" }, "<leader>=", "<cmd>resize +2<CR>")
+vim.keymap.set({ "t", "n" }, "<leader>-", "<cmd>resize -2<CR>")
+vim.keymap.set({ "t", "n" }, "<leader>;", "<cmd>resize<CR>")
 
 -- git browse
 vim.keymap.set(
-  {"n", 'v'},
-  "<leader>gl",
-  "<cmd>GitLink<cr>",
-  { silent = true, noremap = true, desc = "Copy git permlink to clipboard" }
+	{ "n", "v" },
+	"<leader>gl",
+	"<cmd>GitLink<cr>",
+	{ silent = true, noremap = true, desc = "Copy git permlink to clipboard" }
 )
 vim.keymap.set(
-  {"n", 'v'},
-  "<leader>gL",
-  "<cmd>GitLink!<cr>",
-  { silent = true, noremap = true, desc = "Open git permlink in browser" }
+	{ "n", "v" },
+	"<leader>gL",
+	"<cmd>GitLink!<cr>",
+	{ silent = true, noremap = true, desc = "Open git permlink in browser" }
 )
 
-
 -- scrolling
-vim.keymap.set('n', '<c-u>', '5<c-y>')
-vim.keymap.set('n', '<c-d>', '5<c-e>')
-vim.keymap.set('n', '<c-b>', '10<c-y>')
-vim.keymap.set('n', '<c-f>', '10<c-e>')
+vim.keymap.set("n", "<c-u>", "5<c-y>")
+vim.keymap.set("n", "<c-d>", "5<c-e>")
+vim.keymap.set("n", "<c-b>", "10<c-y>")
+vim.keymap.set("n", "<c-f>", "10<c-e>")
 
 vim.keymap.set("t", "<esc>", [[<C-\><C-n>]])
 

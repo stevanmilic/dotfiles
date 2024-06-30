@@ -80,6 +80,21 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
+-- Function to hide the statusline for toggleterm file type
+local function hide_statusline()
+	if vim.bo.filetype == "toggleterm" then
+		vim.opt.laststatus = 0
+	else
+		vim.opt.laststatus = 2
+	end
+end
+
+vim.api.nvim_create_autocmd({ "TermOpen" }, {
+	pattern = "*",
+	callback = hide_statusline,
+	group = vim.api.nvim_create_augroup("StatuslineControl", { clear = true }),
+})
+
 vim.cmd([[
   " yank duration highlight in ms
   au TextYankPost * silent! lua vim.highlight.on_yank {timeout=500}

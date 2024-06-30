@@ -1,20 +1,11 @@
 return {
-	"nvim-tree/nvim-web-devicons",
 	"nvim-lua/plenary.nvim",
 	"nvim-telescope/telescope.nvim",
 	"folke/trouble.nvim",
-	"aserowy/tmux.nvim",
 	{
 		"gbprod/nord.nvim",
 		lazy = false,
 		priority = 1000,
-	},
-	"nvim-tree/nvim-tree.lua",
-	{
-		"stevanmilic/barbecue.nvim",
-		name = "barbecue",
-		branch = "feature/navic-depth-limit",
-		dependencies = { "SmiteshP/nvim-navic" },
 	},
 	{ "akinsho/toggleterm.nvim", version = "*" },
 	{ "stevearc/dressing.nvim", event = "VeryLazy" },
@@ -31,23 +22,14 @@ return {
 		},
 	},
 	"folke/which-key.nvim",
-	"johmsalas/text-case.nvim",
 	"willothy/flatten.nvim",
-	{
-		"ggandor/leap.nvim",
-		dependencies = {
-			"ggandor/flit.nvim",
-			"tpope/vim-repeat",
-		},
-	},
-	"nvim-pack/nvim-spectre",
 	"echasnovski/mini.ai",
+	"echasnovski/mini.clue",
 	{
 		"altermo/ultimate-autopair.nvim",
-		event = { "InsertEnter", "CmdlineEnter" },
+		event = { "InsertEnter" },
 		branch = "development",
 	},
-	{ "folke/noice.nvim", dependencies = { "MunifTanjim/nui.nvim" } },
 	{
 		"rcarriga/neotest",
 		dependencies = {
@@ -55,15 +37,12 @@ return {
 			"nvim-neotest/neotest-plenary",
 			"haydenmeade/neotest-jest",
 			"nvim-neotest/neotest-go",
-			-- "stevanmilic/neotest-scala",
-			{ dir = "/Users/Stevan.Milic/Applications/neotest-scala" },
+			"stevanmilic/neotest-scala",
+			-- { dir = "/Users/Stevan.Milic/Applications/neotest-scala" },
 		},
 	},
 	"stevearc/conform.nvim",
-	"mfussenegger/nvim-lint",
-	{ "zbirenbaum/copilot.lua", event = "InsertEnter" },
-	"stevanmilic/statuscol.nvim",
-	"otavioschwanck/arrow.nvim",
+	{ "smoka7/hop.nvim", version = "*" },
 
 	-- tree-sitter
 	{
@@ -78,9 +57,11 @@ return {
 		name = "lsp",
 		event = "BufReadPre",
 		dependencies = {
-			"kosayoda/nvim-lightbulb",
+			-- "kosayoda/nvim-lightbulb"
+			"gh-liu/nvim-lightbulb",
 		},
 	},
+	{ "echasnovski/mini.completion", version = "*" },
 	{ "dgagn/diagflow.nvim", event = "LspAttach" },
 	"j-hui/fidget.nvim",
 	"scalameta/nvim-metals",
@@ -101,26 +82,7 @@ return {
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {},
 	},
-	{
-		"hrsh7th/nvim-cmp",
-		event = "InsertEnter",
-		dependencies = {
-			"hrsh7th/cmp-nvim-lsp",
-			"hrsh7th/cmp-buffer",
-			"hrsh7th/cmp-path",
-			"hrsh7th/cmp-cmdline",
-			"rcarriga/cmp-dap",
-			{ "L3MON4D3/LuaSnip", dependencies = "rafamadriz/friendly-snippets" },
-			"saadparwaiz1/cmp_luasnip",
-			"onsails/lspkind-nvim",
-			"lukas-reineke/cmp-under-comparator",
-			"zbirenbaum/copilot-cmp",
-		},
-	},
 	"folke/neodev.nvim",
-
-	-- extendend syntax
-	{ "towolf/vim-helm", lazy = false },
 
 	-- git
 	{ "akinsho/git-conflict.nvim", version = "*", config = true },
