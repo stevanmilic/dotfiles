@@ -1,0 +1,65 @@
+theme = "nord"
+
+[editor]
+line-number = "relative"
+completion-timeout = 50
+
+[keys.normal]
+# Quick iteration on config changes
+C-r = ":config-reload"
+
+# Muscle memory
+G = "goto_file_end"
+V = ["select_mode", "extend_to_line_bounds"]
+
+i = ["insert_mode", "collapse_selection"]
+a = ["append_mode", "collapse_selection"]
+
+# Undoing the 'd' + motion commands restores the selection which is annoying
+u = ["undo", "collapse_selection"]
+
+# Escape the madness! No more fighting with the cursor! Or with multiple cursors!
+esc = ["collapse_selection", "keep_primary_selection"]
+
+# Search for word under cursor
+"*" = ["move_char_right", "move_prev_word_start", "move_next_word_end", "search_selection", "search_next"]
+"#" = ["move_char_right", "move_prev_word_start", "move_next_word_end", "search_selection", "search_prev"]
+
+# Make j and k behave as they do Vim when soft-wrap is enabled
+j = "move_line_down"
+k = "move_line_up"
+
+";" = "repeat_last_motion"
+
+[keys.insert]
+# Escape the madness! No more fighting with the cursor! Or with multiple cursors!
+esc = ["collapse_selection", "normal_mode"]
+
+[keys.select]
+# Muscle memory
+"$" = "goto_line_end"
+"^" = "goto_first_nonwhitespace"
+G = "goto_file_end"
+
+# Visual-mode specific muscle memory
+i = "select_textobject_inner"
+a = "select_textobject_around"
+
+# Make selecting lines in visual mode behave sensibly
+k = ["extend_line_up", "extend_to_line_bounds"]
+j = ["extend_line_down", "extend_to_line_bounds"]
+
+# Escape the madness! No more fighting with the cursor! Or with multiple cursors!
+esc = ["collapse_selection", "keep_primary_selection", "normal_mode"]
+
+[editor.cursor-shape]
+insert = "bar"
+
+[editor.lsp]
+display-inlay-hints = true
+
+[editor.soft-wrap]
+enable = true
+
+[keys.normal.space]
+H = ":toggle-option lsp.display-inlay-hints"
